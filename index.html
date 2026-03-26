@@ -11,52 +11,65 @@
         #menu-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
         .menu-box { background-color: #2c3e50; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .menu-box input { font-size: 20px; padding: 10px; width: 80px; text-align: center; margin: 20px 0; border-radius: 5px; border: none;}
-        .btn-large { font-size: 20px; padding: 15px 30px; background-color: #2ecc71; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; }
+        .btn-large { font-size: 20px; padding: 15px 30px; background-color: #2ecc71; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s; }
         .btn-large:hover { background-color: #27ae60; }
 
         /* Game */
         #game-screen { display: none; flex-direction: column; align-items: center; width: 100%; height: 100%; }
-        #status-bar { background-color: #f39c12; color: #2c3e50; font-weight: bold; padding: 8px 20px; border-radius: 20px; margin-bottom: 5px; font-size: 1.1rem; text-align: center; max-width: 800px;}
+        #status-bar { background-color: #f39c12; color: #2c3e50; font-weight: bold; padding: 8px 20px; border-radius: 20px; margin-bottom: 5px; font-size: 1.1rem; text-align: center; max-width: 800px; transition: all 0.3s ease;}
         
         /* Table & Layout */
         #ai-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 10px; width: 100%; }
         #poker-table { background-color: #27ae60; border: 12px solid #2ecc71; border-radius: 100px; width: 100%; max-width: 750px; height: 260px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        .pot-container { position: absolute; top: 10px; display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 2px solid #f1c40f; }
+        .pot-container { position: absolute; top: 10px; display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.5); padding: 5px 20px; border-radius: 20px; border: 2px solid #f1c40f; transition: transform 0.2s ease; }
         .card-area { display: flex; gap: 5px; margin-top: 20px;}
         
         /* Cards */
-        .card { background-color: white; border-radius: 5px; width: 45px; height: 65px; display: flex; flex-direction: column; justify-content: space-between; padding: 4px; color: black; font-size: 14px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.4); }
+        .card { background-color: white; border-radius: 5px; width: 45px; height: 65px; display: flex; flex-direction: column; justify-content: space-between; padding: 4px; color: black; font-size: 14px; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.4); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-5px); box-shadow: 2px 8px 15px rgba(0,0,0,0.5); }
         .card.red { color: #e74c3c; }
         .hidden-card { background: repeating-linear-gradient(45deg, #2980b9, #2980b9 8px, #3498db 8px, #3498db 16px); border: 1px solid #fff; }
         
         /* Players */
         .player-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; }
-        .player-badge { background-color: #34495e; padding: 5px 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 0.85rem; width: 120px; z-index: 2; transition: all 0.2s; }
+        .player-badge { background-color: #34495e; padding: 5px 10px; border-radius: 8px; text-align: center; border: 2px solid transparent; font-size: 0.85rem; width: 120px; z-index: 2; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
         .ai-cards { display: flex; gap: 2px; margin-bottom: -15px; z-index: 1; }
         .ai-cards .card { width: 35px; height: 50px; font-size: 12px; }
 
         #player-0 { margin-top: 5px; width: 160px; border: 2px solid #3498db; }
-        .player-badge.active-turn { border-color: #f1c40f; background-color: #2c3e50; box-shadow: 0 0 15px #f1c40f; transform: scale(1.05); }
-        .player-badge.folded { opacity: 0.4; filter: grayscale(100%); }
+        .player-badge.active-turn { border-color: #f1c40f; background-color: #2c3e50; box-shadow: 0 0 20px rgba(241, 196, 15, 0.6); transform: scale(1.08); }
+        .player-badge.folded { opacity: 0.4; filter: grayscale(100%); transform: scale(0.95); }
         .player-badge.bankrupt { background-color: #c0392b; border-color: #e74c3c; opacity: 0.8; }
         .action-text { font-size: 0.8rem; color: #bdc3c7; margin-top: 3px; font-weight: bold;}
         .action-text.highlight { color: #f1c40f; }
 
         /* User Area */
         #user-hand-container { display: flex; gap: 10px; margin-top: -20px; z-index: 10; }
-        .controls { display: flex; gap: 8px; background-color: #2c3e50; padding: 10px; border-radius: 10px; margin-top: 5px; align-items: center; }
-        input[type="number"] { padding: 8px; border-radius: 5px; border: none; width: 80px; text-align: center; font-weight: bold; }
-        button { padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; border: none; border-radius: 5px; background-color: #3498db; color: white; transition: background 0.2s;}
-        button:hover:not(:disabled) { background-color: #2980b9; }
-        button:disabled { background-color: #7f8c8d; cursor: not-allowed; opacity: 0.5; }
+        .controls { display: flex; gap: 8px; background-color: #2c3e50; padding: 10px; border-radius: 10px; margin-top: 5px; align-items: center; transition: opacity 0.3s; }
+        input[type="number"] { padding: 8px; border-radius: 5px; border: none; width: 80px; text-align: center; font-weight: bold; outline: none; transition: box-shadow 0.2s;}
+        input[type="number"]:focus { box-shadow: 0 0 10px #3498db; }
+        button { padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; border: none; border-radius: 5px; background-color: #3498db; color: white; transition: all 0.2s ease;}
+        button:hover:not(:disabled) { background-color: #2980b9; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        button:disabled { background-color: #7f8c8d; cursor: not-allowed; opacity: 0.5; transform: none; box-shadow: none; }
         #btn-fold { background-color: #e74c3c; }
         #btn-fold:hover:not(:disabled) { background-color: #c0392b; }
         #btn-call { background-color: #f39c12; }
         #btn-call:hover:not(:disabled) { background-color: #d68910; }
+        #btn-bet { background-color: #9b59b6; }
+        #btn-bet:hover:not(:disabled) { background-color: #8e44ad; }
 
-        /* Animations */
-        .chip-anim { position: absolute; font-size: 28px; z-index: 1000; pointer-events: none; transition: all 0.5s ease-in-out; opacity: 1; }
+        /* Hardware Accelerated Smooth Animations */
+        .chip-anim { 
+            position: absolute; 
+            font-size: 30px; 
+            z-index: 1000; 
+            pointer-events: none; 
+            margin-left: -15px; 
+            margin-top: -15px;
+            /* Buttery smooth easing curves */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease-in; 
+        }
     </style>
 </head>
 <body>
@@ -99,8 +112,8 @@
             <button id="btn-check" onclick="userAction('check')" disabled>Check</button>
             <button id="btn-call" onclick="userAction('call')" disabled style="display:none;">Call 0</button>
             <div style="border-left: 2px solid #7f8c8d; height: 30px; margin: 0 5px;"></div>
-            <input type="number" id="bet-input" value="50" min="1" disabled>
-            <button id="btn-bet" onclick="userAction('bet')" disabled>Bet / Raise</button>
+            <input type="number" id="bet-input" value="10" min="1" disabled>
+            <button id="btn-bet" onclick="userAction('bet')" disabled>Raise By</button>
         </div>
     </div>
 
@@ -118,7 +131,7 @@
         let players = [];
         let totalPlayers = 5;
 
-        // Animation Engine
+        // --- Smooth Hardware-Accelerated Animation Engine ---
         function runAnimation(playerId, toPot) {
             let pBadge = document.getElementById(`player-${playerId}`);
             let potBox = document.getElementById('main-pot');
@@ -126,33 +139,40 @@
 
             let animEl = document.createElement('div');
             animEl.className = 'chip-anim';
-            animEl.innerText = toPot ? '✋🪙' : '🪙🤚';
+            animEl.innerText = '🪙';
             
             let pRect = pBadge.getBoundingClientRect();
             let potRect = potBox.getBoundingClientRect();
 
-            // Set start position
+            let startX, startY, endX, endY;
+
+            // Calculate exact start and end coordinates
             if(toPot) {
-                animEl.style.left = (pRect.left + pRect.width/2 - 15) + 'px';
-                animEl.style.top = (pRect.top) + 'px';
+                startX = pRect.left + pRect.width/2;
+                startY = pRect.top;
+                endX = potRect.left + potRect.width/2;
+                endY = potRect.top + 20;
             } else {
-                animEl.style.left = (potRect.left + potRect.width/2 - 15) + 'px';
-                animEl.style.top = (potRect.top) + 'px';
+                startX = potRect.left + potRect.width/2;
+                startY = potRect.top + 20;
+                endX = pRect.left + pRect.width/2;
+                endY = pRect.top;
             }
+
+            // Set initial position
+            animEl.style.left = startX + 'px';
+            animEl.style.top = startY + 'px';
+            animEl.style.transform = `translate(0, 0) scale(1)`;
             document.body.appendChild(animEl);
 
-            // Trigger move
-            setTimeout(() => {
-                if(toPot) {
-                    animEl.style.left = (potRect.left + potRect.width/2 - 15) + 'px';
-                    animEl.style.top = (potRect.top + 10) + 'px';
-                } else {
-                    animEl.style.left = (pRect.left + pRect.width/2 - 15) + 'px';
-                    animEl.style.top = (pRect.top + 10) + 'px';
-                }
-                animEl.style.opacity = '0';
-            }, 50);
+            // Force the browser to register the start position before moving
+            void animEl.offsetWidth;
 
+            // Execute the smooth CSS transform translation
+            animEl.style.transform = `translate(${endX - startX}px, ${endY - startY}px) scale(0.5)`;
+            animEl.style.opacity = '0';
+
+            // Clean up DOM after animation completes
             setTimeout(() => animEl.remove(), 600);
         }
 
@@ -313,7 +333,7 @@
             if (p.isAI) {
                 setStatus(`AI ${p.id} is thinking...`);
                 disableControls();
-                setTimeout(() => { executeAILogic(p); }, 1500);
+                setTimeout(() => { executeAILogic(p); }, 1200);
             } else {
                 setStatus("Your turn!");
                 setupUserControls(p);
@@ -335,13 +355,18 @@
                 runAnimation(player.id, true);
                 setActionText(player.id, player.chips === 0 ? "ALL IN!" : `Called ${callAmt}`, player.chips===0);
             } else if (type === 'raise') {
-                let totalAdd = Math.min(amount, player.chips);
-                player.chips -= totalAdd; player.roundBet += totalAdd; pot += totalAdd;
+                // FIXED MATH: Deduct the Call Amount PLUS the Extra Raise Amount
+                let totalAdd = toCall + amount;
+                totalAdd = Math.min(totalAdd, player.chips); // Prevent betting more than you have
+                
+                player.chips -= totalAdd; 
+                player.roundBet += totalAdd; 
+                pot += totalAdd;
                 highestBet = player.roundBet;
                 
                 runAnimation(player.id, true);
                 players.forEach(p => { if(p.id !== player.id && p.active) p.hasActed = false; });
-                setActionText(player.id, player.chips === 0 ? "ALL IN!" : `Raised to ${highestBet}`, true);
+                setActionText(player.id, player.chips === 0 ? "ALL IN!" : `Raised +${amount}`, true);
             }
             advanceTurn();
         }
@@ -376,9 +401,10 @@
             if (user.chips > toCall) {
                 document.getElementById('btn-bet').disabled = false;
                 document.getElementById('bet-input').disabled = false;
-                document.getElementById('bet-input').min = toCall + 10;
-                // Suggest a pot-sized bet
-                document.getElementById('bet-input').value = toCall + Math.max(20, Math.floor(pot * 0.5));
+                document.getElementById('bet-input').min = 10;
+                // Suggest a reasonable minimum raise amount
+                document.getElementById('bet-input').value = Math.max(10, Math.floor(pot * 0.25));
+                document.getElementById('btn-bet').innerText = "Raise By";
             }
         }
 
@@ -389,38 +415,33 @@
             else if (action === 'check') processBet(user, 'check', 0);
             else if (action === 'call') processBet(user, 'call', 0);
             else if (action === 'bet') {
-                let amt = parseInt(document.getElementById('bet-input').value);
-                if(isNaN(amt)) amt = highestBet - user.roundBet + 10;
-                processBet(user, 'raise', amt);
+                let extraRaiseAmt = parseInt(document.getElementById('bet-input').value);
+                if(isNaN(extraRaiseAmt) || extraRaiseAmt < 1) extraRaiseAmt = 10;
+                processBet(user, 'raise', extraRaiseAmt);
             }
         }
 
-        // --- Human-Like AI Logic ---
         function executeAILogic(ai) {
             let toCall = highestBet - ai.roundBet;
             
-            // Smarter AI: They base decisions on pot size and chip count
             if (toCall > 0) {
-                // If it costs more than 1/3 of their chips to call, they are very likely to fold
                 if (toCall > ai.chips / 3) {
                     if (Math.random() < 0.75) return processBet(ai, 'fold', 0);
                 }
                 
                 let r = Math.random();
-                if (r < 0.25) return processBet(ai, 'fold', 0); // Folds 25% of the time to any bet
-                else if (r < 0.85) return processBet(ai, 'call', 0); // Calls most of the time
+                if (r < 0.25) return processBet(ai, 'fold', 0); 
+                else if (r < 0.85) return processBet(ai, 'call', 0); 
                 else {
-                    // Small human-like raise (roughly 1/2 the pot)
-                    let raiseAmt = toCall + Math.max(10, Math.floor(pot * 0.5));
-                    return processBet(ai, 'raise', raiseAmt);
+                    // AI decides how much EXTRA to raise
+                    let extraRaise = Math.max(10, Math.floor(pot * 0.4));
+                    return processBet(ai, 'raise', extraRaise);
                 }
             } else {
-                // No bet to match
                 let r = Math.random();
-                if (r < 0.7) return processBet(ai, 'check', 0); // Usually just checks
+                if (r < 0.7) return processBet(ai, 'check', 0); 
                 else {
-                    // Bets about 1/3 to 1/2 the pot
-                    let betAmt = Math.max(10, Math.floor(pot * 0.4));
+                    let betAmt = Math.max(10, Math.floor(pot * 0.3));
                     return processBet(ai, 'raise', betAmt);
                 }
             }
@@ -458,13 +479,13 @@
             
             winners.forEach(w => {
                 w.chips += winAmt;
-                runAnimation(w.id, false); // Win animation!
+                runAnimation(w.id, false); 
             });
             pot = 0;
             
             let names = winners.map(w => w.id === 0 ? "You" : `AI ${w.id}`).join(" and ");
             setStatus(`${reason} ${names} won! Next round in 8s...`);
-            updateUI(stage === 4); // Keep AI cards revealed if it was a showdown
+            updateUI(stage === 4); 
             disableControls();
             
             setTimeout(() => { startNewHand(); }, 8000); 
