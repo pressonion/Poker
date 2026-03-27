@@ -246,6 +246,15 @@
         }
 
         function startNewHand() {
+            // Check if user is bankrupt before starting
+            if (players[0].chips <= 0) {
+                players[0].bankrupt = true;
+                disableControls();
+                setStatus("GAME OVER! You went bankrupt. Refresh the page to play again.");
+                updateUI();
+                return;
+            }
+
             buildDeck();
             pot = 0; stage = 0; highestBet = 0; currentPlayerIndex = 0;
             communityCards = [deck.pop(), deck.pop(), deck.pop(), deck.pop(), deck.pop()];
@@ -254,9 +263,12 @@
             players.forEach(p => {
                 p.roundBet = 0;
                 p.hasActed = false;
-                p.bluffing = Math.random() < 0.2; // 20% chance to bluff this round
+                p.bluffing = Math.random() < 0.15; // 15% chance to bluff this round
                 if (p.chips <= 0) {
-                    p.bankrupt = true; p.active = false;
+                    p.bankrupt = true; 
+                    p.active = false;
+                    p.hand = []; // Bankrupt players get no cards
+                    setActionText(p.id, "BANKRUPT", true);
                 } else {
                     p.active = true;
                     p.hand = [deck.pop(), deck.pop()]; 
@@ -268,6 +280,7 @@
             if (activeCount <= 1) {
                 setStatus("GAME OVER! Only one player remains.");
                 updateUI();
+                disableControls();
                 return;
             }
 
@@ -278,8 +291,8 @@
         function getActive() { return players.filter(p => p.active && !p.bankrupt); }
 
         function isRoundComplete() {
-            let active = getActive().filter(p => p.chips > 0);
-            if (active.length === 0) return true;
+            let active = getActive().filter(p => p.chips > 0); // Ignore all-in players for round completion
+            if (active.length === 0) return true; // Everyone left is all in
             return active.every(p => p.hasActed && (p.roundBet === highestBet));
         }
 
@@ -293,19 +306,24 @@
             if (isRoundComplete()) {
                 stage++;
                 highestBet = 0;
-                players.forEach(p => { p.roundBet = 0; p.hasActed = false; if(p.active && !p.bankrupt) setActionText(p.id, "Waiting..."); });
+                players.forEach(p => { 
+                    p.roundBet = 0; 
+                    p.hasActed = false; 
+                    if(p.active && !p.bankrupt) setActionText(p.id, "Waiting..."); 
+                });
                 
                 if (stage === 4) { showdown(); return; }
                 updateUI();
             }
 
+            // Find next active player who has chips
             let attempts = 0;
             do {
                 currentPlayerIndex = (currentPlayerIndex + 1) % totalPlayers;
                 attempts++;
-            } while ((!players[currentPlayerIndex].active || players[currentPlayerIndex].chips === 0) && attempts < 20);
+            } while ((!players[currentPlayerIndex].active || players[currentPlayerIndex].chips === 0 || players[currentPlayerIndex].bankrupt) && attempts < 20);
 
-            if (attempts >= 20) { showdown(); return; } // Safety escape
+            if (attempts >= 20) { showdown(); return; } // Safety escape if everyone is all-in
 
             playTurn();
         }
@@ -344,6 +362,7 @@
                 highestBet = player.roundBet;
                 
                 runAnimation(player.id, true);
+                // Reset hasActed for everyone else who isn't broke
                 players.forEach(p => { if(p.id !== player.id && p.active && p.chips > 0) p.hasActed = false; });
                 setActionText(player.id, player.chips === 0 ? "ALL IN!" : `Raised to ${highestBet}`, true);
             }
@@ -399,31 +418,56 @@
 
         function executeAILogic(ai) {
             let toCall = highestBet - ai.roundBet;
-            let handScore = ai.hand[0].num + ai.hand[1].num;
+            
+            // Smarter hand evaluation
+            let card1 = ai.hand[0].num;
+            let card2 = ai.hand[1].num;
+            let isPair = card1 === card2;
+            
+            // Score: Max is 28 (Ace + Ace), Min is 4 (2 + 2)
+            let handScore = card1 + card2; 
+            if (isPair) handScore += 10; // A pair in the hand is a huge advantage
+            
             let rand = Math.random();
 
             if (toCall > 0) {
-                // DECISION TO CALL OR FOLD
-                // Hero Call logic: If pot is huge compared to the bet, they call more
-                let potOdds = toCall / (pot + toCall);
+                // DECISION: YOU BET OR RAISED
                 
-                if (toCall >= ai.chips) { // You went All-In
-                    if (handScore > 18 || ai.bluffing || (potOdds < 0.3 && rand < 0.6)) {
+                // Is it a massive bet? (More than 40% of their chips)
+                if (toCall > (ai.chips * 0.4)) { 
+                    // To call a huge bet or All-In, they need a REALLY good hand
+                    if (handScore > 22 || (isPair && handScore > 18) || (ai.bluffing && rand < 0.1)) {
                         return processBet(ai, 'call', 0);
                     } else {
-                        return processBet(ai, 'fold', 0);
+                        return processBet(ai, 'fold', 0); // FOLD!
                     }
                 }
 
-                if (handScore < 12 && !ai.bluffing && rand < 0.6) return processBet(ai, 'fold', 0);
-                if (rand < 0.8) return processBet(ai, 'call', 0);
-                return processBet(ai, 'raise', toCall + 50);
+                // Standard bet
+                // If they have a below-average hand (score < 16), they will usually fold
+                if (handScore < 16 && !ai.bluffing) {
+                    if (rand < 0.8) return processBet(ai, 'fold', 0); // 80% chance to fold bad cards
+                }
+                
+                // If they have a great hand, they might raise back
+                if (handScore >= 20 || (ai.bluffing && rand < 0.2)) {
+                     if (rand < 0.3) return processBet(ai, 'raise', toCall + 50);
+                     return processBet(ai, 'call', 0);
+                }
+                
+                // Average hand: just call and see the next card
+                return processBet(ai, 'call', 0);
+
             } else {
-                // DECISION TO CHECK OR BET
-                if (handScore > 20 || ai.bluffing) {
+                // DECISION: NOBODY HAS BET YET (FREE TO CHECK)
+                
+                // Only raise if they have an amazing hand or are actively bluffing
+                if (handScore > 22 || (ai.bluffing && rand < 0.15)) {
                     return processBet(ai, 'raise', 50);
                 }
-                return processBet(ai, 'check', 0);
+                
+                // Otherwise, play it safe and check
+                return processBet(ai, 'check', 0); // CHECK!
             }
         }
 
@@ -465,6 +509,8 @@
             setStatus(`${reason} ${names} won!`);
             updateUI(stage >= 3);
             disableControls();
+            
+            // Start next hand after delay
             setTimeout(() => { startNewHand(); }, 4000); 
         }
     </script>
