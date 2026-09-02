@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
     </script>
     <style>
+        /* ----- global reset & layout ----- */
         * {
             box-sizing: border-box;
         }
@@ -410,6 +411,19 @@
             border-color: #e74c3c;
             opacity: 0.8;
         }
+        .player-badge.recovering {
+            background-color: #8e44ad;
+            border-color: #9b59b6;
+            animation: pulse-recover 0.8s infinite alternate;
+        }
+        @keyframes pulse-recover {
+            0% {
+                box-shadow: 0 0 5px #9b59b6;
+            }
+            100% {
+                box-shadow: 0 0 25px #9b59b6, 0 0 50px #8e44ad;
+            }
+        }
         .action-text {
             font-size: 0.7rem;
             color: #bdc3c7;
@@ -509,6 +523,82 @@
             opacity: 1;
         }
 
+        /* ----- AD OVERLAY (recovery) ----- */
+        #ad-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        #ad-overlay.show {
+            display: flex;
+        }
+        #ad-overlay .ad-box {
+            background: linear-gradient(145deg, #2c3e50, #1a252f);
+            padding: 40px 50px;
+            border-radius: 30px;
+            border: 4px solid #f1c40f;
+            box-shadow: 0 0 60px rgba(241, 196, 15, 0.3);
+            max-width: 550px;
+            width: 100%;
+        }
+        #ad-overlay .ad-icon {
+            font-size: 64px;
+            margin-bottom: 10px;
+        }
+        #ad-overlay .ad-message {
+            font-size: 32px;
+            font-weight: 900;
+            color: #f1c40f;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            line-height: 1.3;
+            text-shadow: 0 0 30px rgba(241, 196, 15, 0.5);
+        }
+        #ad-overlay .ad-sub {
+            font-size: 18px;
+            color: #ecf0f1;
+            margin-top: 12px;
+            opacity: 0.8;
+        }
+        #ad-overlay .ad-timer {
+            font-size: 72px;
+            font-weight: 900;
+            color: #2ecc71;
+            margin: 20px 0 10px 0;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 40px rgba(46, 204, 113, 0.4);
+        }
+        #ad-overlay .ad-progress {
+            width: 100%;
+            height: 6px;
+            background: #2c3e50;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        #ad-overlay .ad-progress-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #2ecc71, #f1c40f);
+            border-radius: 4px;
+            transition: width 0.3s linear;
+        }
+        #ad-overlay .ad-small {
+            color: #95a5a6;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
         /* responsive */
         @media (max-width: 600px) {
             .menu-box {
@@ -580,6 +670,15 @@
                 letter-spacing: 6px;
                 padding: 8px 14px;
             }
+            #ad-overlay .ad-message {
+                font-size: 22px;
+            }
+            #ad-overlay .ad-timer {
+                font-size: 50px;
+            }
+            #ad-overlay .ad-box {
+                padding: 25px 20px;
+            }
         }
         @media (max-width: 450px) {
             #ai-container {
@@ -647,7 +746,7 @@
 
             <!-- Multiplayer -->
             <div style="margin-top:4px;">
-                <label style="display:block;margin-bottom:6px;font-weight:bold;font-size:1.1rem;">🌐 Multiplayer</label>
+                <label style="display:block;margin-bottom:6px;font-weight:bold;font-size:1.1rem;">🌐 Multiplayer (2‑player, no AI)</label>
                 <div id="mp-status" class="status-msg" style="margin-bottom:8px;">Choose Host or Join</div>
 
                 <div class="multiplayer-options">
@@ -659,7 +758,7 @@
                                 <span style="font-weight:bold;">Your code:</span>
                                 <span class="code-display" id="host-code">----</span>
                             </div>
-                            <div class="sub-text">Share this 4-letter code with your friend.</div>
+                            <div class="sub-text">Share this 4‑letter code with your friend.</div>
                             <div style="margin-top:6px;">
                                 <button class="btn-large btn-warning btn-sm" onclick="copyCode()">📋 Copy</button>
                                 <button class="btn-large btn-danger btn-sm" onclick="cancelHost()">Cancel</button>
@@ -677,10 +776,11 @@
                                 <button class="btn-large btn-success btn-sm" onclick="doJoin()">Join</button>
                                 <button class="btn-large btn-secondary btn-sm" onclick="cancelJoin()">Cancel</button>
                             </div>
-                            <div id="join-wait" class="status-msg" style="margin-top:6px;">Enter the 4-letter code from the host.</div>
+                            <div id="join-wait" class="status-msg" style="margin-top:6px;">Enter the 4‑letter code from the host.</div>
                         </div>
                     </div>
                 </div>
+                <div class="sub-text" style="margin-top:10px;">💡 Go bankrupt? Watch a 10‑sec ad to get 1000 chips back!</div>
             </div>
         </div>
     </div>
@@ -723,6 +823,18 @@
         </div>
     </div>
 
+    <!-- ===== AD OVERLAY (recovery) ===== -->
+    <div id="ad-overlay">
+        <div class="ad-box">
+            <div class="ad-icon">📢</div>
+            <div class="ad-message">TELL YOUR FRIENDS<br />ABOUT THE DUCKWEB</div>
+            <div class="ad-sub">Watch this ad to revive your chips!</div>
+            <div class="ad-timer" id="ad-timer">10</div>
+            <div class="ad-progress"><div class="ad-progress-bar" id="ad-progress-bar"></div></div>
+            <div class="ad-small">⏳ You'll get 1000 chips back when the timer hits 0</div>
+        </div>
+    </div>
+
     <script>
         // =====================================================================
         //  CARD & GAME CONSTANTS
@@ -738,13 +850,13 @@
         let deck = [];
         let communityCards = [];
         let pot = 0;
-        let stage = 0; // 0=pre-flop, 1=flop, 2=turn, 3=river, 4=showdown
+        let stage = 0;
         let highestBet = 0;
         let currentPlayerIndex = 0;
         let players = [];
-        let totalPlayers = 5;
+        let totalPlayers = 2;
 
-        let gameMode = 'single'; // 'single' | 'multi-host' | 'multi-join'
+        let gameMode = 'single';
         let isMultiplayer = false;
         let isHost = false;
         let isJoiner = false;
@@ -754,6 +866,10 @@
         let conn = null;
         let myPeerId = '';
         let roomCode = '';
+
+        // Ad recovery state
+        let isRecovering = false;
+        let recoveryPlayerId = -1;
 
         // UI elements
         const menuScreen = document.getElementById('menu-screen');
@@ -769,6 +885,10 @@
         const btnCall = document.getElementById('btn-call');
         const btnBet = document.getElementById('btn-bet');
         const betInput = document.getElementById('bet-input');
+
+        const adOverlay = document.getElementById('ad-overlay');
+        const adTimer = document.getElementById('ad-timer');
+        const adProgress = document.getElementById('ad-progress-bar');
 
         // =====================================================================
         //  MENU LOGIC
@@ -812,7 +932,7 @@
             document.getElementById('host-area').style.display = 'none';
             document.getElementById('btn-host').disabled = true;
             document.getElementById('btn-join').disabled = true;
-            document.getElementById('mp-status').textContent = 'Enter the 4-letter code';
+            document.getElementById('mp-status').textContent = 'Enter the 4‑letter code';
             document.getElementById('join-code-input').value = '';
             document.getElementById('join-code-input').focus();
         }
@@ -828,7 +948,6 @@
         }
 
         function generateRoomCode() {
-            // Generate 4-letter uppercase code
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
             let code = '';
             for (let i = 0; i < 4; i++) {
@@ -837,11 +956,8 @@
             roomCode = code;
             document.getElementById('host-code').textContent = code;
 
-            // Create Peer with this code as ID
             try {
-                peer = new Peer(code, {
-                    debug: 0
-                });
+                peer = new Peer(code, { debug: 0 });
                 peer.on('open', (id) => {
                     myPeerId = id;
                     document.getElementById('mp-status').textContent = '✅ Room ready! Share the code.';
@@ -878,16 +994,14 @@
         function doJoin() {
             let code = document.getElementById('join-code-input').value.trim().toUpperCase();
             if (code.length !== 4) {
-                document.getElementById('join-wait').textContent = '❌ Please enter a 4-letter code.';
+                document.getElementById('join-wait').textContent = '❌ Please enter a 4‑letter code.';
                 return;
             }
             roomCode = code;
             document.getElementById('join-wait').textContent = '⏳ Connecting to ' + code + '...';
 
             try {
-                peer = new Peer({
-                    debug: 0
-                });
+                peer = new Peer({ debug: 0 });
                 peer.on('open', (id) => {
                     myPeerId = id;
                     conn = peer.connect(code);
@@ -950,141 +1064,164 @@
             isHost = (role === 'host');
             isJoiner = (role === 'join');
             gameMode = isHost ? 'multi-host' : 'multi-join';
-
-            // 2 human players (host=0, joiner=1) + AI
-            totalPlayers = Math.max(4, Math.min(parseInt(document.getElementById('player-count').value) || 5, 22));
-            // Ensure at least 2 humans + 2 AI
-            if (totalPlayers < 4) totalPlayers = 4;
+            totalPlayers = 2;
 
             document.getElementById('game-mode-label').textContent = isHost ? '🌐 Host' : '🌐 Guest';
 
-            // Build players: host=0, joiner=1, rest AI
             players = [];
-            players.push({ id: 0, isAI: false, isHuman: true, chips: 1000, active: true, bankrupt: false, hand: [],
-                roundBet: 0, hasActed: false, bluffing: false, isHost: true, isJoiner: false });
-            if (isHost) {
-                // Host controls player 0
-                players[0].isHuman = true;
-                players[0].isHost = true;
-                players[0].isJoiner = false;
-            } else {
-                // Joiner controls player 0 (but we'll map joiner to player 1)
-                // Actually, let's make player 0 always the local player
-                // For joiner, player 0 is the joiner's avatar, player 1 is the host
-                players[0].isHost = false;
-                players[0].isJoiner = true;
-            }
+            players.push({
+                id: 0,
+                isAI: false,
+                isHuman: true,
+                chips: 1000,
+                active: true,
+                bankrupt: false,
+                hand: [],
+                roundBet: 0,
+                hasActed: false,
+                bluffing: false,
+                isHost: isHost,
+                isJoiner: !isHost,
+            });
+            players.push({
+                id: 1,
+                isAI: false,
+                isHuman: true,
+                chips: 1000,
+                active: true,
+                bankrupt: false,
+                hand: [],
+                roundBet: 0,
+                hasActed: false,
+                bluffing: false,
+                isHost: !isHost,
+                isJoiner: isHost,
+            });
 
-            // Player 1 is the other human
-            players.push({ id: 1, isAI: false, isHuman: true, chips: 1000, active: true, bankrupt: false, hand: [],
-                roundBet: 0, hasActed: false, bluffing: false, isHost: !isHost, isJoiner: !isJoiner });
-
-            // AI players
-            for (let i = 2; i < totalPlayers; i++) {
-                players.push({
-                    id: i,
-                    isAI: true,
-                    isHuman: false,
-                    chips: 1000,
-                    active: true,
-                    bankrupt: false,
-                    hand: [],
-                    roundBet: 0,
-                    hasActed: false,
-                    bluffing: false,
-                    isHost: false,
-                    isJoiner: false
-                });
-            }
-
-            // Mark which player index is "me" (local human)
-            // For host: player 0 is "You", player 1 is "Opponent"
-            // For joiner: player 0 is "You", player 1 is "Opponent"
-            // But the joiner's "You" is actually player 1 in the host's game state
-            // So we need to swap: the joiner sees player 1 as "You" and player 0 as "Opponent"
-
-            // For the joiner, we'll remap: player 0 in the UI is actually player 1 in the game
-            // This is a bit tricky. Let's just keep it simple: both see themselves as player 0.
-            // The host sees player 0 as "You (Host)" and player 1 as "Opponent (Guest)"
-            // The joiner sees player 0 as "You (Guest)" and player 1 as "Opponent (Host)"
-
-            // But the game state on the host has player 0 = host, player 1 = joiner
-            // On the joiner, we need to swap: player 0 = joiner, player 1 = host
-
-            // Instead of swapping, let's just make the joiner's UI treat player 0 as "You"
-            // and player 1 as "Opponent" by using the player IDs correctly.
-
-            // Actually, let's use a simpler approach: the game state is always the same,
-            // but each player sees their own perspective. The host sees player 0 as "You"
-            // and the joiner sees player 1 as "You".
-
-            // For the joiner, we'll render player 1 as "You" and player 0 as "Opponent"
-            // For the host, we'll render player 0 as "You" and player 1 as "Opponent"
-
-            // We'll handle this in the rendering functions.
+            window._localPlayerIdx = 0;
+            window._opponentIdx = 1;
 
             buildPlayersHTMLMultiplayer();
             menuScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
 
-            // If host, start the game immediately
             if (isHost) {
-                // Send initial game state to joiner
                 startNewHand();
             } else {
-                // Joiner waits for the host to send the game state
                 setStatus('Waiting for host to start...');
                 disableControls();
-                // The host will send the game state via peer
             }
         }
 
         function buildPlayersHTMLMultiplayer() {
-            let html = '';
-            // For host: player 0 = You, player 1 = Opponent
-            // For joiner: player 1 = You, player 0 = Opponent
-            const localIdx = isHost ? 0 : 1;
-            const opponentIdx = isHost ? 1 : 0;
-
-            for (let i = 0; i < players.length; i++) {
-                if (i === localIdx) {
-                    // This is the local player - rendered in the user area
-                    continue;
-                }
-                let p = players[i];
-                let isOpponent = (i === opponentIdx);
-                let label = isOpponent ? '👤 Opponent' : `🤖 AI ${i}`;
-                if (p.isAI) label = `🤖 AI ${i}`;
-                if (isOpponent && !p.isAI) label = '👤 Opponent';
-
-                html += `
-                    <div class="player-wrapper">
-                        <div class="ai-cards" id="ai-cards-${i}"></div>
-                        <div id="player-${i}" class="player-badge">
-                            <div class="player-name">${label}</div>
-                            <div>Chips: <span id="chips-${i}">${p.chips}</span></div>
-                            <div id="action-${i}" class="action-text">Waiting...</div>
-                        </div>
-                    </div>`;
-            }
+            let opp = players[1];
+            let label = '👤 Opponent';
+            let html = `
+                <div class="player-wrapper">
+                    <div class="ai-cards" id="ai-cards-1"></div>
+                    <div id="player-1" class="player-badge">
+                        <div class="player-name">${label}</div>
+                        <div>Chips: <span id="chips-1">${opp.chips}</span></div>
+                        <div id="action-1" class="action-text">Waiting...</div>
+                    </div>
+                </div>`;
             document.getElementById('ai-container').innerHTML = html;
 
-            // Set up user label
-            const localPlayer = players[localIdx];
             const userLabel = document.getElementById('user-label');
-            if (isHost) {
-                userLabel.textContent = '👤 You (Host)';
-            } else {
-                userLabel.textContent = '👤 You (Guest)';
-            }
-
-            // Store local player index
-            window._localPlayerIdx = localIdx;
-            window._opponentIdx = opponentIdx;
+            userLabel.textContent = isHost ? '👤 You (Host)' : '👤 You (Guest)';
         }
 
         // =====================================================================
-        //  GAME LOGIC (shared)
+        //  AD RECOVERY SYSTEM
+        // =====================================================================
+        function showAdRecovery(playerId, callback) {
+            if (isRecovering) return;
+            isRecovering = true;
+            recoveryPlayerId = playerId;
+
+            let countdown = 10;
+            adTimer.textContent = countdown;
+            adProgress.style.width = '100%';
+
+            // Show overlay
+            adOverlay.classList.add('show');
+
+            // Also update badge
+            let badge = document.getElementById(`player-${playerId}`);
+            if (badge) badge.classList.add('recovering');
+
+            // Set status
+            let name = playerId === 0 ? 'You' : 'Opponent';
+            setStatus(`📺 ${name} is watching an ad to recover...`);
+
+            // Disable all controls during ad
+            disableControls();
+
+            const interval = setInterval(() => {
+                countdown--;
+                adTimer.textContent = countdown;
+                adProgress.style.width = (countdown / 10 * 100) + '%';
+
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    // Hide overlay
+                    adOverlay.classList.remove('show');
+                    if (badge) badge.classList.remove('recovering');
+
+                    // Restore chips
+                    let p = players[playerId];
+                    if (p) {
+                        p.chips = 1000;
+                        p.bankrupt = false;
+                        p.active = true;
+                        setActionText(playerId, 'Revived!', true);
+                        setStatus(`✅ ${playerId === 0 ? 'You' : 'Opponent'} recovered with 1000 chips!`);
+                    }
+
+                    isRecovering = false;
+                    recoveryPlayerId = -1;
+
+                    // Update UI
+                    updateUI();
+                    if (isMultiplayer && isHost) broadcastState();
+
+                    // Continue the game
+                    if (callback) callback();
+                    else {
+                        // Wait a moment then start a new hand
+                        setTimeout(() => {
+                            startNewHand();
+                        }, 800);
+                    }
+                }
+            }, 1000);
+        }
+
+        function triggerRecoveryForPlayer(playerId) {
+            if (isRecovering) return;
+            const p = players[playerId];
+            if (!p || p.chips > 0) return;
+
+            p.bankrupt = true;
+            p.active = false;
+
+            // If it's the local player, show ad on this screen
+            if (playerId === 0) {
+                showAdRecovery(playerId, () => {
+                    // After recovery, start a new hand
+                    setTimeout(() => startNewHand(), 400);
+                });
+            } else {
+                // Opponent is bankrupt – show message and wait for them to recover
+                setStatus('⏳ Opponent is watching an ad to recover...');
+                setActionText(1, 'Watching ad...', true);
+                // The opponent will send a 'revived' message when done
+                // We'll handle that in handlePeerData
+            }
+        }
+
+        // =====================================================================
+        //  GAME LOGIC
         // =====================================================================
         function buildDeck() {
             deck = [];
@@ -1124,77 +1261,53 @@
 
         function updateUI(revealAI = false) {
             potSpan.textContent = pot;
+            document.getElementById('chips-0').textContent = players[0]?.chips || 0;
 
-            // Update local player chips
-            const localIdx = window._localPlayerIdx || 0;
-            document.getElementById('chips-0').textContent = players[localIdx]?.chips || 0;
-
-            // Update all player badges
-            players.forEach(p => {
-                let badge = document.getElementById(`player-${p.id}`);
-                if (!badge) return;
-                if (p.id !== localIdx) {
-                    let chipEl = document.getElementById(`chips-${p.id}`);
-                    if (chipEl) chipEl.textContent = p.chips;
+            let opp = players[1];
+            if (opp) {
+                let chipEl = document.getElementById('chips-1');
+                if (chipEl) chipEl.textContent = opp.chips;
+                let badge = document.getElementById('player-1');
+                if (badge) {
+                    badge.className = 'player-badge';
+                    if (opp.bankrupt) badge.classList.add('bankrupt');
+                    else if (!opp.active) badge.classList.add('folded');
+                    else if (currentPlayerIndex === 1 && stage < 4) badge.classList.add('active-turn');
                 }
-                badge.className = 'player-badge';
-                if (p.bankrupt) badge.classList.add('bankrupt');
-                else if (!p.active) badge.classList.add('folded');
-                else if (p.id === currentPlayerIndex && stage < 4) badge.classList.add('active-turn');
-            });
+            }
 
-            // Community cards
+            let localBadge = document.getElementById('player-0');
+            if (localBadge) {
+                localBadge.className = 'player-badge';
+                let p = players[0];
+                if (p.bankrupt) localBadge.classList.add('bankrupt');
+                else if (!p.active) localBadge.classList.add('folded');
+                else if (currentPlayerIndex === 0 && stage < 4) localBadge.classList.add('active-turn');
+            }
+
             let showCount = stage === 0 ? 0 : (stage === 1 ? 3 : (stage === 2 ? 4 : 5));
             while (commContainer.children.length < showCount) {
                 let nextIndex = commContainer.children.length;
                 commContainer.insertAdjacentHTML('beforeend', createCardHTML(communityCards[nextIndex]));
             }
-            // Remove extra
             while (commContainer.children.length > showCount) {
                 commContainer.removeChild(commContainer.lastChild);
             }
 
-            // AI cards
-            if (revealAI) {
-                for (let i = 0; i < players.length; i++) {
-                    let p = players[i];
-                    if (p.isAI && !p.bankrupt && p.active && p.hand.length === 2) {
-                        let container = document.getElementById(`ai-cards-${p.id}`);
-                        if (container) {
-                            container.innerHTML = createCardHTML(p.hand[0]) + createCardHTML(p.hand[1]);
-                        }
-                    }
-                }
-            } else {
-                // Show face-down for AI
-                for (let i = 0; i < players.length; i++) {
-                    let p = players[i];
-                    if (p.isAI && !p.bankrupt && p.active) {
-                        let container = document.getElementById(`ai-cards-${p.id}`);
-                        if (container) {
-                            container.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
-                        }
-                    }
-                }
-            }
-
-            // Show opponent's hand (face down unless revealed)
-            const opponentIdx = window._opponentIdx || 1;
-            const opp = players[opponentIdx];
-            if (opp && !opp.isAI && !opp.bankrupt && opp.active) {
-                let container = document.getElementById(`ai-cards-${opp.id}`);
-                if (container) {
+            let oppContainer = document.getElementById('ai-cards-1');
+            if (oppContainer) {
+                if (opp && opp.active && !opp.bankrupt) {
                     if (revealAI || stage === 4) {
-                        container.innerHTML = createCardHTML(opp.hand[0]) + createCardHTML(opp.hand[1]);
+                        oppContainer.innerHTML = createCardHTML(opp.hand[0]) + createCardHTML(opp.hand[1]);
                     } else {
-                        container.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
+                        oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
                     }
+                } else {
+                    oppContainer.innerHTML = '';
                 }
             }
 
-            // User hand
-            const localIdx2 = window._localPlayerIdx || 0;
-            const localP = players[localIdx2];
+            let localP = players[0];
             if (localP && localP.active && !localP.bankrupt && localP.hand.length === 2) {
                 userHandContainer.innerHTML = createCardHTML(localP.hand[0]) + createCardHTML(localP.hand[1]);
             } else {
@@ -1251,24 +1364,67 @@
             }
         }
 
+        function initGame() {}
+
         // =====================================================================
-        //  SINGLE-PLAYER GAME (original logic adapted)
+        //  START NEW HAND with recovery check
         // =====================================================================
-        function initGame() {
-            // Called once when game starts
+        function startNewHand() {
+            // Check for bankruptcy in multiplayer
+            if (isMultiplayer) {
+                // Check local player
+                if (players[0] && players[0].chips <= 0 && !players[0].bankrupt) {
+                    players[0].bankrupt = true;
+                    players[0].active = false;
+                }
+                // Check opponent
+                if (players[1] && players[1].chips <= 0 && !players[1].bankrupt) {
+                    players[1].bankrupt = true;
+                    players[1].active = false;
+                }
+
+                // If local player is bankrupt, trigger recovery
+                if (players[0].bankrupt) {
+                    triggerRecoveryForPlayer(0);
+                    return;
+                }
+
+                // If opponent is bankrupt and we're the host, tell the joiner to recover
+                if (players[1].bankrupt) {
+                    if (isHost) {
+                        // Send a message to the joiner to trigger recovery
+                        if (conn && conn.open) {
+                            conn.send({
+                                type: 'trigger-recovery',
+                                playerId: 1
+                            });
+                        }
+                        setStatus('⏳ Opponent is recovering...');
+                        setActionText(1, 'Watching ad...', true);
+                        disableControls();
+                        // We'll wait for the 'revived' message from the joiner
+                        return;
+                    } else {
+                        // Joiner: opponent is the host, but if opponent is bankrupt, the host will recover themselves
+                        // Just wait
+                        setStatus('⏳ Opponent is recovering...');
+                        disableControls();
+                        return;
+                    }
+                }
+            }
+
+            // Normal hand start
+            _doStartNewHand();
         }
 
-        function startNewHand() {
-            // Check if local player is bankrupt
-            const localIdx = window._localPlayerIdx || 0;
-            if (players[localIdx] && players[localIdx].chips <= 0) {
-                players[localIdx].bankrupt = true;
+        function _doStartNewHand() {
+            // Single player: check bankrupt
+            if (!isMultiplayer && players[0] && players[0].chips <= 0) {
+                players[0].bankrupt = true;
                 disableControls();
                 setStatus('💀 You went bankrupt! Refresh to play again.');
                 updateUI();
-                if (isMultiplayer && isHost) {
-                    broadcastState();
-                }
                 return;
             }
 
@@ -1284,7 +1440,7 @@
             players.forEach(p => {
                 p.roundBet = 0;
                 p.hasActed = false;
-                p.bluffing = Math.random() < 0.15;
+                p.bluffing = false;
                 if (p.chips <= 0) {
                     p.bankrupt = true;
                     p.active = false;
@@ -1292,39 +1448,23 @@
                     setActionText(p.id, 'BANKRUPT', true);
                 } else {
                     p.active = true;
+                    p.bankrupt = false;
                     p.hand = [deck.pop(), deck.pop()];
                     activeCount++;
                     setActionText(p.id, 'Waiting...');
                 }
             });
 
-            // Update user hand
-            const localIdx2 = window._localPlayerIdx || 0;
-            const localP = players[localIdx2];
+            const localP = players[0];
             if (localP && localP.active && !localP.bankrupt) {
                 userHandContainer.innerHTML = createCardHTML(localP.hand[0]) + createCardHTML(localP.hand[1]);
             } else {
                 userHandContainer.innerHTML = '';
             }
 
-            // AI cards hidden
-            for (let i = 0; i < players.length; i++) {
-                let p = players[i];
-                if (p.isAI && p.active && !p.bankrupt) {
-                    let container = document.getElementById(`ai-cards-${p.id}`);
-                    if (container) {
-                        container.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
-                    }
-                }
-            }
-            // Opponent cards hidden
-            const oppIdx = window._opponentIdx || 1;
-            const opp = players[oppIdx];
-            if (opp && !opp.isAI && !opp.bankrupt && opp.active) {
-                let container = document.getElementById(`ai-cards-${opp.id}`);
-                if (container) {
-                    container.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
-                }
+            let oppContainer = document.getElementById('ai-cards-1');
+            if (oppContainer) {
+                oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
             }
 
             if (activeCount <= 1) {
@@ -1338,7 +1478,6 @@
             updateUI();
             if (isMultiplayer && isHost) broadcastState();
 
-            // If multiplayer joiner, don't start turn yet - wait for host
             if (isMultiplayer && !isHost) {
                 setStatus('Waiting for host...');
                 disableControls();
@@ -1361,7 +1500,7 @@
         function advanceTurn() {
             let active = getActive();
             if (active.length === 1) {
-                awardPot([active[0]], '🏆 Everyone folded.');
+                awardPot([active[0]], '🏆 Opponent folded.');
                 return;
             }
 
@@ -1387,15 +1526,14 @@
                 currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
                 attempts++;
             } while ((!players[currentPlayerIndex].active || players[currentPlayerIndex].chips === 0 || players[
-                    currentPlayerIndex].bankrupt) && attempts < 30);
+                    currentPlayerIndex].bankrupt) && attempts < 10);
 
-            if (attempts >= 30) {
+            if (attempts >= 10) {
                 showdown();
                 return;
             }
 
             if (isMultiplayer && !isHost) {
-                // Joiner: wait for host to tell us whose turn it is
                 setStatus('Waiting for host...');
                 disableControls();
                 return;
@@ -1406,20 +1544,16 @@
 
         function playTurn() {
             let p = players[currentPlayerIndex];
-            const localIdx = window._localPlayerIdx || 0;
+            const localIdx = 0;
 
-            // If it's the joiner's turn, the joiner should handle it locally
             if (isMultiplayer && !isHost) {
-                // The joiner only controls their own player (localIdx)
                 if (currentPlayerIndex === localIdx) {
-                    // It's the joiner's turn
                     setStatus('Your turn!');
                     setupUserControls(p);
                     updateUI();
                     return;
                 } else {
-                    // It's someone else's turn, wait for host
-                    setStatus(`Waiting for ${p.isAI ? 'AI' : 'opponent'}...`);
+                    setStatus('Waiting for opponent...');
                     disableControls();
                     updateUI();
                     return;
@@ -1427,39 +1561,25 @@
             }
 
             if (isMultiplayer && isHost) {
-                // Host controls all AI and their own player
-                // If it's the joiner's turn, we need to send a message to the joiner
-                if (p.isHuman && !p.isAI && !p.isHost) {
-                    // It's the joiner's turn - send them a message
-                    setStatus(`Waiting for opponent...`);
-                    disableControls();
-                    updateUI();
-                    sendTurnToJoiner();
-                    return;
-                }
-                // If it's host's own turn
                 if (p.isHuman && p.isHost) {
                     setStatus('Your turn!');
                     setupUserControls(p);
                     updateUI();
                     return;
-                }
-                // AI turn
-                if (p.isAI) {
-                    setStatus(`AI ${p.id} is thinking...`);
+                } else if (p.isHuman && !p.isHost) {
+                    setStatus('Waiting for opponent...');
                     disableControls();
-                    let delay = totalPlayers > 8 ? 600 : 1000;
-                    setTimeout(() => { executeAILogic(p); }, delay);
+                    updateUI();
+                    sendTurnToJoiner();
                     return;
                 }
             }
 
-            // Single player mode
             if (!isMultiplayer) {
                 if (p.isAI) {
                     setStatus(`AI ${p.id} is thinking...`);
                     disableControls();
-                    let delay = totalPlayers > 8 ? 600 : 1000;
+                    let delay = 1000;
                     setTimeout(() => { executeAILogic(p); }, delay);
                 } else {
                     setStatus('Your turn!');
@@ -1470,7 +1590,6 @@
         }
 
         function sendTurnToJoiner() {
-            // Host sends a message to the joiner indicating it's their turn
             if (conn && conn.open) {
                 conn.send({
                     type: 'your-turn',
@@ -1486,7 +1605,7 @@
                         bankrupt: p.bankrupt,
                         roundBet: p.roundBet,
                         hasActed: p.hasActed,
-                        hand: p.id === currentPlayerIndex ? p.hand : [] // only send the active player's hand
+                        hand: p.id === currentPlayerIndex ? p.hand : []
                     }))
                 });
             }
@@ -1524,9 +1643,7 @@
             updateUI();
             if (isMultiplayer && isHost) broadcastState();
 
-            // If joiner sent this action, we need to continue the game
             if (isMultiplayer && !isHost) {
-                // Joiner: send action to host
                 sendActionToHost(type, amount);
                 return;
             }
@@ -1535,30 +1652,30 @@
         }
 
         function userAction(action) {
-            const localIdx = window._localPlayerIdx || 0;
-            let user = players[localIdx];
+            let user = players[0];
             if (!user || !user.active || user.bankrupt) return;
+            if (isRecovering) return;
 
             disableControls();
 
             if (action === 'fold') {
                 if (isMultiplayer && !isHost) {
                     sendActionToHost('fold', 0);
-                    setActionText(localIdx, 'Folded');
+                    setActionText(0, 'Folded');
                     return;
                 }
                 processBet(user, 'fold', 0);
             } else if (action === 'check') {
                 if (isMultiplayer && !isHost) {
                     sendActionToHost('check', 0);
-                    setActionText(localIdx, 'Checked');
+                    setActionText(0, 'Checked');
                     return;
                 }
                 processBet(user, 'check', 0);
             } else if (action === 'call') {
                 if (isMultiplayer && !isHost) {
                     sendActionToHost('call', 0);
-                    setActionText(localIdx, 'Called');
+                    setActionText(0, 'Called');
                     return;
                 }
                 processBet(user, 'call', 0);
@@ -1567,16 +1684,13 @@
                 if (isNaN(amt) || amt < 1) amt = 50;
                 if (isMultiplayer && !isHost) {
                     sendActionToHost('raise', amt);
-                    setActionText(localIdx, `Raised ${amt}`, true);
+                    setActionText(0, `Raised ${amt}`, true);
                     return;
                 }
                 processBet(user, 'raise', amt);
             }
         }
 
-        // =====================================================================
-        //  AI LOGIC
-        // =====================================================================
         function executeAILogic(ai) {
             let toCall = highestBet - ai.roundBet;
             let card1 = ai.hand[0].num;
@@ -1736,11 +1850,7 @@
                 setActionText(w.id, `Won ${winAmt}`, true, true);
             });
             pot = 0;
-            let names = winners.map(w => {
-                if (w.id === 0) return 'You';
-                if (w.id === 1 && !w.isAI) return 'Opponent';
-                return `AI ${w.id}`;
-            }).join(' & ');
+            let names = winners.map(w => w.id === 0 ? 'You' : 'Opponent').join(' & ');
             setStatus(`${reason} ${names} won ${winAmt * winners.length}!`);
 
             potSpan.textContent = pot;
@@ -1748,14 +1858,12 @@
 
             if (isMultiplayer && isHost) {
                 broadcastState();
-                // Wait for joiner to see the result
-                setTimeout(() => { startNewHand(); }, 4000);
+                setTimeout(() => { startNewHand(); }, 3500);
             } else if (isMultiplayer && !isHost) {
-                // Joiner waits for host to start new hand
                 setStatus('Waiting for host...');
-                setTimeout(() => { startNewHand(); }, 4500);
-            } else {
                 setTimeout(() => { startNewHand(); }, 4000);
+            } else {
+                setTimeout(() => { startNewHand(); }, 3500);
             }
         }
 
@@ -1833,18 +1941,15 @@
                 type: 'action',
                 action: action,
                 amount: amount || 0,
-                playerIdx: window._localPlayerIdx || 0
+                playerIdx: 0
             });
         }
 
         function handlePeerData(data, role) {
             if (role === 'host') {
-                // Host receives actions from joiner
                 if (data.type === 'action') {
-                    const localIdx = window._localPlayerIdx || 0;
                     const player = players[data.playerIdx];
-                    if (player && player.active && !player.bankrupt) {
-                        // Process the action
+                    if (player && player.active && !player.bankrupt && !isRecovering) {
                         if (data.action === 'fold') {
                             processBet(player, 'fold', 0);
                         } else if (data.action === 'check') {
@@ -1855,14 +1960,25 @@
                             processBet(player, 'raise', data.amount || 50);
                         }
                     }
+                } else if (data.type === 'revived') {
+                    // Joiner has recovered from ad
+                    const playerId = data.playerId;
+                    if (players[playerId]) {
+                        players[playerId].chips = 1000;
+                        players[playerId].bankrupt = false;
+                        players[playerId].active = true;
+                        setActionText(playerId, 'Revived!', true);
+                        setStatus('✅ Opponent recovered with 1000 chips!');
+                        updateUI();
+                        broadcastState();
+                        // Start a new hand
+                        setTimeout(() => startNewHand(), 600);
+                    }
                 }
             } else if (role === 'join') {
-                // Joiner receives state updates from host
                 if (data.type === 'state-sync') {
-                    // Update local game state
                     players = data.players.map(p => ({
                         ...p,
-                        // Preserve local player reference
                         isHost: p.isHost,
                         isJoiner: p.isJoiner
                     }));
@@ -1873,30 +1989,27 @@
                     currentPlayerIndex = data.currentPlayerIndex;
                     totalPlayers = data.totalPlayers;
 
-                    // Update UI
                     updateUI(stage === 4);
                     potSpan.textContent = pot;
 
-                    // Check if it's the local player's turn
-                    const localIdx = window._localPlayerIdx || 0;
+                    const localIdx = 0;
                     if (currentPlayerIndex === localIdx && players[localIdx] && players[localIdx].active && !players[
-                            localIdx].bankrupt) {
+                            localIdx].bankrupt && !isRecovering) {
                         setStatus('Your turn!');
                         setupUserControls(players[localIdx]);
                     } else {
                         const p = players[currentPlayerIndex];
                         if (p) {
-                            setStatus(`Waiting for ${p.isAI ? 'AI' : (p.isHost ? 'host' : 'opponent')}...`);
+                            setStatus(`Waiting for ${p.isHost ? 'host' : 'opponent'}...`);
                         } else {
                             setStatus('Waiting...');
                         }
-                        disableControls();
+                        if (!isRecovering) disableControls();
                     }
                 } else if (data.type === 'your-turn') {
-                    // Host tells joiner it's their turn
-                    const localIdx = window._localPlayerIdx || 0;
+                    const localIdx = 0;
                     const player = players[localIdx];
-                    if (player && player.active && !player.bankrupt) {
+                    if (player && player.active && !player.bankrupt && !isRecovering) {
                         setStatus('Your turn!');
                         highestBet = data.highestBet || 0;
                         pot = data.pot || 0;
@@ -1906,6 +2019,29 @@
                         potSpan.textContent = pot;
                         updateUI();
                         setupUserControls(player);
+                    }
+                } else if (data.type === 'trigger-recovery') {
+                    // Host tells joiner to recover (opponent went bankrupt)
+                    const playerId = data.playerId;
+                    if (playerId === 1) {
+                        // The joiner's opponent (host) is bankrupt, but we need to recover the opponent
+                        // Actually, if the host is bankrupt, the host will trigger recovery on their own screen
+                        // This is for the joiner to know the host is recovering
+                        setStatus('⏳ Opponent is watching an ad to recover...');
+                        setActionText(1, 'Watching ad...', true);
+                        disableControls();
+                    }
+                } else if (data.type === 'revived') {
+                    // Host has recovered
+                    const playerId = data.playerId;
+                    if (players[playerId]) {
+                        players[playerId].chips = 1000;
+                        players[playerId].bankrupt = false;
+                        players[playerId].active = true;
+                        setActionText(playerId, 'Revived!', true);
+                        setStatus('✅ Opponent recovered with 1000 chips!');
+                        updateUI();
+                        setTimeout(() => startNewHand(), 600);
                     }
                 }
             }
@@ -1920,6 +2056,11 @@
                 peer = null;
                 conn = null;
             }
+            // Hide ad overlay if shown
+            adOverlay.classList.remove('show');
+            isRecovering = false;
+            recoveryPlayerId = -1;
+
             gameScreen.style.display = 'none';
             menuScreen.style.display = 'flex';
             document.getElementById('host-area').style.display = 'none';
@@ -1928,7 +2069,6 @@
             document.getElementById('btn-join').disabled = false;
             document.getElementById('mp-status').textContent = 'Choose Host or Join';
             disableControls();
-            // Reset
             players = [];
             communityCards = [];
             pot = 0;
@@ -1940,23 +2080,7 @@
         // =====================================================================
         //  INIT
         // =====================================================================
-        // Override startNewHand for multiplayer
-        const originalStartNewHand = startNewHand;
-        startNewHand = function() {
-            if (isMultiplayer && !isHost) {
-                // Joiner: wait for host
-                setStatus('Waiting for host to start a new hand...');
-                disableControls();
-                return;
-            }
-            originalStartNewHand.call(this);
-        };
-
-        // Patch: when joiner receives state-sync with a new hand, call startNewHand
-        // But we need to be careful not to loop.
-        // The host will broadcast state after each action, and the joiner will update.
-
-        console.log('🎲 Ultimate Texas Hold\'em loaded!');
+        console.log('🎲 Ultimate Texas Hold\'em – Multiplayer with ad recovery!');
     </script>
 </body>
 </html>
