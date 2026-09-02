@@ -1244,6 +1244,7 @@
                 </div>`;
         }
 
+        // ---- Updated updateUI: force rebuild of community cards ----
         function updateUI(revealAI = false) {
             potSpan.textContent = pot;
 
@@ -1274,14 +1275,11 @@
                 else if (currentPlayerIndex === 0 && stage < 4) localBadge.classList.add('active-turn');
             }
 
-            // Community cards
+            // ---- Community cards: rebuild from scratch ----
             let showCount = stage === 0 ? 0 : (stage === 1 ? 3 : (stage === 2 ? 4 : 5));
-            while (commContainer.children.length < showCount) {
-                let nextIndex = commContainer.children.length;
-                commContainer.insertAdjacentHTML('beforeend', createCardHTML(communityCards[nextIndex]));
-            }
-            while (commContainer.children.length > showCount) {
-                commContainer.removeChild(commContainer.lastChild);
+            commContainer.innerHTML = ''; // clear all
+            for (let i = 0; i < showCount && i < communityCards.length; i++) {
+                commContainer.insertAdjacentHTML('beforeend', createCardHTML(communityCards[i]));
             }
 
             // Opponent's cards
@@ -1414,6 +1412,7 @@
             stage = 0;
             highestBet = 0;
             currentPlayerIndex = 0;
+            // Deal 5 community cards (we'll show them progressively)
             communityCards = [deck.pop(), deck.pop(), deck.pop(), deck.pop(), deck.pop()];
             commContainer.innerHTML = '';
 
@@ -1528,17 +1527,17 @@
             const localIdx = 0;
 
             if (isMultiplayer && !isHost) {
+                // Guest: only enable controls if it's their turn
                 if (currentPlayerIndex === localIdx) {
                     setStatus('Your turn!');
                     setupUserControls(p);
                     updateUI();
-                    return;
                 } else {
                     setStatus('Waiting for opponent...');
                     disableControls();
                     updateUI();
-                    return;
                 }
+                return;
             }
 
             if (isMultiplayer && isHost) {
@@ -1546,16 +1545,18 @@
                     setStatus('Your turn!');
                     setupUserControls(p);
                     updateUI();
-                    return;
                 } else if (p.isHuman && !p.isHost) {
+                    // It's the guest's turn – we wait for their action via network
                     setStatus('Waiting for opponent...');
                     disableControls();
                     updateUI();
-                    sendTurnToJoiner();
-                    return;
+                    // We don't need to send a special message; the guest will act and send action
                 }
+                // No AI in multiplayer
+                return;
             }
 
+            // Single player mode
             if (!isMultiplayer) {
                 if (p.isAI) {
                     setStatus(`AI ${p.id} is thinking...`);
@@ -1567,28 +1568,6 @@
                     setupUserControls(p);
                     updateUI();
                 }
-            }
-        }
-
-        function sendTurnToJoiner() {
-            if (conn && conn.open) {
-                conn.send({
-                    type: 'your-turn',
-                    playerIdx: currentPlayerIndex,
-                    highestBet: highestBet,
-                    pot: pot,
-                    stage: stage,
-                    community: communityCards,
-                    players: players.map(p => ({
-                        id: p.id,
-                        chips: p.chips,
-                        active: p.active,
-                        bankrupt: p.bankrupt,
-                        roundBet: p.roundBet,
-                        hasActed: p.hasActed,
-                        hand: p.id === currentPlayerIndex ? p.hand : []
-                    }))
-                });
             }
         }
 
@@ -1624,54 +1603,66 @@
             updateUI();
             if (isMultiplayer && isHost) broadcastState();
 
+            // If guest, we already sent action to host; we don't advance here
             if (isMultiplayer && !isHost) {
-                sendActionToHost(type, amount);
+                // Guest: after sending action, we disabled controls locally; host will broadcast new state
                 return;
             }
 
             advanceTurn();
         }
 
+        // =====================================================================
+        //  USER ACTIONS (guest sends to host, host processes locally)
+        // =====================================================================
         function userAction(action) {
             let user = players[0];
             if (!user || !user.active || user.bankrupt) return;
             if (isRecovering) return;
 
-            disableControls();
-
-            if (action === 'fold') {
-                if (isMultiplayer && !isHost) {
-                    sendActionToHost('fold', 0);
-                    setActionText(0, 'Folded');
-                    return;
+            // If guest, send action to host and disable controls immediately
+            if (isMultiplayer && !isHost) {
+                // Send action
+                let amt = 0;
+                if (action === 'bet') {
+                    amt = parseInt(betInput.value);
+                    if (isNaN(amt) || amt < 1) amt = 50;
                 }
+                sendActionToHost(action, amt);
+                // Disable controls locally to prevent double-click
+                disableControls();
+                setActionText(0, action === 'fold' ? 'Folded' : (action === 'check' ? 'Checked' : (action === 'call' ?
+                    'Called' : `Raised ${amt}`)), true);
+                return;
+            }
+
+            // Host processes locally
+            if (action === 'fold') {
                 processBet(user, 'fold', 0);
             } else if (action === 'check') {
-                if (isMultiplayer && !isHost) {
-                    sendActionToHost('check', 0);
-                    setActionText(0, 'Checked');
-                    return;
-                }
                 processBet(user, 'check', 0);
             } else if (action === 'call') {
-                if (isMultiplayer && !isHost) {
-                    sendActionToHost('call', 0);
-                    setActionText(0, 'Called');
-                    return;
-                }
                 processBet(user, 'call', 0);
             } else if (action === 'bet') {
                 let amt = parseInt(betInput.value);
                 if (isNaN(amt) || amt < 1) amt = 50;
-                if (isMultiplayer && !isHost) {
-                    sendActionToHost('raise', amt);
-                    setActionText(0, `Raised ${amt}`, true);
-                    return;
-                }
                 processBet(user, 'raise', amt);
             }
         }
 
+        function sendActionToHost(action, amount) {
+            if (!conn || !conn.open) return;
+            conn.send({
+                type: 'action',
+                action: action,
+                amount: amount || 0,
+                playerIdx: 0
+            });
+        }
+
+        // =====================================================================
+        //  AI LOGIC (single player only)
+        // =====================================================================
         function executeAILogic(ai) {
             let toCall = highestBet - ai.roundBet;
             let card1 = ai.hand[0].num;
@@ -1916,6 +1907,7 @@
             conn.send(state);
         }
 
+        // Guest sends action to host
         function sendActionToHost(action, amount) {
             if (!conn || !conn.open) return;
             conn.send({
@@ -1928,9 +1920,11 @@
 
         function handlePeerData(data, role) {
             if (role === 'host') {
+                // Host receives actions from guest
                 if (data.type === 'action') {
                     const player = players[data.playerIdx];
                     if (player && player.active && !player.bankrupt && !isRecovering) {
+                        // Process the action as if it came from the player
                         if (data.action === 'fold') {
                             processBet(player, 'fold', 0);
                         } else if (data.action === 'check') {
@@ -1942,6 +1936,7 @@
                         }
                     }
                 } else if (data.type === 'revived') {
+                    // Guest recovered
                     const playerId = data.playerId;
                     if (players[playerId]) {
                         players[playerId].chips = 1000;
@@ -1955,7 +1950,9 @@
                     }
                 }
             } else if (role === 'join') {
+                // Guest receives full state from host
                 if (data.type === 'state-sync') {
+                    // Update entire game state from host
                     players = data.players.map(p => ({
                         ...p,
                         isHost: p.isHost,
@@ -1968,10 +1965,11 @@
                     currentPlayerIndex = data.currentPlayerIndex || 0;
                     totalPlayers = data.totalPlayers || 2;
 
-                    // Force re-render of community cards
+                    // Update UI
                     updateUI(stage === 4);
                     potSpan.textContent = pot;
 
+                    // Determine if it's our turn
                     const localIdx = 0;
                     if (currentPlayerIndex === localIdx && players[localIdx] && players[localIdx].active && !players[
                             localIdx].bankrupt && !isRecovering) {
@@ -1986,21 +1984,8 @@
                         }
                         if (!isRecovering) disableControls();
                     }
-                } else if (data.type === 'your-turn') {
-                    const localIdx = 0;
-                    const player = players[localIdx];
-                    if (player && player.active && !player.bankrupt && !isRecovering) {
-                        setStatus('Your turn!');
-                        highestBet = data.highestBet || 0;
-                        pot = data.pot || 0;
-                        stage = data.stage || 0;
-                        communityCards = data.community || [];
-                        currentPlayerIndex = data.playerIdx;
-                        potSpan.textContent = pot;
-                        updateUI();
-                        setupUserControls(player);
-                    }
                 } else if (data.type === 'trigger-recovery') {
+                    // Host tells guest that opponent (host) is recovering
                     const playerId = data.playerId;
                     if (playerId === 1) {
                         setStatus('⏳ Opponent is watching an ad to recover...');
@@ -2008,16 +1993,9 @@
                         disableControls();
                     }
                 } else if (data.type === 'revived') {
-                    const playerId = data.playerId;
-                    if (players[playerId]) {
-                        players[playerId].chips = 1000;
-                        players[playerId].bankrupt = false;
-                        players[playerId].active = true;
-                        setActionText(playerId, 'Revived!', true);
-                        setStatus('✅ Opponent recovered with 1000 chips!');
-                        updateUI();
-                        setTimeout(() => startNewHand(), 600);
-                    }
+                    // Host recovered (we already see updated state via state-sync)
+                    // Just update UI
+                    updateUI();
                 }
             }
         }
@@ -2054,7 +2032,7 @@
         // =====================================================================
         //  INIT
         // =====================================================================
-        console.log('♠ Ultimate Texas Hold\'em – Multiplayer fixed!');
+        console.log('♠ Ultimate Texas Hold\'em – Multiplayer fixed (host-authoritative)');
     </script>
 </body>
 </html>
