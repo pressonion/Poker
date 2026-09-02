@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ultimate Texas Hold'em – Multiplayer</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
-    </script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         /* ----- global reset & layout ----- */
         * {
@@ -1262,44 +1261,32 @@
         function updateUI(revealAI = false) {
             potSpan.textContent = pot;
             document.getElementById('chips-0').textContent = players[0]?.chips || 0;
-            let opp = players[1];
+            
+            // Replaced duplicated block with clean loop logic
             for (let i = 1; i < players.length; i++) {
-        opp = players[i];
-        let chipEl = document.getElementById(`chips-${i}`);
-        if (chipEl) chipEl.textContent = opp.chips;
-        
-        let badge = document.getElementById(`player-${i}`);
-        if (badge) {
-            badge.className = 'player-badge';
-            if (opp.bankrupt) badge.classList.add('bankrupt');
-            else if (!opp.active) badge.classList.add('folded');
-            else if (currentPlayerIndex === i && stage < 4) badge.classList.add('active-turn');
-        }
-
-        let oppContainer = document.getElementById(`ai-cards-${i}`);
-        if (oppContainer) {
-            if (opp && opp.active && !opp.bankrupt) {
-                if (revealAI || stage === 4) {
-                    oppContainer.innerHTML = createCardHTML(opp.hand[0]) + createCardHTML(opp.hand[1]);
-                } else {
-                    oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
-                }
-            } else {
-                oppContainer.innerHTML = '';
-            }
-        }
-    }
-
-    let localBadge = document.getElementById('player-0');
-            if (opp) {
-                let chipEl = document.getElementById('chips-1');
+                let opp = players[i];
+                let chipEl = document.getElementById(`chips-${i}`);
                 if (chipEl) chipEl.textContent = opp.chips;
-                let badge = document.getElementById('player-1');
+                
+                let badge = document.getElementById(`player-${i}`);
                 if (badge) {
                     badge.className = 'player-badge';
                     if (opp.bankrupt) badge.classList.add('bankrupt');
                     else if (!opp.active) badge.classList.add('folded');
-                    else if (currentPlayerIndex === 1 && stage < 4) badge.classList.add('active-turn');
+                    else if (currentPlayerIndex === i && stage < 4) badge.classList.add('active-turn');
+                }
+
+                let oppContainer = document.getElementById(`ai-cards-${i}`);
+                if (oppContainer) {
+                    if (opp && opp.active && !opp.bankrupt) {
+                        if (revealAI || stage === 4) {
+                            oppContainer.innerHTML = createCardHTML(opp.hand[0]) + createCardHTML(opp.hand[1]);
+                        } else {
+                            oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
+                        }
+                    } else {
+                        oppContainer.innerHTML = '';
+                    }
                 }
             }
 
@@ -1319,19 +1306,6 @@
             }
             while (commContainer.children.length > showCount) {
                 commContainer.removeChild(commContainer.lastChild);
-            }
-
-            let oppContainer = document.getElementById('ai-cards-1');
-            if (oppContainer) {
-                if (opp && opp.active && !opp.bankrupt) {
-                    if (revealAI || stage === 4) {
-                        oppContainer.innerHTML = createCardHTML(opp.hand[0]) + createCardHTML(opp.hand[1]);
-                    } else {
-                        oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
-                    }
-                } else {
-                    oppContainer.innerHTML = '';
-                }
             }
 
             let localP = players[0];
@@ -1392,30 +1366,31 @@
         }
 
         function initGame() {
-    players = [];
-    // 1. Add User
-    players.push({
-        id: 0, isAI: false, isHuman: true, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0, hasActed: false, bluffing: false
-    });
-    
-    // 2. Add AI Players and build their HTML
-    let aiHtml = '';
-    for (let i = 1; i < totalPlayers; i++) {
-        players.push({
-            id: i, isAI: true, isHuman: false, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0, hasActed: false, bluffing: Math.random() > 0.6
-        });
-        aiHtml += `
-        <div class="player-wrapper">
-            <div class="ai-cards" id="ai-cards-${i}"></div>
-            <div id="player-${i}" class="player-badge">
-                <div class="player-name">🤖 AI ${i}</div>
-                <div>Chips: <span id="chips-${i}">1000</span></div>
-                <div id="action-${i}" class="action-text">Waiting...</div>
-            </div>
-        </div>`;
-    }
-    document.getElementById('ai-container').innerHTML = aiHtml;
-}
+            players = [];
+            // 1. Add User
+            players.push({
+                id: 0, isAI: false, isHuman: true, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0, hasActed: false, bluffing: false
+            });
+            
+            // 2. Add AI Players and build their HTML
+            let aiHtml = '';
+            for (let i = 1; i < totalPlayers; i++) {
+                players.push({
+                    id: i, isAI: true, isHuman: false, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0, hasActed: false, bluffing: Math.random() > 0.6
+                });
+                aiHtml += `
+                <div class="player-wrapper">
+                    <div class="ai-cards" id="ai-cards-${i}"></div>
+                    <div id="player-${i}" class="player-badge">
+                        <div class="player-name">🤖 AI ${i}</div>
+                        <div>Chips: <span id="chips-${i}">1000</span></div>
+                        <div id="action-${i}" class="action-text">Waiting...</div>
+                    </div>
+                </div>`;
+            }
+            document.getElementById('ai-container').innerHTML = aiHtml;
+        }
+
         // =====================================================================
         //  START NEW HAND with recovery check
         // =====================================================================
@@ -1469,7 +1444,6 @@
         }
 
         function _doStartNewHand() {
-        
             // Single player: check bankrupt
             if (!isMultiplayer && players[0] && players[0].chips <= 0) {
                 players[0].bankrupt = true;
@@ -1513,16 +1487,12 @@
                 userHandContainer.innerHTML = '';
             }
 
-            let oppContainer = document.getElementById('ai-cards-1');
-            if (oppContainer) {
-                oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
-            }
             for (let i = 1; i < players.length; i++) {
-        let oppContainer = document.getElementById(`ai-cards-${i}`);
-        if (oppContainer) {
-            oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
-        }
-    }
+                let oppContainer = document.getElementById(`ai-cards-${i}`);
+                if (oppContainer) {
+                    oppContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
+                }
+            }
 
             if (activeCount <= 1) {
                 setStatus('GAME OVER! Only one player remains.');
