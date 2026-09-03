@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Texas Hold'em</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
-    </script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         /* ── RESET & BASE ── */
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1a252f;
@@ -47,577 +44,220 @@
             max-width: 550px;
             width: 100%;
         }
-        .menu-box h1 {
-            margin-top: 0;
-            color: #f1c40f;
-        }
-        .menu-box hr {
-            border: 1px solid #7f8c8d;
-            margin: 20px 0;
-        }
+        .menu-box h1 { margin-top: 0; color: #f1c40f; }
+        .menu-box hr { border: 1px solid #7f8c8d; margin: 20px 0; }
 
         /* Single‑player section */
-        .sp-section {
-            margin-bottom: 10px;
-        }
+        .sp-section { margin-bottom: 10px; }
         .sp-section input {
-            font-size: 20px;
-            padding: 10px;
-            width: 80px;
-            text-align: center;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
+            font-size: 20px; padding: 10px; width: 80px;
+            text-align: center; margin: 10px 0; border-radius: 5px; border: none;
         }
 
         /* Multiplayer section */
-        .mp-section {
-            margin-top: 10px;
-        }
+        .mp-section { margin-top: 10px; }
         .mp-section .mp-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 6px 0;
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+            gap: 8px; margin: 6px 0;
         }
         .mp-section .mp-code {
-            font-size: 1.6rem;
-            font-weight: bold;
-            letter-spacing: 6px;
-            color: #f1c40f;
-            background: #1a252f;
-            padding: 2px 20px;
-            border-radius: 8px;
-            font-family: monospace;
-            display: inline-block;
-            min-width: 100px;
+            font-size: 1.6rem; font-weight: bold; letter-spacing: 6px;
+            color: #f1c40f; background: #1a252f; padding: 2px 20px;
+            border-radius: 8px; font-family: monospace; display: inline-block; min-width: 100px;
         }
         .mp-section .mp-player-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 12px;
-            font-size: 0.9rem;
-            color: #ecf0f1;
-            justify-content: center;
-            margin: 6px 0;
+            display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 0.9rem;
+            color: #ecf0f1; justify-content: center; margin: 6px 0;
         }
         .mp-section .mp-player-list span {
-            background: #1a252f;
-            padding: 2px 12px;
-            border-radius: 16px;
-            border: 1px solid #7f8c8d;
+            background: #1a252f; padding: 2px 12px; border-radius: 16px; border: 1px solid #7f8c8d;
         }
-        .mp-section .mp-status {
-            font-size: 0.9rem;
-            color: #bdc3c7;
-            margin: 4px 0;
-        }
+        .mp-section .mp-status { font-size: 0.9rem; color: #bdc3c7; margin: 4px 0; }
         .mp-section input.mp-join-input {
-            width: 90px;
-            padding: 6px 8px;
-            border-radius: 4px;
-            border: none;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            background: #ecf0f1;
-            color: #2c3e50;
+            width: 90px; padding: 6px 8px; border-radius: 4px; border: none;
+            text-align: center; font-weight: bold; font-size: 1.1rem;
+            letter-spacing: 2px; background: #ecf0f1; color: #2c3e50;
         }
 
         /* Buttons */
         .btn-large {
-            font-size: 20px;
-            padding: 12px 28px;
-            background-color: #2ecc71;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
+            font-size: 20px; padding: 12px 28px; background-color: #2ecc71;
+            border: none; border-radius: 5px; color: white; cursor: pointer;
+            font-weight: bold; transition: background 0.2s;
         }
-        .btn-large:hover {
-            background-color: #27ae60;
-        }
-        .btn-large:disabled {
-            background-color: #7f8c8d;
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-        .btn-host {
-            background-color: #e67e22;
-        }
-        .btn-host:hover:not(:disabled) {
-            background-color: #d35400;
-        }
-        .btn-join {
-            background-color: #27ae60;
-        }
-        .btn-join:hover:not(:disabled) {
-            background-color: #1e8449;
-        }
-        .btn-mp-start {
-            background-color: #3498db;
-        }
-        .btn-mp-start:hover:not(:disabled) {
-            background-color: #2980b9;
-        }
-        .btn-leave {
-            background-color: #e74c3c;
-        }
-        .btn-leave:hover:not(:disabled) {
-            background-color: #c0392b;
-        }
+        .btn-large:hover { background-color: #27ae60; }
+        .btn-large:disabled { background-color: #7f8c8d; cursor: not-allowed; opacity: 0.5; }
+        .btn-host { background-color: #e67e22; }
+        .btn-host:hover:not(:disabled) { background-color: #d35400; }
+        .btn-join { background-color: #27ae60; }
+        .btn-join:hover:not(:disabled) { background-color: #1e8449; }
+        .btn-mp-start { background-color: #3498db; }
+        .btn-mp-start:hover:not(:disabled) { background-color: #2980b9; }
+        .btn-leave { background-color: #e74c3c; }
+        .btn-leave:hover:not(:disabled) { background-color: #c0392b; }
 
         /* ── GAME SCREEN ── */
         #game-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            height: 100%;
+            display: none; flex-direction: column; align-items: center; width: 100%; height: 100%;
         }
         #status-bar {
-            background-color: #f39c12;
-            color: #2c3e50;
-            font-weight: bold;
-            padding: 8px 20px;
-            border-radius: 20px;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-            text-align: center;
-            max-width: 800px;
-            width: 100%;
+            background-color: #f39c12; color: #2c3e50; font-weight: bold;
+            padding: 8px 20px; border-radius: 20px; margin-bottom: 5px;
+            font-size: 1.1rem; text-align: center; max-width: 800px; width: 100%;
         }
 
         #ai-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-            width: 100%;
-            max-height: 45vh;
-            overflow-y: auto;
-            padding-bottom: 10px;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
+            margin-bottom: 10px; width: 100%; max-height: 45vh; overflow-y: auto; padding-bottom: 10px;
         }
 
         #poker-table {
             background: radial-gradient(circle, #229954 10%, #11572f 90%);
-            border: 16px solid #4a2e15;
-            border-radius: 120px;
-            width: 100%;
-            max-width: 750px;
-            height: 260px;
-            position: relative;
+            border: 16px solid #4a2e15; border-radius: 120px; width: 100%;
+            max-width: 750px; height: 260px; position: relative;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; flex-shrink: 0;
         }
         #poker-table::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 100px;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-            background-size: 5px 5px;
-            pointer-events: none;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 100px; background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 5px 5px; pointer-events: none;
         }
 
         .pot-container {
-            position: absolute;
-            top: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 5px 20px;
-            border-radius: 20px;
-            border: 2px solid #f1c40f;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-            z-index: 2;
+            position: absolute; top: 10px; display: flex; flex-direction: column;
+            align-items: center; background: rgba(0, 0, 0, 0.6); padding: 5px 20px;
+            border-radius: 20px; border: 2px solid #f1c40f; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); z-index: 2;
         }
-        .card-area {
-            display: flex;
-            gap: 8px;
-            margin-top: 20px;
-            z-index: 2;
-        }
+        .card-area { display: flex; gap: 8px; margin-top: 20px; z-index: 2; }
 
-        .card {
-            width: 50px;
-            height: 72px;
-            perspective: 1000px;
-            background-color: transparent;
-        }
+        .card { width: 50px; height: 72px; perspective: 1000px; background-color: transparent; }
         .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
+            position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
             animation: flipReveal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .card.hidden .card-inner {
-            transform: rotateY(180deg);
-            animation: dropIn 0.4s ease-out forwards;
-        }
+        .card.hidden .card-inner { transform: rotateY(180deg); animation: dropIn 0.4s ease-out forwards; }
 
         @keyframes flipReveal {
-            0% {
-                transform: rotateY(180deg) scale(0.8) translateY(-20px);
-                opacity: 0;
-            }
-            100% {
-                transform: rotateY(0deg) scale(1) translateY(0);
-                opacity: 1;
-            }
+            0% { transform: rotateY(180deg) scale(0.8) translateY(-20px); opacity: 0; }
+            100% { transform: rotateY(0deg) scale(1) translateY(0); opacity: 1; }
         }
         @keyframes dropIn {
-            0% {
-                transform: rotateY(180deg) translateY(-20px);
-                opacity: 0;
-            }
-            100% {
-                transform: rotateY(180deg) translateY(0);
-                opacity: 1;
-            }
+            0% { transform: rotateY(180deg) translateY(-20px); opacity: 0; }
+            100% { transform: rotateY(180deg) translateY(0); opacity: 1; }
         }
 
-        .card-front,
-        .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 6px;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 4px;
-            box-sizing: border-box;
-            font-weight: bold;
-            font-size: 14px;
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 6px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); display: flex;
+            flex-direction: column; justify-content: space-between; padding: 4px;
+            box-sizing: border-box; font-weight: bold; font-size: 14px;
         }
-        .card-front {
-            background-color: white;
-            color: black;
-        }
-        .card-front.red {
-            color: #e74c3c;
-        }
+        .card-front { background-color: white; color: black; }
+        .card-front.red { color: #e74c3c; }
         .card-back {
             background: repeating-linear-gradient(45deg, #b03a2e, #b03a2e 8px, #922b21 8px, #922b21 16px);
-            border: 2px solid #fff;
-            transform: rotateY(180deg);
+            border: 2px solid #fff; transform: rotateY(180deg);
         }
 
-        .player-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
+        .player-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; }
         .player-badge {
-            background-color: #2c3e50;
-            padding: 5px 10px;
-            border-radius: 8px;
-            text-align: center;
-            border: 2px solid transparent;
-            font-size: 0.85rem;
-            width: 120px;
-            z-index: 2;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            background-color: #2c3e50; padding: 5px 10px; border-radius: 8px; text-align: center;
+            border: 2px solid transparent; font-size: 0.85rem; width: 120px; z-index: 2;
+            transition: all 0.2s; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
-        .player-name {
-            font-weight: bold;
-            color: #ecf0f1;
-            margin-bottom: 2px;
-        }
-        .ai-cards {
-            display: flex;
-            gap: 4px;
-            margin-bottom: -15px;
-            z-index: 1;
-            min-height: 55px;
-        }
-        .ai-cards .card {
-            width: 38px;
-            height: 55px;
-        }
-        .ai-cards .card-front {
-            font-size: 11px;
-        }
+        .player-name { font-weight: bold; color: #ecf0f1; margin-bottom: 2px; }
+        .ai-cards { display: flex; gap: 4px; margin-bottom: -15px; z-index: 1; min-height: 55px; }
+        .ai-cards .card { width: 38px; height: 55px; }
+        .ai-cards .card-front { font-size: 11px; }
 
-        #player-0 {
-            margin-top: 5px;
-            width: 160px;
-            border: 2px solid #3498db;
-        }
         .player-badge.active-turn {
-            border-color: #f1c40f;
-            background-color: #1a252f;
-            box-shadow: 0 0 15px #f1c40f;
-            transform: scale(1.05);
+            border-color: #f1c40f; background-color: #1a252f;
+            box-shadow: 0 0 15px #f1c40f; transform: scale(1.05);
         }
-        .player-badge.folded {
-            opacity: 0.4;
-            filter: grayscale(100%);
-        }
-        .player-badge.bankrupt {
-            background-color: #c0392b;
-            border-color: #e74c3c;
-            opacity: 0.8;
-        }
-        .action-text {
-            font-size: 0.8rem;
-            color: #bdc3c7;
-            margin-top: 3px;
-            font-weight: bold;
-        }
-        .action-text.highlight {
-            color: #f1c40f;
-        }
+        .player-badge.folded { opacity: 0.4; filter: grayscale(100%); }
+        .player-badge.bankrupt { background-color: #c0392b; border-color: #e74c3c; opacity: 0.8; }
+        .action-text { font-size: 0.8rem; color: #bdc3c7; margin-top: 3px; font-weight: bold; }
+        .action-text.highlight { color: #f1c40f; }
 
-        #user-hand-container {
-            display: flex;
-            gap: 10px;
-            margin-top: -20px;
-            z-index: 10;
-            min-height: 72px;
-        }
+        #user-hand-container { display: flex; gap: 10px; margin-top: -20px; z-index: 10; min-height: 72px; }
         .controls {
-            display: flex;
-            gap: 8px;
-            background-color: #2c3e50;
-            padding: 10px;
-            border-radius: 10px;
-            margin-top: 5px;
-            align-items: center;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: flex; gap: 8px; background-color: #2c3e50; padding: 10px; border-radius: 10px;
+            margin-top: 5px; align-items: center; flex-wrap: wrap; justify-content: center;
             box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
         }
         .controls input[type="number"] {
-            padding: 8px;
-            border-radius: 5px;
-            border: none;
-            width: 80px;
-            text-align: center;
-            font-weight: bold;
-            background: #ecf0f1;
-            color: #2c3e50;
+            padding: 8px; border-radius: 5px; border: none; width: 80px; text-align: center;
+            font-weight: bold; background: #ecf0f1; color: #2c3e50;
         }
         .controls button {
-            padding: 8px 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-            transition: background 0.2s;
+            padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; border: none;
+            border-radius: 5px; background-color: #3498db; color: white; transition: background 0.2s;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        .controls button:hover:not(:disabled) {
-            background-color: #2980b9;
-        }
-        .controls button:disabled {
-            background-color: #7f8c8d;
-            cursor: not-allowed;
-            opacity: 0.5;
-            box-shadow: none;
-        }
-        #btn-fold {
-            background-color: #e74c3c;
-        }
-        #btn-fold:hover:not(:disabled) {
-            background-color: #c0392b;
-        }
-        #btn-call {
-            background-color: #f39c12;
-        }
-        #btn-call:hover:not(:disabled) {
-            background-color: #d68910;
-        }
+        .controls button:hover:not(:disabled) { background-color: #2980b9; }
+        .controls button:disabled { background-color: #7f8c8d; cursor: not-allowed; opacity: 0.5; box-shadow: none; }
+        #btn-fold { background-color: #e74c3c; }
+        #btn-fold:hover:not(:disabled) { background-color: #c0392b; }
+        #btn-call { background-color: #f39c12; }
+        #btn-call:hover:not(:disabled) { background-color: #d68910; }
 
         .chip-anim {
-            position: absolute;
-            font-size: 28px;
-            z-index: 1000;
-            pointer-events: none;
-            transition: all 0.5s ease-in-out;
-            opacity: 1;
+            position: absolute; font-size: 28px; z-index: 1000; pointer-events: none;
+            transition: all 0.5s ease-in-out; opacity: 1;
         }
 
         /* ── AD OVERLAY ── */
         #ad-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.88);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-            text-align: center;
-            padding: 20px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88); z-index: 9999; justify-content: center;
+            align-items: center; flex-direction: column; color: white; text-align: center; padding: 20px;
         }
         #ad-overlay .ad-box {
-            background: #2c3e50;
-            padding: 40px 50px;
-            border-radius: 20px;
-            border: 3px solid #f1c40f;
-            box-shadow: 0 0 60px rgba(241, 196, 15, 0.3);
-            max-width: 500px;
+            background: #2c3e50; padding: 40px 50px; border-radius: 20px;
+            border: 3px solid #f1c40f; box-shadow: 0 0 60px rgba(241, 196, 15, 0.3); max-width: 500px;
         }
-        #ad-overlay .ad-box h2 {
-            font-size: 2.5rem;
-            color: #f1c40f;
-            margin: 0 0 10px 0;
-        }
-        #ad-overlay .ad-box p {
-            font-size: 1.2rem;
-            color: #ecf0f1;
-            margin: 10px 0;
-        }
-        #ad-overlay .ad-box .ad-timer {
-            font-size: 2.8rem;
-            font-weight: bold;
-            color: #2ecc71;
-            margin: 15px 0;
-        }
-        #ad-overlay .ad-box .ad-msg {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #f39c12;
-            animation: pulse 1.2s infinite alternate;
-        }
+        #ad-overlay .ad-box h2 { font-size: 2.5rem; color: #f1c40f; margin: 0 0 10px 0; }
+        #ad-overlay .ad-box p { font-size: 1.2rem; color: #ecf0f1; margin: 10px 0; }
+        #ad-overlay .ad-box .ad-timer { font-size: 2.8rem; font-weight: bold; color: #2ecc71; margin: 15px 0; }
+        #ad-overlay .ad-box .ad-msg { font-size: 1.6rem; font-weight: bold; color: #f39c12; animation: pulse 1.2s infinite alternate; }
+        
         @keyframes pulse {
-            0% {
-                opacity: 0.6;
-                transform: scale(0.98);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1.04);
-            }
+            0% { opacity: 0.6; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1.04); }
         }
 
         /* ── RESPONSIVE ── */
         @media (max-width: 700px) {
-            .card {
-                width: 40px;
-                height: 58px;
-            }
-            .card-front {
-                font-size: 11px;
-            }
-            #poker-table {
-                height: 200px;
-                border-width: 10px;
-            }
-            .player-badge {
-                width: 90px;
-                font-size: 0.7rem;
-            }
-            #player-0 {
-                width: 120px;
-            }
-            .controls button {
-                padding: 5px 8px;
-                font-size: 12px;
-            }
-            .menu-box {
-                padding: 20px 15px;
-            }
-            .mp-section .mp-code {
-                font-size: 1.2rem;
-                letter-spacing: 4px;
-                padding: 0 12px;
-            }
+            .card { width: 40px; height: 58px; }
+            .card-front { font-size: 11px; }
+            #poker-table { height: 200px; border-width: 10px; }
+            .player-badge { width: 90px; font-size: 0.7rem; }
+            .controls button { padding: 5px 8px; font-size: 12px; }
+            .menu-box { padding: 20px 15px; }
+            .mp-section .mp-code { font-size: 1.2rem; letter-spacing: 4px; padding: 0 12px; }
         }
         @media (max-width: 500px) {
-            .card {
-                width: 32px;
-                height: 46px;
-            }
-            .card-front {
-                font-size: 9px;
-            }
-            #poker-table {
-                height: 150px;
-                border-width: 6px;
-                border-radius: 80px;
-            }
-            .pot-container {
-                padding: 2px 10px;
-                font-size: 0.7rem;
-                top: 4px;
-            }
-            .pot-container div {
-                font-size: 0.7rem;
-            }
-            .player-badge {
-                width: 72px;
-                font-size: 0.6rem;
-                padding: 3px 6px;
-            }
-            #player-0 {
-                width: 96px;
-            }
-            .controls {
-                padding: 6px;
-                gap: 4px;
-            }
-            .controls button {
-                padding: 4px 6px;
-                font-size: 10px;
-            }
-            .controls input {
-                width: 50px;
-                padding: 4px;
-                font-size: 11px;
-            }
-            .menu-box {
-                padding: 15px 10px;
-            }
-            .mp-section .mp-row {
-                gap: 4px;
-            }
-            .mp-section input.mp-join-input {
-                width: 60px;
-                font-size: 0.9rem;
-            }
-            .mp-section .mp-code {
-                font-size: 1rem;
-                letter-spacing: 2px;
-            }
+            .card { width: 32px; height: 46px; }
+            .card-front { font-size: 9px; }
+            #poker-table { height: 150px; border-width: 6px; border-radius: 80px; }
+            .pot-container { padding: 2px 10px; font-size: 0.7rem; top: 4px; }
+            .player-badge { width: 72px; font-size: 0.6rem; padding: 3px 6px; }
+            .controls { padding: 6px; gap: 4px; }
+            .controls button { padding: 4px 6px; font-size: 10px; }
+            .controls input { width: 50px; padding: 4px; font-size: 11px; }
+            .menu-box { padding: 15px 10px; }
+            .mp-section input.mp-join-input { width: 60px; font-size: 0.9rem; }
+            .mp-section .mp-code { font-size: 1rem; letter-spacing: 2px; }
         }
     </style>
 </head>
 <body>
-
     <!-- ─── MENU SCREEN ─── -->
     <div id="menu-screen">
         <div class="menu-box">
             <h1>♠ Ultimate Texas Hold'em</h1>
-
             <!-- Single‑player -->
             <div class="sp-section">
                 <p style="margin:6px 0;">Select Total Players (You + AI)</p>
@@ -625,27 +265,21 @@
                 <p style="font-size:0.8rem; color:#bdc3c7; margin:4px 0;">(Max 22 players per 52‑card deck)</p>
                 <button class="btn-large" onclick="startSingleplayer()">START GAME</button>
             </div>
-
             <hr>
-
             <!-- Multiplayer -->
             <div class="mp-section">
                 <p style="margin:6px 0; font-weight:bold; color:#f1c40f;">🎮 Multiplayer (No AI)</p>
-
                 <div class="mp-row">
                     <button class="btn-large btn-host" id="mp-host-btn" onclick="hostGame()">👑 Host</button>
                     <input class="mp-join-input" id="mp-join-input" placeholder="CODE" maxlength="4" style="text-transform:uppercase;">
                     <button class="btn-large btn-join" id="mp-join-btn" onclick="joinGame()">🔗 Join</button>
                 </div>
-
                 <div class="mp-row" style="margin-top:8px;">
                     <span style="color:#bdc3c7;">Room code:</span>
                     <span class="mp-code" id="mp-code-display" style="display:none;">----</span>
                 </div>
-
                 <div class="mp-player-list" id="mp-player-list"></div>
                 <div class="mp-status" id="mp-status-label">Waiting for connection…</div>
-
                 <div class="mp-row" style="margin-top:10px;">
                     <button class="btn-large btn-mp-start" id="mp-start-btn" style="display:none;" onclick="startMultiplayerGame()">▶ Start Game</button>
                     <button class="btn-large btn-leave" id="mp-leave-btn" style="display:none;" onclick="leaveMultiplayer()">✕ Leave</button>
@@ -657,7 +291,6 @@
     <!-- ─── GAME SCREEN ─── -->
     <div id="game-screen">
         <div id="status-bar">Starting game…</div>
-
         <div id="ai-container"></div>
 
         <div id="poker-table">
@@ -669,9 +302,9 @@
         </div>
 
         <div id="user-hand-container"></div>
-
         <div class="player-wrapper">
-            <div id="player-0" class="player-badge">
+            <!-- The local player's badge ID is set dynamically -->
+            <div id="player-0" class="player-badge" style="margin-top: 5px; width: 160px; border: 2px solid #3498db;">
                 <div class="player-name">👤 You</div>
                 <div>Chips: <span id="chips-0">1000</span></div>
                 <div id="action-0" class="action-text">Waiting…</div>
@@ -704,8 +337,7 @@
         // ============================================================
         const suits = ['♥', '♦', '♣', '♠'];
         const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-        const valMap = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13,
-            'A': 14 };
+        const valMap = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14 };
 
         let deck = [];
         let communityCards = [];
@@ -717,6 +349,7 @@
         let totalPlayers = 5;
 
         // Multiplayer state
+        let myPlayerId = 0; // 0 for Host, dynamic for clients
         let multiplayerMode = false;
         let isHost = false;
         let peer = null;
@@ -736,24 +369,16 @@
             let count = parseInt(document.getElementById('player-count').value);
             totalPlayers = Math.max(2, Math.min(count, 22));
 
-            // Ensure we are not in multiplayer mode
             multiplayerMode = false;
             isHost = false;
+            myPlayerId = 0; // Always 0 in singleplayer
             if (peer) { leaveMultiplayer(); }
 
-            players = [{ id: 0, isAI: false, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0,
-                hasActed: false, bluffing: false }];
+            players = [{ id: 0, isAI: false, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0, hasActed: false, bluffing: false }];
             for (let i = 1; i < totalPlayers; i++) {
                 players.push({
-                    id: i,
-                    isAI: true,
-                    chips: 1000,
-                    active: true,
-                    bankrupt: false,
-                    hand: [],
-                    roundBet: 0,
-                    hasActed: false,
-                    bluffing: false
+                    id: i, isAI: true, chips: 1000, active: true, bankrupt: false,
+                    hand: [], roundBet: 0, hasActed: false, bluffing: false
                 });
             }
             buildPlayersHTML();
@@ -768,7 +393,8 @@
         function buildPlayersHTML() {
             let container = document.getElementById('ai-container');
             container.innerHTML = '';
-            for (let i = 1; i < players.length; i++) {
+            for (let i = 0; i < players.length; i++) {
+                if (i === myPlayerId) continue;
                 let p = players[i];
                 let label = p.isAI ? `🤖 AI ${i}` : (p.remoteName || `👤 P${i}`);
                 let wrapper = document.createElement('div');
@@ -830,15 +456,13 @@
         // ============================================================
         function updateUI(revealAI = false) {
             document.getElementById('pot-amount').innerText = pot;
-            document.getElementById('chips-0').innerText = players[0] ? players[0].chips : 0;
 
             players.forEach(p => {
                 let badge = document.getElementById(`player-${p.id}`);
                 if (!badge) return;
-                if (p.id !== 0) {
-                    let chipEl = document.getElementById(`chips-${p.id}`);
-                    if (chipEl) chipEl.innerText = p.chips;
-                }
+                let chipEl = document.getElementById(`chips-${p.id}`);
+                if (chipEl) chipEl.innerText = p.chips;
+
                 badge.className = "player-badge";
                 if (p.bankrupt) badge.classList.add("bankrupt");
                 else if (!p.active) badge.classList.add("folded");
@@ -853,7 +477,8 @@
             }
 
             if (revealAI) {
-                for (let i = 1; i < players.length; i++) {
+                for (let i = 0; i < players.length; i++) {
+                    if (i === myPlayerId) continue;
                     let p = players[i];
                     if (!p) continue;
                     if (!p.bankrupt && p.active && p.hand && p.hand.length === 2) {
@@ -872,8 +497,7 @@
 
         function setActionText(id, msg, highlight = false) {
             let el = document.getElementById(`action-${id}`);
-            if (el) { el.innerText = msg;
-                el.className = highlight ? "action-text highlight" : "action-text"; }
+            if (el) { el.innerText = msg; el.className = highlight ? "action-text highlight" : "action-text"; }
         }
 
         function disableControls() {
@@ -954,75 +578,55 @@
         }
 
         function startNewHand() {
-            // In multiplayer, only host runs the hand logic, remote clients wait for state.
             if (multiplayerMode && !isHost && gameStarted) return;
 
-            let user = players[0];
+            let user = players[myPlayerId];
             if (user && user.chips <= 0 && !user.bankrupt) {
                 showAd(() => {
-                    user.chips = 100;
-                    user.bankrupt = false;
-                    user.active = true;
-                    updateUI();
-                    startNewHand();
+                    user.chips = 100; user.bankrupt = false; user.active = true;
+                    updateUI(); startNewHand();
                 });
                 return;
             }
             if (user && user.chips <= 0) {
-                user.bankrupt = true;
-                user.active = false;
+                user.bankrupt = true; user.active = false;
                 disableControls();
                 setStatus("You are bankrupt! Watch an ad to get back.");
                 showAd(() => {
-                    user.chips = 100;
-                    user.bankrupt = false;
-                    user.active = true;
-                    updateUI();
-                    startNewHand();
+                    user.chips = 100; user.bankrupt = false; user.active = true;
+                    updateUI(); startNewHand();
                 });
                 return;
             }
 
             buildDeck();
-            pot = 0;
-            stage = 0;
-            highestBet = 0;
-            currentPlayerIndex = 0;
+            pot = 0; stage = 0; highestBet = 0; currentPlayerIndex = 0;
             communityCards = [deck.pop(), deck.pop(), deck.pop(), deck.pop(), deck.pop()];
             document.getElementById('community-cards').innerHTML = '';
 
             let activeCount = 0;
             players.forEach(p => {
-                p.roundBet = 0;
-                p.hasActed = false;
-                p.bluffing = Math.random() < 0.15;
+                p.roundBet = 0; p.hasActed = false; p.bluffing = Math.random() < 0.15;
                 if (p.chips <= 0) {
-                    p.bankrupt = true;
-                    p.active = false;
-                    p.hand = [];
+                    p.bankrupt = true; p.active = false; p.hand = [];
                     setActionText(p.id, "BANKRUPT", true);
                 } else {
-                    p.active = true;
-                    p.hand = [deck.pop(), deck.pop()];
-                    activeCount++;
-                    setActionText(p.id, "Waiting…");
+                    p.active = true; p.hand = [deck.pop(), deck.pop()];
+                    activeCount++; setActionText(p.id, "Waiting…");
                 }
-                if (p.id === 0) {
-                    document.getElementById('user-hand-container').innerHTML = (p.active && !p.bankrupt) ? createCardHTML(p
-                        .hand[0]) + createCardHTML(p.hand[1]) : '';
+                if (p.id === myPlayerId) {
+                    document.getElementById('user-hand-container').innerHTML = (p.active && !p.bankrupt) ? createCardHTML(p.hand[0]) + createCardHTML(p.hand[1]) : '';
                 } else {
                     let container = document.getElementById(`ai-cards-${p.id}`);
                     if (container) {
-                        container.innerHTML = (p.active && !p.bankrupt) ? createCardHTML(null, true) + createCardHTML(null,
-                            true) : '';
+                        container.innerHTML = (p.active && !p.bankrupt) ? createCardHTML(null, true) + createCardHTML(null, true) : '';
                     }
                 }
             });
 
             if (activeCount <= 1) {
                 setStatus("GAME OVER! Only one player remains.");
-                updateUI();
-                disableControls();
+                updateUI(); disableControls();
                 if (multiplayerMode && isHost) broadcastGameState();
                 return;
             }
@@ -1041,33 +645,24 @@
             }
 
             if (multiplayerMode) {
-                // Only host runs the game logic
                 if (!isHost) return;
-                // If it's a remote human player's turn, host waits for their action
-                if (p.isAI === false && p.id !== 0) {
+                if (p.isAI === false && p.id !== myPlayerId) {
                     setStatus(`Waiting for ${p.remoteName || 'Player ' + p.id}…`);
-                    disableControls();
-                    broadcastGameState();
-                    return;
+                    disableControls(); broadcastGameState(); return;
                 }
-                // Host's own turn
-                if (p.id === 0) {
+                if (p.id === myPlayerId) {
                     setStatus("Your turn!");
-                    setupUserControls(p);
-                    broadcastGameState();
-                    return;
+                    setupUserControls(p); broadcastGameState(); return;
                 }
-                // Should not happen: AI in multiplayer? We don't have AI in multiplayer.
                 return;
             }
 
-            // Single‑player AI logic
             if (p.isAI) {
                 setStatus(`AI ${p.id} is thinking…`);
                 disableControls();
                 let delay = totalPlayers > 8 ? 600 : 1200;
                 setTimeout(() => { executeAILogic(p); }, delay);
-            } else if (p.id === 0) {
+            } else if (p.id === myPlayerId) {
                 setStatus("Your turn!");
                 setupUserControls(p);
             } else {
@@ -1078,15 +673,12 @@
         function advanceTurn() {
             let active = getActive();
             if (active.length === 1) {
-                awardPot([active[0]], "Everyone folded.");
-                return;
+                awardPot([active[0]], "Everyone folded."); return;
             }
             if (isRoundComplete()) {
-                stage++;
-                highestBet = 0;
+                stage++; highestBet = 0;
                 players.forEach(p => {
-                    p.roundBet = 0;
-                    p.hasActed = false;
+                    p.roundBet = 0; p.hasActed = false;
                     if (p.active && !p.bankrupt) setActionText(p.id, "Waiting…");
                 });
                 if (stage === 4) { showdown(); return; }
@@ -1111,24 +703,18 @@
             let toCall = highestBet - player.roundBet;
 
             if (type === 'fold') {
-                player.active = false;
-                setActionText(player.id, "Folded");
+                player.active = false; setActionText(player.id, "Folded");
             } else if (type === 'check') {
                 setActionText(player.id, "Checked");
             } else if (type === 'call') {
                 let callAmt = Math.min(toCall, player.chips);
-                player.chips -= callAmt;
-                player.roundBet += callAmt;
-                pot += callAmt;
+                player.chips -= callAmt; player.roundBet += callAmt; pot += callAmt;
                 runAnimation(player.id, true);
                 setActionText(player.id, player.chips === 0 ? "ALL IN!" : `Called`, player.chips === 0);
             } else if (type === 'raise') {
                 let totalAdd = Math.min(amount, player.chips);
-                player.chips -= totalAdd;
-                player.roundBet += totalAdd;
-                pot += totalAdd;
-                highestBet = player.roundBet;
-                runAnimation(player.id, true);
+                player.chips -= totalAdd; player.roundBet += totalAdd; pot += totalAdd;
+                highestBet = player.roundBet; runAnimation(player.id, true);
                 players.forEach(p => { if (p.id !== player.id && p.active && p.chips > 0) p.hasActed = false; });
                 setActionText(player.id, player.chips === 0 ? "ALL IN!" : `Raised`, true);
             }
@@ -1143,8 +729,7 @@
         function executeAILogic(ai) {
             if (multiplayerMode) return;
             let toCall = highestBet - ai.roundBet;
-            let card1 = ai.hand[0].num,
-                card2 = ai.hand[1].num;
+            let card1 = ai.hand[0].num, card2 = ai.hand[1].num;
             let isPair = card1 === card2;
             let handScore = card1 + card2;
             if (isPair) handScore += 10;
@@ -1152,8 +737,7 @@
 
             if (toCall > 0) {
                 if (toCall > (ai.chips * 0.4)) {
-                    if (handScore > 22 || (isPair && handScore > 18) || (ai.bluffing && rand < 0.1)) return processBet(ai,
-                        'call', 0);
+                    if (handScore > 22 || (isPair && handScore > 18) || (ai.bluffing && rand < 0.1)) return processBet(ai, 'call', 0);
                     else return processBet(ai, 'fold', 0);
                 }
                 if (handScore < 16 && !ai.bluffing && rand < 0.8) return processBet(ai, 'fold', 0);
@@ -1172,15 +756,12 @@
         //  USER ACTION (local)
         // ============================================================
         function userAction(action) {
-            let user = players[0];
+            let user = players[myPlayerId];
             if (!user || user.bankrupt || !user.active) return;
 
-            // In multiplayer, if not host, send action to host.
             if (multiplayerMode && !isHost) {
-                sendActionToHost(action);
-                return;
+                sendActionToHost(action); return;
             }
-
             disableControls();
             if (action === 'fold') processBet(user, 'fold', 0);
             else if (action === 'check') processBet(user, 'check', 0);
@@ -1200,30 +781,24 @@
             let flushSuit = null;
             let suitCounts = { '♥': [], '♦': [], '♣': [], '♠': [] };
             cards.forEach(c => suitCounts[c.suit].push(c));
-            for (let s in suitCounts)
-                if (suitCounts[s].length >= 5) flushSuit = s;
+            for (let s in suitCounts) if (suitCounts[s].length >= 5) flushSuit = s;
 
             let vals = [...new Set(cards.map(c => c.num))];
-            if (vals.includes(14) && vals.includes(5) && vals.includes(4) && vals.includes(3) && vals.includes(2)) vals.push(
-            1);
+            if (vals.includes(14) && vals.includes(5) && vals.includes(4) && vals.includes(3) && vals.includes(2)) vals.push(1);
             let straightHigh = 0;
             for (let i = 0; i <= vals.length - 5; i++) {
                 if (vals[i] - vals[i + 4] === 4) { straightHigh = vals[i]; break; }
-                if (vals[i] === 5 && vals[i + 1] === 4 && vals[i + 2] === 3 && vals[i + 3] === 2 && vals[vals.length - 1] ===
-                    1) { straightHigh = 5; break; }
+                if (vals[i] === 5 && vals[i + 1] === 4 && vals[i + 2] === 3 && vals[i + 3] === 2 && vals[vals.length - 1] === 1) { straightHigh = 5; break; }
             }
 
-            let isFlush = flushSuit !== null;
-            let isStraight = straightHigh > 0;
+            let isFlush = flushSuit !== null; let isStraight = straightHigh > 0;
             let straightFlushHigh = 0;
             if (isFlush) {
                 let fVals = [...new Set(suitCounts[flushSuit].map(c => c.num))];
-                if (fVals.includes(14) && fVals.includes(5) && fVals.includes(4) && fVals.includes(3) && fVals.includes(2))
-                    fVals.push(1);
+                if (fVals.includes(14) && fVals.includes(5) && fVals.includes(4) && fVals.includes(3) && fVals.includes(2)) fVals.push(1);
                 for (let i = 0; i <= fVals.length - 5; i++) {
                     if (fVals[i] - fVals[i + 4] === 4) { straightFlushHigh = fVals[i]; break; }
-                    if (fVals[i] === 5 && fVals[i + 1] === 4 && fVals[i + 2] === 3 && fVals[i + 3] === 2 && fVals[fVals
-                            .length - 1] === 1) { straightFlushHigh = 5; break; }
+                    if (fVals[i] === 5 && fVals[i + 1] === 4 && fVals[i + 2] === 3 && fVals[i + 3] === 2 && fVals[fVals.length - 1] === 1) { straightFlushHigh = 5; break; }
                 }
             }
 
@@ -1232,86 +807,62 @@
             let groups = Object.keys(counts).map(k => ({ val: parseInt(k), count: counts[k] }))
                 .sort((a, b) => b.count - a.count || b.val - a.val);
 
-            let rank = 0,
-                name = "",
-                best5 = [];
+            let rank = 0, name = "", best5 = [];
             const getKickers = (exclude, count) => cards.filter(c => !exclude.includes(c.num)).map(c => c.num).slice(0, count);
 
             if (straightFlushHigh > 0) {
-                rank = 8;
-                name = straightFlushHigh === 14 ? "Royal Flush" : "Straight Flush";
-                best5 = [straightFlushHigh, straightFlushHigh - 1, straightFlushHigh - 2, straightFlushHigh - 3,
-                    straightFlushHigh - 4
-                ];
+                rank = 8; name = straightFlushHigh === 14 ? "Royal Flush" : "Straight Flush";
+                best5 = [straightFlushHigh, straightFlushHigh - 1, straightFlushHigh - 2, straightFlushHigh - 3, straightFlushHigh - 4];
             } else if (groups[0].count === 4) {
-                rank = 7;
-                name = "Four of a Kind";
+                rank = 7; name = "Four of a Kind";
                 best5 = [groups[0].val, groups[0].val, groups[0].val, groups[0].val, ...getKickers([groups[0].val], 1)];
             } else if (groups[0].count === 3 && groups[1] && groups[1].count >= 2) {
-                rank = 6;
-                name = "Full House";
+                rank = 6; name = "Full House";
                 best5 = [groups[0].val, groups[0].val, groups[0].val, groups[1].val, groups[1].val];
             } else if (isFlush) {
-                rank = 5;
-                name = "Flush";
+                rank = 5; name = "Flush";
                 best5 = suitCounts[flushSuit].slice(0, 5).map(c => c.num);
             } else if (isStraight) {
-                rank = 4;
-                name = "Straight";
+                rank = 4; name = "Straight";
                 best5 = [straightHigh, straightHigh - 1, straightHigh - 2, straightHigh - 3, straightHigh - 4];
             } else if (groups[0].count === 3) {
-                rank = 3;
-                name = "Three of a Kind";
+                rank = 3; name = "Three of a Kind";
                 best5 = [groups[0].val, groups[0].val, groups[0].val, ...getKickers([groups[0].val], 2)];
             } else if (groups[0].count === 2 && groups[1] && groups[1].count === 2) {
-                rank = 2;
-                name = "Two Pair";
-                best5 = [groups[0].val, groups[0].val, groups[1].val, groups[1].val, ...getKickers([groups[0].val, groups[1]
-                        .val
-                    ], 1)];
+                rank = 2; name = "Two Pair";
+                best5 = [groups[0].val, groups[0].val, groups[1].val, groups[1].val, ...getKickers([groups[0].val, groups[1].val], 1)];
             } else if (groups[0].count === 2) {
-                rank = 1;
-                name = "One Pair";
+                rank = 1; name = "One Pair";
                 best5 = [groups[0].val, groups[0].val, ...getKickers([groups[0].val], 3)];
             } else {
-                rank = 0;
-                name = "High Card";
+                rank = 0; name = "High Card";
                 best5 = [groups[0].val, ...getKickers([groups[0].val], 4)];
             }
 
-            let score = rank * 10000000000 + best5[0] * 100000000 + best5[1] * 1000000 + best5[2] * 10000 + best5[3] * 100 +
-                best5[4];
+            let score = rank * 10000000000 + best5[0] * 100000000 + best5[1] * 1000000 + best5[2] * 10000 + best5[3] * 100 + best5[4];
             return { score, name };
         }
 
         function showdown() {
             updateUI(true);
             let active = getActive();
-            let bestScore = -1;
-            let winners = [];
+            let bestScore = -1; let winners = [];
 
             active.forEach(p => {
                 let evalResult = evaluateHand(p.hand, communityCards);
                 setActionText(p.id, evalResult.name, true);
                 if (evalResult.score > bestScore) {
-                    bestScore = evalResult.score;
-                    winners = [p];
-                } else if (evalResult.score === bestScore) {
-                    winners.push(p);
-                }
+                    bestScore = evalResult.score; winners = [p];
+                } else if (evalResult.score === bestScore) { winners.push(p); }
             });
-
             awardPot(winners, "SHOWDOWN!");
         }
 
         function awardPot(winners, reason) {
             let winAmt = Math.floor(pot / winners.length);
-            winners.forEach(w => {
-                w.chips += winAmt;
-                runAnimation(w.id, false);
-            });
+            winners.forEach(w => { w.chips += winAmt; runAnimation(w.id, false); });
             pot = 0;
-            let names = winners.map(w => w.id === 0 ? "You" : (w.remoteName || `AI ${w.id}`)).join(" & ");
+            let names = winners.map(w => w.id === myPlayerId ? "You" : (w.remoteName || `AI ${w.id}`)).join(" & ");
             setStatus(`${reason} ${names} won!`);
             document.getElementById('pot-amount').innerText = pot;
             disableControls();
@@ -1332,12 +883,10 @@
             let overlay = document.getElementById('ad-overlay');
             let timerEl = document.getElementById('ad-timer');
             overlay.style.display = 'flex';
-            let count = 10;
-            timerEl.innerText = count;
+            let count = 10; timerEl.innerText = count;
             clearInterval(adTimerInterval);
             adTimerInterval = setInterval(() => {
-                count--;
-                timerEl.innerText = count;
+                count--; timerEl.innerText = count;
                 if (count <= 0) {
                     clearInterval(adTimerInterval);
                     overlay.style.display = 'none';
@@ -1351,20 +900,15 @@
         //  MULTIPLAYER: HOST / JOIN (in menu)
         // ============================================================
         function generateRoomCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let code = '';
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; let code = '';
             for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
             return code;
         }
 
         function hostGame() {
             if (peer) { leaveMultiplayer(); }
-            roomCode = generateRoomCode();
-            myPeerId = roomCode;
-            isHost = true;
-            multiplayerMode = true;
-            gameStarted = false;
-            isMultiplayerGameRunning = false;
+            roomCode = generateRoomCode(); myPeerId = roomCode; myPlayerId = 0;
+            isHost = true; multiplayerMode = true; gameStarted = false; isMultiplayerGameRunning = false;
 
             peer = new Peer(roomCode, { debug: 0 });
 
@@ -1386,32 +930,22 @@
                 connections[conn.peer] = conn;
                 conn.on('data', (data) => handleRemoteMessage(conn.peer, data));
                 conn.on('close', () => {
-                    delete connections[conn.peer];
-                    updatePlayerList();
+                    delete connections[conn.peer]; updatePlayerList();
                     if (gameStarted) {
                         let idx = remotePlayerMap[conn.peer];
                         if (idx !== undefined && players[idx]) {
-                            players[idx].active = false;
-                            players[idx].bankrupt = true;
+                            players[idx].active = false; players[idx].bankrupt = true;
                             setActionText(idx, "Disconnected");
                         }
-                        delete remotePlayerMap[conn.peer];
-                        broadcastGameState();
+                        delete remotePlayerMap[conn.peer]; broadcastGameState();
                     }
                 });
-                // Send current game state if game already started
-                if (gameStarted) {
-                    sendGameState(conn);
-                }
+                if (gameStarted) sendGameState(conn);
                 updatePlayerList();
             });
 
             peer.on('error', (err) => {
-                console.warn('Peer error:', err);
-                if (err.type === 'unavailable-id') {
-                    alert('Room code already taken. Try again.');
-                    leaveMultiplayer();
-                }
+                if (err.type === 'unavailable-id') { alert('Room code already taken. Try again.'); leaveMultiplayer(); }
             });
         }
 
@@ -1420,15 +954,11 @@
             if (code.length !== 4) { alert('Enter a 4‑letter code.'); return; }
             if (peer) { leaveMultiplayer(); }
 
-            roomCode = code;
-            isHost = false;
-            multiplayerMode = true;
-            gameStarted = false;
-            isMultiplayerGameRunning = false;
+            roomCode = code; isHost = false; multiplayerMode = true;
+            gameStarted = false; isMultiplayerGameRunning = false;
 
             let randomId = 'p' + Math.random().toString(36).substring(2, 6);
-            myPeerId = randomId;
-            peer = new Peer(randomId, { debug: 0 });
+            myPeerId = randomId; peer = new Peer(randomId, { debug: 0 });
 
             peer.on('open', (id) => {
                 document.getElementById('mp-status-label').innerText = '🎮 Connecting…';
@@ -1444,44 +974,29 @@
                     connections[roomCode] = conn;
                     conn.on('data', (data) => handleRemoteMessage(roomCode, data));
                     conn.on('close', () => {
-                        delete connections[roomCode];
-                        setStatus('Disconnected from host.');
+                        delete connections[roomCode]; setStatus('Disconnected from host.');
                         document.getElementById('mp-status-label').innerText = '🎮 Disconnected';
                         document.getElementById('mp-leave-btn').style.display = 'none';
-                        multiplayerMode = false;
-                        isHost = false;
+                        multiplayerMode = false; isHost = false;
                     });
                     conn.send({ type: 'join', peerId: myPeerId, name: 'Player' });
                     document.getElementById('mp-status-label').innerText = '🎮 Connected – waiting for host…';
                     setStatus(`Connected to ${roomCode}. Waiting for host to start…`);
                 });
-                conn.on('error', (err) => {
-                    alert('Could not connect to host. Make sure the code is correct and the host is online.');
-                    leaveMultiplayer();
-                });
+                conn.on('error', (err) => { alert('Could not connect to host.'); leaveMultiplayer(); });
             });
 
-            peer.on('error', (err) => {
-                console.warn('Peer error:', err);
-                alert('Connection error. Try again.');
-                leaveMultiplayer();
-            });
+            peer.on('error', (err) => { alert('Connection error. Try again.'); leaveMultiplayer(); });
         }
 
         function leaveMultiplayer() {
             if (peer) {
-                for (let pid in connections) {
-                    try { connections[pid].close(); } catch (e) {}
-                }
+                for (let pid in connections) { try { connections[pid].close(); } catch (e) {} }
                 try { peer.destroy(); } catch (e) {}
                 peer = null;
             }
-            connections = {};
-            remotePlayerMap = {};
-            multiplayerMode = false;
-            isHost = false;
-            gameStarted = false;
-            isMultiplayerGameRunning = false;
+            connections = {}; remotePlayerMap = {}; multiplayerMode = false; isHost = false; myPlayerId = 0;
+            gameStarted = false; isMultiplayerGameRunning = false;
             document.getElementById('mp-code-display').style.display = 'none';
             document.getElementById('mp-code-display').innerText = '----';
             document.getElementById('mp-status-label').innerText = 'Waiting for connection…';
@@ -1493,9 +1008,7 @@
             document.getElementById('mp-leave-btn').style.display = 'none';
             document.getElementById('mp-player-list').innerHTML = '';
             setStatus('Left multiplayer.');
-            // Reset game if it was showing
             if (document.getElementById('game-screen').style.display === 'flex') {
-                // Go back to menu
                 document.getElementById('game-screen').style.display = 'none';
                 document.getElementById('menu-screen').style.display = 'flex';
             }
@@ -1503,20 +1016,13 @@
 
         function updatePlayerList() {
             let list = document.getElementById('mp-player-list');
-            let html = '';
-            let count = 1; // host
-            html += `<span>👑 You (Host)</span>`;
+            let html = `<span>👑 You (Host)</span>`;
+            let count = 1;
             for (let pid in connections) {
-                let conn = connections[pid];
-                if (conn.open) {
-                    html += `<span>👤 ${pid}</span>`;
-                    count++;
-                }
+                if (connections[pid].open) { html += `<span>👤 ${pid}</span>`; count++; }
             }
             list.innerHTML = html;
-            if (isHost) {
-                document.getElementById('mp-start-btn').disabled = (count < 2);
-            }
+            if (isHost) document.getElementById('mp-start-btn').disabled = (count < 2);
         }
 
         // ============================================================
@@ -1526,35 +1032,18 @@
             if (!data || !data.type) return;
 
             if (data.type === 'join') {
-                // Host receives join request
                 if (isHost) {
-                    let idx = players.length;
-                    let name = data.name || `Player ${idx}`;
+                    let idx = players.length; let name = data.name || `Player ${idx}`;
                     players.push({
-                        id: idx,
-                        isAI: false,
-                        remoteName: name,
-                        remotePeerId: peerId,
-                        chips: 1000,
-                        active: true,
-                        bankrupt: false,
-                        hand: [],
-                        roundBet: 0,
-                        hasActed: false,
-                        bluffing: false
+                        id: idx, isAI: false, remoteName: name, remotePeerId: peerId, chips: 1000,
+                        active: true, bankrupt: false, hand: [], roundBet: 0, hasActed: false, bluffing: false
                     });
-                    remotePlayerMap[peerId] = idx;
-                    updatePlayerList();
-                    // Build UI for this remote player
+                    remotePlayerMap[peerId] = idx; updatePlayerList();
                     addRemotePlayerUI(idx, name);
-                    // Send current game state if game already started
-                    if (gameStarted) {
-                        sendGameState(connections[peerId]);
-                    }
+                    if (gameStarted) sendGameState(connections[peerId]);
                     broadcastGameState();
                 }
             } else if (data.type === 'action') {
-                // Host receives action from remote player
                 if (isHost && gameStarted) {
                     let idx = remotePlayerMap[peerId];
                     if (idx !== undefined && players[idx] && players[idx].active && !players[idx].bankrupt) {
@@ -1564,50 +1053,35 @@
                             else if (data.action === 'check') processBet(p, 'check', 0);
                             else if (data.action === 'call') processBet(p, 'call', 0);
                             else if (data.action === 'raise') {
-                                let amt = data.amount || 50;
-                                processBet(p, 'raise', amt);
+                                let amt = data.amount || 50; processBet(p, 'raise', amt);
                             }
                         }
                     }
                 }
             } else if (data.type === 'state') {
-                // Remote client receives state from host
-                if (!isHost) {
-                    applyGameState(data.state);
-                }
+                if (!isHost) applyGameState(data.state);
             } else if (data.type === 'start_game') {
-                // Remote client receives start signal
                 if (!isHost) {
-                    gameStarted = true;
-                    isMultiplayerGameRunning = true;
+                    gameStarted = true; isMultiplayerGameRunning = true;
                     document.getElementById('mp-status-label').innerText = '🎮 Playing';
                     document.getElementById('mp-start-btn').style.display = 'none';
                     document.getElementById('mp-leave-btn').style.display = 'none';
-                    // Hide menu, show game
                     document.getElementById('menu-screen').style.display = 'none';
                     document.getElementById('game-screen').style.display = 'flex';
                     setStatus('Game started!');
                 }
             } else if (data.type === 'ad_trigger') {
-                // Remote player triggered ad
                 if (!isHost) {
                     let idx = data.playerIdx;
-                    if (idx === 0) {
-                        showAd(() => {
-                            if (connections[roomCode]) {
-                                connections[roomCode].send({ type: 'ad_done', playerIdx: idx });
-                            }
-                        });
+                    if (idx === myPlayerId) {
+                        showAd(() => { if (connections[roomCode]) connections[roomCode].send({ type: 'ad_done', playerIdx: idx }); });
                     }
                 }
             } else if (data.type === 'ad_done') {
-                // Host receives ad done from remote
                 if (isHost) {
                     let idx = data.playerIdx;
                     if (idx !== undefined && players[idx]) {
-                        players[idx].chips = 100;
-                        players[idx].bankrupt = false;
-                        players[idx].active = true;
+                        players[idx].chips = 100; players[idx].bankrupt = false; players[idx].active = true;
                         broadcastGameState();
                     }
                 }
@@ -1617,8 +1091,7 @@
         function addRemotePlayerUI(idx, name) {
             let container = document.getElementById('ai-container');
             let wrapper = document.createElement('div');
-            wrapper.className = 'player-wrapper';
-            wrapper.id = `wrapper-${idx}`;
+            wrapper.className = 'player-wrapper'; wrapper.id = `wrapper-${idx}`;
             wrapper.innerHTML = `
                 <div class="ai-cards" id="ai-cards-${idx}"></div>
                 <div id="player-${idx}" class="player-badge">
@@ -1628,7 +1101,6 @@
                 </div>
             `;
             container.appendChild(wrapper);
-            // Ensure totalPlayers is updated
             totalPlayers = players.length;
         }
 
@@ -1639,82 +1111,43 @@
                 data.amount = parseInt(document.getElementById('bet-input').value) || 50;
             }
             connections[roomCode].send(data);
-            disableControls();
-            setStatus('Action sent…');
+            disableControls(); setStatus('Action sent…');
         }
 
         function sendGameState(conn) {
-            let state = serializeGameState();
-            conn.send({ type: 'state', state: state });
+            let state = serializeGameState(); conn.send({ type: 'state', state: state });
         }
 
         function broadcastGameState() {
             if (!isHost) return;
             let state = serializeGameState();
-            for (let pid in connections) {
-                try {
-                    connections[pid].send({ type: 'state', state: state });
-                } catch (e) {}
-            }
+            for (let pid in connections) { try { connections[pid].send({ type: 'state', state: state }); } catch (e) {} }
         }
 
         function serializeGameState() {
             return {
                 players: players.map(p => ({
-                    id: p.id,
-                    isAI: p.isAI,
-                    remoteName: p.remoteName || null,
-                    remotePeerId: p.remotePeerId || null,
-                    chips: p.chips,
-                    active: p.active,
-                    bankrupt: p.bankrupt,
-                    hand: p.hand ? p.hand.map(c => ({ value: c.value, suit: c.suit, num: c.num, color: c.color })) :
-                        [],
-                    roundBet: p.roundBet,
-                    hasActed: p.hasActed,
-                    bluffing: p.bluffing || false
+                    id: p.id, isAI: p.isAI, remoteName: p.remoteName || null, remotePeerId: p.remotePeerId || null,
+                    chips: p.chips, active: p.active, bankrupt: p.bankrupt,
+                    hand: p.hand ? p.hand.map(c => ({ value: c.value, suit: c.suit, num: c.num, color: c.color })) : [],
+                    roundBet: p.roundBet, hasActed: p.hasActed, bluffing: p.bluffing || false
                 })),
-                pot: pot,
-                stage: stage,
-                highestBet: highestBet,
-                currentPlayerIndex: currentPlayerIndex,
+                pot: pot, stage: stage, highestBet: highestBet, currentPlayerIndex: currentPlayerIndex,
                 communityCards: communityCards.map(c => ({ value: c.value, suit: c.suit, num: c.num, color: c.color })),
-                totalPlayers: totalPlayers,
-                gameStarted: gameStarted
+                totalPlayers: totalPlayers, gameStarted: gameStarted
             };
         }
 
         function applyGameState(state) {
             if (!state) return;
-            // Update players
+
+            if (!isHost && state.players) {
+                let meState = state.players.find(p => p.remotePeerId === myPeerId);
+                if (meState) myPlayerId = meState.id;
+            }
+
             if (state.players) {
-                let myPlayer = players[0] || { id: 0, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0,
-                    hasActed: false };
-                let newPlayers = state.players.map((sp, idx) => {
-                    let p = {
-                        id: sp.id,
-                        isAI: sp.isAI,
-                        remoteName: sp.remoteName || null,
-                        remotePeerId: sp.remotePeerId || null,
-                        chips: sp.chips,
-                        active: sp.active,
-                        bankrupt: sp.bankrupt,
-                        hand: sp.hand || [],
-                        roundBet: sp.roundBet || 0,
-                        hasActed: sp.hasActed || false,
-                        bluffing: sp.bluffing || false
-                    };
-                    if (idx === 0) {
-                        if (myPlayer.hand && myPlayer.hand.length === 2) {
-                            p.hand = myPlayer.hand;
-                        }
-                        p.chips = myPlayer.chips;
-                        p.active = myPlayer.active;
-                        p.bankrupt = myPlayer.bankrupt;
-                    }
-                    return p;
-                });
-                players = newPlayers;
+                players = state.players;
                 totalPlayers = state.totalPlayers || players.length;
             }
             if (state.pot !== undefined) pot = state.pot;
@@ -1724,18 +1157,17 @@
             if (state.communityCards) communityCards = state.communityCards;
             if (state.gameStarted !== undefined) gameStarted = state.gameStarted;
 
-            // Rebuild remote UI
             rebuildRemoteUI();
             updateUI();
-            // Check if it's our turn (player 0)
-            let me = players[0];
-            if (me && me.active && !me.bankrupt && currentPlayerIndex === 0 && gameStarted) {
+
+            let me = players[myPlayerId];
+            if (me && me.active && !me.bankrupt && currentPlayerIndex === myPlayerId && gameStarted) {
                 setStatus("Your turn!");
                 setupUserControls(me);
             } else if (gameStarted) {
                 let current = players[currentPlayerIndex];
                 if (current) {
-                    setStatus(`Waiting for ${current.remoteName || 'Player ' + current.id}…`);
+                    setStatus(`Waiting for ${current.remoteName || (current.id === 0 ? 'Host' : 'Player ' + current.id)}…`);
                 }
                 disableControls();
             }
@@ -1744,46 +1176,53 @@
 
         function rebuildRemoteUI() {
             let container = document.getElementById('ai-container');
-            // Clear all wrappers except those that are not for AI? But we'll rebuild from players.
             container.innerHTML = '';
-            for (let i = 1; i < players.length; i++) {
+
+            for (let i = 0; i < players.length; i++) {
                 let p = players[i];
                 if (!p) continue;
-                let label = p.remoteName || (p.isAI ? `🤖 AI ${i}` : `👤 P${i}`);
-                let wrapper = document.createElement('div');
-                wrapper.className = 'player-wrapper';
-                wrapper.id = `wrapper-${i}`;
-                wrapper.innerHTML = `
-                    <div class="ai-cards" id="ai-cards-${i}"></div>
-                    <div id="player-${i}" class="player-badge">
-                        <div class="player-name">${label}</div>
-                        <div>Chips: <span id="chips-${i}">${p.chips || 1000}</span></div>
-                        <div id="action-${i}" class="action-text">${p.active ? 'Waiting…' : 'Out'}</div>
-                    </div>
-                `;
-                container.appendChild(wrapper);
-                // Hide cards for remote players
-                if (p.hand && p.hand.length === 2) {
-                    let cardContainer = document.getElementById(`ai-cards-${i}`);
-                    if (cardContainer) {
-                        cardContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
+
+                if (i === myPlayerId) {
+                    let bottomBadge = document.querySelector('#game-screen > .player-wrapper .player-badge');
+                    if (bottomBadge) {
+                        bottomBadge.id = `player-${myPlayerId}`;
+                        bottomBadge.querySelector('.player-name').innerText = '👤 You';
+                        bottomBadge.querySelector('div > span').id = `chips-${myPlayerId}`;
+                        bottomBadge.querySelector('.action-text').id = `action-${myPlayerId}`;
+
+                        document.getElementById(`chips-${myPlayerId}`).innerText = p.chips;
+                        bottomBadge.className = "player-badge";
+                        if (p.bankrupt) bottomBadge.classList.add("bankrupt");
+                        else if (!p.active) bottomBadge.classList.add("folded");
+                        else if (currentPlayerIndex === myPlayerId && stage < 4) bottomBadge.classList.add("active-turn");
                     }
-                }
-            }
-            // Update our own player badge
-            let me = players[0];
-            if (me) {
-                document.getElementById('chips-0').innerText = me.chips;
-                let badge = document.getElementById('player-0');
-                if (badge) {
-                    badge.className = "player-badge";
-                    if (me.bankrupt) badge.classList.add("bankrupt");
-                    else if (!me.active) badge.classList.add("folded");
-                    else if (currentPlayerIndex === 0 && stage < 4) badge.classList.add("active-turn");
-                }
-                if (me.hand && me.hand.length === 2) {
-                    document.getElementById('user-hand-container').innerHTML = createCardHTML(me.hand[0]) + createCardHTML(me
-                        .hand[1]);
+
+                    if (p.hand && p.hand.length === 2) {
+                        document.getElementById('user-hand-container').innerHTML = createCardHTML(p.hand[0]) + createCardHTML(p.hand[1]);
+                    } else {
+                        document.getElementById('user-hand-container').innerHTML = '';
+                    }
+                } else {
+                    let label = p.remoteName || (p.isAI ? `🤖 AI ${i}` : (i === 0 ? `👑 Host` : `👤 P${i}`));
+                    let wrapper = document.createElement('div');
+                    wrapper.className = 'player-wrapper';
+                    wrapper.id = `wrapper-${i}`;
+                    wrapper.innerHTML = `
+                        <div class="ai-cards" id="ai-cards-${i}"></div>
+                        <div id="player-${i}" class="player-badge">
+                            <div class="player-name">${label}</div>
+                            <div>Chips: <span id="chips-${i}">${p.chips || 1000}</span></div>
+                            <div id="action-${i}" class="action-text">${p.active ? 'Waiting…' : 'Out'}</div>
+                        </div>
+                    `;
+                    container.appendChild(wrapper);
+
+                    if (p.hand && p.hand.length === 2) {
+                        let cardContainer = document.getElementById(`ai-cards-${i}`);
+                        if (cardContainer) {
+                            cardContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
+                        }
+                    }
                 }
             }
         }
@@ -1797,30 +1236,20 @@
             let count = Object.keys(connections).length + 1;
             if (count < 2) { alert('Need at least 2 players.'); return; }
 
-            gameStarted = true;
-            isMultiplayerGameRunning = true;
+            gameStarted = true; isMultiplayerGameRunning = true;
             document.getElementById('mp-status-label').innerText = '🎮 Playing';
             document.getElementById('mp-start-btn').style.display = 'none';
             document.getElementById('mp-leave-btn').style.display = 'none';
 
-            // Ensure all remote players are active and have chips
             players.forEach(p => {
-                if (p.id !== 0 && p.remotePeerId) {
-                    p.active = true;
-                    p.bankrupt = false;
-                    p.chips = 1000;
-                }
+                if (p.id !== 0 && p.remotePeerId) { p.active = true; p.bankrupt = false; p.chips = 1000; }
             });
-            totalPlayers = players.length;
-            buildPlayersHTML();
-            // Broadcast start to all
-            for (let pid in connections) {
-                connections[pid].send({ type: 'start_game' });
-            }
-            // Hide menu, show game
+            totalPlayers = players.length; buildPlayersHTML();
+            
+            for (let pid in connections) { connections[pid].send({ type: 'start_game' }); }
+            
             document.getElementById('menu-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
-            // Start the hand
             startNewHand();
         }
 
@@ -1829,74 +1258,56 @@
         // ============================================================
         const originalStartNewHand = startNewHand;
         startNewHand = function() {
-            if (multiplayerMode && !isHost && gameStarted) {
-                // Remote client waits for state from host
-                return;
-            }
+            if (multiplayerMode && !isHost && gameStarted) return;
             originalStartNewHand.call(this);
         };
 
         const originalAwardPot = awardPot;
         awardPot = function(winners, reason) {
             originalAwardPot.call(this, winners, reason);
-            if (multiplayerMode && isHost) {
-                setTimeout(() => broadcastGameState(), 100);
-            }
+            if (multiplayerMode && isHost) setTimeout(() => broadcastGameState(), 100);
         };
 
         const originalProcessBet = processBet;
         processBet = function(player, type, amount) {
             originalProcessBet.call(this, player, type, amount);
-            if (multiplayerMode && isHost) {
-                setTimeout(() => broadcastGameState(), 50);
-            }
+            if (multiplayerMode && isHost) setTimeout(() => broadcastGameState(), 50);
         };
 
         const originalPlayTurn = playTurn;
         playTurn = function() {
             if (multiplayerMode && !isHost) return;
             originalPlayTurn.call(this);
-            if (multiplayerMode && isHost) {
-                setTimeout(() => broadcastGameState(), 50);
-            }
+            if (multiplayerMode && isHost) setTimeout(() => broadcastGameState(), 50);
         };
 
         const originalAdvanceTurn = advanceTurn;
         advanceTurn = function() {
             if (multiplayerMode && !isHost) return;
             originalAdvanceTurn.call(this);
-            if (multiplayerMode && isHost) {
-                setTimeout(() => broadcastGameState(), 50);
-            }
+            if (multiplayerMode && isHost) setTimeout(() => broadcastGameState(), 50);
         };
 
         const originalShowdown = showdown;
         showdown = function() {
             if (multiplayerMode && !isHost) return;
             originalShowdown.call(this);
-            if (multiplayerMode && isHost) {
-                setTimeout(() => broadcastGameState(), 100);
-            }
+            if (multiplayerMode && isHost) setTimeout(() => broadcastGameState(), 100);
         };
 
         const originalUserAction = userAction;
         userAction = function(action) {
-            if (multiplayerMode && !isHost) {
-                sendActionToHost(action);
-                return;
-            }
+            if (multiplayerMode && !isHost) { sendActionToHost(action); return; }
             originalUserAction.call(this, action);
         };
 
         const originalSetupUserControls = setupUserControls;
         setupUserControls = function(user) {
             if (multiplayerMode && !isHost) {
-                let me = players[0];
-                if (me && me.active && !me.bankrupt && currentPlayerIndex === 0) {
+                let me = players[myPlayerId];
+                if (me && me.active && !me.bankrupt && currentPlayerIndex === myPlayerId) {
                     originalSetupUserControls.call(this, me);
-                } else {
-                    disableControls();
-                }
+                } else { disableControls(); }
                 return;
             }
             originalSetupUserControls.call(this, user);
@@ -1916,7 +1327,6 @@
 
         console.log('🦆 Ultimate Texas Hold\'em loaded!');
         console.log('🎮 Multiplayer: Host or Join using a 4‑letter code (no AI).');
-        console.log('💡 Bankrupt? Watch a 10s ad to get 100 chips back!');
     </script>
 </body>
 </html>
