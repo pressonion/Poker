@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
     </script>
     <style>
+        /* ── RESET & BASE ── */
         * {
             box-sizing: border-box;
         }
@@ -24,7 +25,7 @@
             position: relative;
         }
 
-        /* Menu */
+        /* ── MENU SCREEN ── */
         #menu-screen {
             display: flex;
             flex-direction: column;
@@ -40,34 +41,138 @@
         }
         .menu-box {
             background-color: #2c3e50;
-            padding: 40px;
+            padding: 30px 40px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 550px;
+            width: 100%;
         }
-        .menu-box input {
+        .menu-box h1 {
+            margin-top: 0;
+            color: #f1c40f;
+        }
+        .menu-box hr {
+            border: 1px solid #7f8c8d;
+            margin: 20px 0;
+        }
+
+        /* Single‑player section */
+        .sp-section {
+            margin-bottom: 10px;
+        }
+        .sp-section input {
             font-size: 20px;
             padding: 10px;
             width: 80px;
             text-align: center;
-            margin: 20px 0;
+            margin: 10px 0;
             border-radius: 5px;
             border: none;
         }
+
+        /* Multiplayer section */
+        .mp-section {
+            margin-top: 10px;
+        }
+        .mp-section .mp-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+        .mp-section .mp-code {
+            font-size: 1.6rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            color: #f1c40f;
+            background: #1a252f;
+            padding: 2px 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            display: inline-block;
+            min-width: 100px;
+        }
+        .mp-section .mp-player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            font-size: 0.9rem;
+            color: #ecf0f1;
+            justify-content: center;
+            margin: 6px 0;
+        }
+        .mp-section .mp-player-list span {
+            background: #1a252f;
+            padding: 2px 12px;
+            border-radius: 16px;
+            border: 1px solid #7f8c8d;
+        }
+        .mp-section .mp-status {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            margin: 4px 0;
+        }
+        .mp-section input.mp-join-input {
+            width: 90px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        /* Buttons */
         .btn-large {
             font-size: 20px;
-            padding: 15px 30px;
+            padding: 12px 28px;
             background-color: #2ecc71;
             border: none;
             border-radius: 5px;
             color: white;
             cursor: pointer;
             font-weight: bold;
+            transition: background 0.2s;
         }
         .btn-large:hover {
             background-color: #27ae60;
         }
+        .btn-large:disabled {
+            background-color: #7f8c8d;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .btn-host {
+            background-color: #e67e22;
+        }
+        .btn-host:hover:not(:disabled) {
+            background-color: #d35400;
+        }
+        .btn-join {
+            background-color: #27ae60;
+        }
+        .btn-join:hover:not(:disabled) {
+            background-color: #1e8449;
+        }
+        .btn-mp-start {
+            background-color: #3498db;
+        }
+        .btn-mp-start:hover:not(:disabled) {
+            background-color: #2980b9;
+        }
+        .btn-leave {
+            background-color: #e74c3c;
+        }
+        .btn-leave:hover:not(:disabled) {
+            background-color: #c0392b;
+        }
 
-        /* Game */
+        /* ── GAME SCREEN ── */
         #game-screen {
             display: none;
             flex-direction: column;
@@ -88,7 +193,6 @@
             width: 100%;
         }
 
-        /* Table & Layout */
         #ai-container {
             display: flex;
             flex-wrap: wrap;
@@ -101,7 +205,6 @@
             padding-bottom: 10px;
         }
 
-        /* Premium Casino Table */
         #poker-table {
             background: radial-gradient(circle, #229954 10%, #11572f 90%);
             border: 16px solid #4a2e15;
@@ -117,7 +220,6 @@
             justify-content: center;
             flex-shrink: 0;
         }
-
         #poker-table::before {
             content: '';
             position: absolute;
@@ -151,7 +253,6 @@
             z-index: 2;
         }
 
-        /* Premium 3D Cards */
         .card {
             width: 50px;
             height: 72px;
@@ -220,7 +321,6 @@
             transform: rotateY(180deg);
         }
 
-        /* Players */
         .player-wrapper {
             display: flex;
             flex-direction: column;
@@ -289,7 +389,6 @@
             color: #f1c40f;
         }
 
-        /* User Area */
         #user-hand-container {
             display: flex;
             gap: 10px;
@@ -309,7 +408,7 @@
             justify-content: center;
             box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
         }
-        input[type="number"] {
+        .controls input[type="number"] {
             padding: 8px;
             border-radius: 5px;
             border: none;
@@ -319,7 +418,7 @@
             background: #ecf0f1;
             color: #2c3e50;
         }
-        button {
+        .controls button {
             padding: 8px 12px;
             font-size: 14px;
             font-weight: bold;
@@ -331,10 +430,10 @@
             transition: background 0.2s;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        button:hover:not(:disabled) {
+        .controls button:hover:not(:disabled) {
             background-color: #2980b9;
         }
-        button:disabled {
+        .controls button:disabled {
             background-color: #7f8c8d;
             cursor: not-allowed;
             opacity: 0.5;
@@ -353,7 +452,6 @@
             background-color: #d68910;
         }
 
-        /* Animations */
         .chip-anim {
             position: absolute;
             font-size: 28px;
@@ -363,90 +461,7 @@
             opacity: 1;
         }
 
-        /* ---- MULTIPLAYER UI ---- */
-        #multiplayer-section {
-            width: 100%;
-            max-width: 750px;
-            margin-top: 6px;
-            background: #2c3e50;
-            border-radius: 12px;
-            padding: 10px 14px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        #multiplayer-section .mp-status {
-            font-size: 0.85rem;
-            color: #bdc3c7;
-            font-weight: bold;
-            margin-right: 6px;
-        }
-        #multiplayer-section .mp-code {
-            font-size: 1.3rem;
-            font-weight: bold;
-            letter-spacing: 4px;
-            color: #f1c40f;
-            background: #1a252f;
-            padding: 2px 16px;
-            border-radius: 6px;
-            font-family: monospace;
-        }
-        #multiplayer-section input.mp-join-input {
-            width: 90px;
-            padding: 6px 8px;
-            border-radius: 4px;
-            border: none;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            background: #ecf0f1;
-            color: #2c3e50;
-        }
-        #multiplayer-section .mp-player-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px 10px;
-            font-size: 0.8rem;
-            color: #ecf0f1;
-            align-items: center;
-        }
-        #multiplayer-section .mp-player-list span {
-            background: #1a252f;
-            padding: 2px 10px;
-            border-radius: 12px;
-            border: 1px solid #7f8c8d;
-        }
-        .mp-host-btn {
-            background-color: #e67e22;
-        }
-        .mp-host-btn:hover:not(:disabled) {
-            background-color: #d35400;
-        }
-        .mp-join-btn {
-            background-color: #27ae60;
-        }
-        .mp-join-btn:hover:not(:disabled) {
-            background-color: #1e8449;
-        }
-        .mp-start-btn {
-            background-color: #2ecc71;
-        }
-        .mp-start-btn:hover:not(:disabled) {
-            background-color: #1abc9c;
-        }
-        .mp-leave-btn {
-            background-color: #e74c3c;
-        }
-        .mp-leave-btn:hover:not(:disabled) {
-            background-color: #c0392b;
-        }
-
-        /* Ad overlay */
+        /* ── AD OVERLAY ── */
         #ad-overlay {
             display: none;
             position: fixed;
@@ -504,7 +519,7 @@
             }
         }
 
-        /* Responsive */
+        /* ── RESPONSIVE ── */
         @media (max-width: 700px) {
             .card {
                 width: 40px;
@@ -528,14 +543,13 @@
                 padding: 5px 8px;
                 font-size: 12px;
             }
-            #multiplayer-section {
-                padding: 6px 10px;
-                gap: 5px;
+            .menu-box {
+                padding: 20px 15px;
             }
-            #multiplayer-section .mp-code {
-                font-size: 1rem;
-                letter-spacing: 2px;
-                padding: 0 10px;
+            .mp-section .mp-code {
+                font-size: 1.2rem;
+                letter-spacing: 4px;
+                padding: 0 12px;
             }
         }
         @media (max-width: 500px) {
@@ -580,58 +594,76 @@
                 padding: 4px;
                 font-size: 11px;
             }
-            #multiplayer-section {
-                font-size: 0.7rem;
+            .menu-box {
+                padding: 15px 10px;
             }
-            #multiplayer-section input.mp-join-input {
+            .mp-section .mp-row {
+                gap: 4px;
+            }
+            .mp-section input.mp-join-input {
                 width: 60px;
                 font-size: 0.9rem;
             }
-            #multiplayer-section .mp-code {
-                font-size: 0.9rem;
-                letter-spacing: 1px;
+            .mp-section .mp-code {
+                font-size: 1rem;
+                letter-spacing: 2px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- MENU -->
+    <!-- ─── MENU SCREEN ─── -->
     <div id="menu-screen">
         <div class="menu-box">
-            <h1>Ultimate Texas Hold'em</h1>
-            <p>Select Total Players (You + AI)</p>
-            <input type="number" id="player-count" min="2" max="22" value="5">
-            <p style="font-size: 0.8rem; color: #bdc3c7;">(Max 22 players per 52-card deck)</p>
-            <br>
-            <button class="btn-large" onclick="startGame()">START GAME</button>
+            <h1>♠ Ultimate Texas Hold'em</h1>
+
+            <!-- Single‑player -->
+            <div class="sp-section">
+                <p style="margin:6px 0;">Select Total Players (You + AI)</p>
+                <input type="number" id="player-count" min="2" max="22" value="5">
+                <p style="font-size:0.8rem; color:#bdc3c7; margin:4px 0;">(Max 22 players per 52‑card deck)</p>
+                <button class="btn-large" onclick="startSingleplayer()">START GAME</button>
+            </div>
+
+            <hr>
+
+            <!-- Multiplayer -->
+            <div class="mp-section">
+                <p style="margin:6px 0; font-weight:bold; color:#f1c40f;">🎮 Multiplayer (No AI)</p>
+
+                <div class="mp-row">
+                    <button class="btn-large btn-host" id="mp-host-btn" onclick="hostGame()">👑 Host</button>
+                    <input class="mp-join-input" id="mp-join-input" placeholder="CODE" maxlength="4" style="text-transform:uppercase;">
+                    <button class="btn-large btn-join" id="mp-join-btn" onclick="joinGame()">🔗 Join</button>
+                </div>
+
+                <div class="mp-row" style="margin-top:8px;">
+                    <span style="color:#bdc3c7;">Room code:</span>
+                    <span class="mp-code" id="mp-code-display" style="display:none;">----</span>
+                </div>
+
+                <div class="mp-player-list" id="mp-player-list"></div>
+                <div class="mp-status" id="mp-status-label">Waiting for connection…</div>
+
+                <div class="mp-row" style="margin-top:10px;">
+                    <button class="btn-large btn-mp-start" id="mp-start-btn" style="display:none;" onclick="startMultiplayerGame()">▶ Start Game</button>
+                    <button class="btn-large btn-leave" id="mp-leave-btn" style="display:none;" onclick="leaveMultiplayer()">✕ Leave</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- GAME -->
+    <!-- ─── GAME SCREEN ─── -->
     <div id="game-screen">
-
-        <div id="status-bar">Starting game...</div>
+        <div id="status-bar">Starting game…</div>
 
         <div id="ai-container"></div>
 
-        <!-- MULTIPLAYER SECTION (below AI) -->
-        <div id="multiplayer-section">
-            <span class="mp-status" id="mp-status-label">🎮 Multiplayer</span>
-            <button class="mp-host-btn" id="mp-host-btn" onclick="hostGame()">👑 Host</button>
-            <input class="mp-join-input" id="mp-join-input" placeholder="CODE" maxlength="4" style="text-transform:uppercase;">
-            <button class="mp-join-btn" id="mp-join-btn" onclick="joinGame()">🔗 Join</button>
-            <span class="mp-code" id="mp-code-display" style="display:none;">----</span>
-            <div class="mp-player-list" id="mp-player-list"></div>
-            <button class="mp-start-btn" id="mp-start-btn" style="display:none;" onclick="startMultiplayerGame()">▶ Start</button>
-            <button class="mp-leave-btn" id="mp-leave-btn" style="display:none;" onclick="leaveMultiplayer()">✕ Leave</button>
-        </div>
-
-        <!-- TABLE -->
         <div id="poker-table">
             <div class="pot-container" id="main-pot">
-                <div style="font-size: 18px;">🪙</div>
-                <div style="font-weight: bold; font-size: 1rem;">Pot: <span id="pot-amount">0</span></div>
+                <div style="font-size:18px;">🪙</div>
+                <div style="font-weight:bold; font-size:1rem;">Pot: <span id="pot-amount">0</span></div>
             </div>
             <div class="card-area" id="community-cards"></div>
         </div>
@@ -642,7 +674,7 @@
             <div id="player-0" class="player-badge">
                 <div class="player-name">👤 You</div>
                 <div>Chips: <span id="chips-0">1000</span></div>
-                <div id="action-0" class="action-text">Waiting...</div>
+                <div id="action-0" class="action-text">Waiting…</div>
             </div>
         </div>
 
@@ -656,7 +688,7 @@
         </div>
     </div>
 
-    <!-- AD OVERLAY -->
+    <!-- ─── AD OVERLAY ─── -->
     <div id="ad-overlay">
         <div class="ad-box">
             <h2>📢 AD</h2>
@@ -668,7 +700,7 @@
 
     <script>
         // ============================================================
-        //  CORE GAME CONSTANTS
+        //  CONSTANTS & GLOBALS
         // ============================================================
         const suits = ['♥', '♦', '♣', '♠'];
         const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -684,32 +716,30 @@
         let players = [];
         let totalPlayers = 5;
 
-        // ---- MULTIPLAYER STATE ----
-        let multiplayerMode = false; // true = human-only multiplayer, false = singleplayer with AI
+        // Multiplayer state
+        let multiplayerMode = false;
         let isHost = false;
         let peer = null;
-        let connections = {}; // peerId -> dataConnection
+        let connections = {};
         let roomCode = '';
         let myPeerId = '';
         let gameStarted = false;
         let isMultiplayerGameRunning = false;
-        let pendingActions = {}; // for sync
-        let remotePlayerMap = {}; // remote peerId -> player index
+        let remotePlayerMap = {};
         let isAdShowing = false;
         let adTimerInterval = null;
 
         // ============================================================
-        //  MENU / START
+        //  SINGLE‑PLAYER START
         // ============================================================
-        function startGame() {
+        function startSingleplayer() {
             let count = parseInt(document.getElementById('player-count').value);
             totalPlayers = Math.max(2, Math.min(count, 22));
 
-            // If multiplayer mode is active, don't use AI.
-            if (multiplayerMode) {
-                // Multiplayer game is started via host's Start button.
-                return;
-            }
+            // Ensure we are not in multiplayer mode
+            multiplayerMode = false;
+            isHost = false;
+            if (peer) { leaveMultiplayer(); }
 
             players = [{ id: 0, isAI: false, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0,
                 hasActed: false, bluffing: false }];
@@ -729,29 +759,31 @@
             buildPlayersHTML();
             document.getElementById('menu-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
-            document.getElementById('multiplayer-section').style.display = 'flex';
             startNewHand();
         }
 
         // ============================================================
-        //  BUILD PLAYERS HTML
+        //  BUILD PLAYERS UI
         // ============================================================
         function buildPlayersHTML() {
-            let aiHTML = '';
-            for (let i = 1; i < totalPlayers; i++) {
-                let p = players[i] || { chips: 1000, active: true, bankrupt: false };
+            let container = document.getElementById('ai-container');
+            container.innerHTML = '';
+            for (let i = 1; i < players.length; i++) {
+                let p = players[i];
                 let label = p.isAI ? `🤖 AI ${i}` : (p.remoteName || `👤 P${i}`);
-                aiHTML += `
-                    <div class="player-wrapper">
-                        <div class="ai-cards" id="ai-cards-${i}"></div>
-                        <div id="player-${i}" class="player-badge">
-                            <div class="player-name">${label}</div>
-                            <div>Chips: <span id="chips-${i}">${p.chips || 1000}</span></div>
-                            <div id="action-${i}" class="action-text">Waiting...</div>
-                        </div>
-                    </div>`;
+                let wrapper = document.createElement('div');
+                wrapper.className = 'player-wrapper';
+                wrapper.id = `wrapper-${i}`;
+                wrapper.innerHTML = `
+                    <div class="ai-cards" id="ai-cards-${i}"></div>
+                    <div id="player-${i}" class="player-badge">
+                        <div class="player-name">${label}</div>
+                        <div>Chips: <span id="chips-${i}">${p.chips || 1000}</span></div>
+                        <div id="action-${i}" class="action-text">Waiting…</div>
+                    </div>
+                `;
+                container.appendChild(wrapper);
             }
-            document.getElementById('ai-container').innerHTML = aiHTML;
         }
 
         // ============================================================
@@ -821,7 +853,7 @@
             }
 
             if (revealAI) {
-                for (let i = 1; i < totalPlayers; i++) {
+                for (let i = 1; i < players.length; i++) {
                     let p = players[i];
                     if (!p) continue;
                     if (!p.bankrupt && p.active && p.hand && p.hand.length === 2) {
@@ -909,7 +941,7 @@
         }
 
         // ============================================================
-        //  GAME LOGIC (singleplayer & multiplayer host)
+        //  CORE GAME LOGIC (shared)
         // ============================================================
         function getActive() {
             return players.filter(p => p.active && !p.bankrupt);
@@ -922,14 +954,11 @@
         }
 
         function startNewHand() {
-            // If in multiplayer mode and not host, we wait for state from host.
-            if (multiplayerMode && !isHost && gameStarted) {
-                return;
-            }
+            // In multiplayer, only host runs the hand logic, remote clients wait for state.
+            if (multiplayerMode && !isHost && gameStarted) return;
 
             let user = players[0];
             if (user && user.chips <= 0 && !user.bankrupt) {
-                // Trigger ad
                 showAd(() => {
                     user.chips = 100;
                     user.bankrupt = false;
@@ -976,7 +1005,7 @@
                     p.active = true;
                     p.hand = [deck.pop(), deck.pop()];
                     activeCount++;
-                    setActionText(p.id, "Waiting...");
+                    setActionText(p.id, "Waiting…");
                 }
                 if (p.id === 0) {
                     document.getElementById('user-hand-container').innerHTML = (p.active && !p.bankrupt) ? createCardHTML(p
@@ -1012,33 +1041,29 @@
             }
 
             if (multiplayerMode) {
-                // In multiplayer, only the host runs the logic.
-                // If it's a remote player's turn, host waits for their action.
+                // Only host runs the game logic
+                if (!isHost) return;
+                // If it's a remote human player's turn, host waits for their action
                 if (p.isAI === false && p.id !== 0) {
-                    // Remote human player
-                    setStatus(`Waiting for ${p.remoteName || 'Player ' + p.id}...`);
+                    setStatus(`Waiting for ${p.remoteName || 'Player ' + p.id}…`);
                     disableControls();
-                    // Host broadcasts the turn state so remote players know it's their turn.
-                    if (isHost) broadcastGameState();
+                    broadcastGameState();
                     return;
                 }
-                // Local player (host) turn
-                if (p.id === 0 && isHost) {
+                // Host's own turn
+                if (p.id === 0) {
                     setStatus("Your turn!");
                     setupUserControls(p);
-                    if (isHost) broadcastGameState();
+                    broadcastGameState();
                     return;
                 }
-                // If host is not player 0? That shouldn't happen.
-                if (!isHost) {
-                    // Remote client: we don't run the game logic, we just wait for state.
-                    return;
-                }
+                // Should not happen: AI in multiplayer? We don't have AI in multiplayer.
+                return;
             }
 
-            // Singleplayer or host's own turn
+            // Single‑player AI logic
             if (p.isAI) {
-                setStatus(`AI ${p.id} is thinking...`);
+                setStatus(`AI ${p.id} is thinking…`);
                 disableControls();
                 let delay = totalPlayers > 8 ? 600 : 1200;
                 setTimeout(() => { executeAILogic(p); }, delay);
@@ -1046,7 +1071,6 @@
                 setStatus("Your turn!");
                 setupUserControls(p);
             } else {
-                // Should not happen in singleplayer
                 advanceTurn();
             }
         }
@@ -1063,7 +1087,7 @@
                 players.forEach(p => {
                     p.roundBet = 0;
                     p.hasActed = false;
-                    if (p.active && !p.bankrupt) setActionText(p.id, "Waiting...");
+                    if (p.active && !p.bankrupt) setActionText(p.id, "Waiting…");
                 });
                 if (stage === 4) { showdown(); return; }
                 updateUI();
@@ -1071,7 +1095,7 @@
 
             let attempts = 0;
             do {
-                currentPlayerIndex = (currentPlayerIndex + 1) % totalPlayers;
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
                 attempts++;
             } while ((!players[currentPlayerIndex] || !players[currentPlayerIndex].active ||
                     players[currentPlayerIndex].chips === 0 || players[currentPlayerIndex].bankrupt) && attempts < 20);
@@ -1114,7 +1138,7 @@
         }
 
         // ============================================================
-        //  AI LOGIC (singleplayer only)
+        //  AI LOGIC (single‑player only)
         // ============================================================
         function executeAILogic(ai) {
             if (multiplayerMode) return;
@@ -1324,7 +1348,7 @@
         }
 
         // ============================================================
-        //  MULTIPLAYER: HOST / JOIN
+        //  MULTIPLAYER: HOST / JOIN (in menu)
         // ============================================================
         function generateRoomCode() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -1342,14 +1366,12 @@
             gameStarted = false;
             isMultiplayerGameRunning = false;
 
-            peer = new Peer(roomCode, {
-                debug: 0
-            });
+            peer = new Peer(roomCode, { debug: 0 });
 
             peer.on('open', (id) => {
                 document.getElementById('mp-code-display').style.display = 'inline-block';
                 document.getElementById('mp-code-display').innerText = roomCode;
-                document.getElementById('mp-status-label').innerText = '🎮 Hosting';
+                document.getElementById('mp-status-label').innerText = '🎮 Hosting – waiting for players…';
                 document.getElementById('mp-host-btn').disabled = true;
                 document.getElementById('mp-join-btn').disabled = true;
                 document.getElementById('mp-join-input').disabled = true;
@@ -1367,7 +1389,6 @@
                     delete connections[conn.peer];
                     updatePlayerList();
                     if (gameStarted) {
-                        // Remove this player from the game
                         let idx = remotePlayerMap[conn.peer];
                         if (idx !== undefined && players[idx]) {
                             players[idx].active = false;
@@ -1385,7 +1406,6 @@
                 updatePlayerList();
             });
 
-            // Also handle errors
             peer.on('error', (err) => {
                 console.warn('Peer error:', err);
                 if (err.type === 'unavailable-id') {
@@ -1397,7 +1417,7 @@
 
         function joinGame() {
             let code = document.getElementById('mp-join-input').value.trim().toUpperCase();
-            if (code.length !== 4) { alert('Enter a 4-letter code.'); return; }
+            if (code.length !== 4) { alert('Enter a 4‑letter code.'); return; }
             if (peer) { leaveMultiplayer(); }
 
             roomCode = code;
@@ -1411,13 +1431,13 @@
             peer = new Peer(randomId, { debug: 0 });
 
             peer.on('open', (id) => {
-                document.getElementById('mp-status-label').innerText = '🎮 Joining...';
+                document.getElementById('mp-status-label').innerText = '🎮 Connecting…';
                 document.getElementById('mp-host-btn').disabled = true;
                 document.getElementById('mp-join-btn').disabled = true;
                 document.getElementById('mp-join-input').disabled = true;
                 document.getElementById('mp-start-btn').style.display = 'none';
                 document.getElementById('mp-leave-btn').style.display = 'inline-block';
-                setStatus(`Connecting to room ${roomCode}...`);
+                setStatus(`Connecting to room ${roomCode}…`);
 
                 let conn = peer.connect(roomCode);
                 conn.on('open', () => {
@@ -1431,10 +1451,9 @@
                         multiplayerMode = false;
                         isHost = false;
                     });
-                    // Send join info
                     conn.send({ type: 'join', peerId: myPeerId, name: 'Player' });
-                    document.getElementById('mp-status-label').innerText = '🎮 Connected';
-                    setStatus(`Connected to ${roomCode}. Waiting for host to start...`);
+                    document.getElementById('mp-status-label').innerText = '🎮 Connected – waiting for host…';
+                    setStatus(`Connected to ${roomCode}. Waiting for host to start…`);
                 });
                 conn.on('error', (err) => {
                     alert('Could not connect to host. Make sure the code is correct and the host is online.');
@@ -1465,7 +1484,7 @@
             isMultiplayerGameRunning = false;
             document.getElementById('mp-code-display').style.display = 'none';
             document.getElementById('mp-code-display').innerText = '----';
-            document.getElementById('mp-status-label').innerText = '🎮 Multiplayer';
+            document.getElementById('mp-status-label').innerText = 'Waiting for connection…';
             document.getElementById('mp-host-btn').disabled = false;
             document.getElementById('mp-join-btn').disabled = false;
             document.getElementById('mp-join-input').disabled = false;
@@ -1474,31 +1493,19 @@
             document.getElementById('mp-leave-btn').style.display = 'none';
             document.getElementById('mp-player-list').innerHTML = '';
             setStatus('Left multiplayer.');
-            // Reset to singleplayer mode
-            multiplayerMode = false;
-            // Reload game? We'll just reset.
+            // Reset game if it was showing
             if (document.getElementById('game-screen').style.display === 'flex') {
-                // Rebuild with AI
-                let count = parseInt(document.getElementById('player-count').value) || 5;
-                totalPlayers = Math.max(2, Math.min(count, 22));
-                players = [{ id: 0, isAI: false, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0,
-                    hasActed: false, bluffing: false }];
-                for (let i = 1; i < totalPlayers; i++) {
-                    players.push({ id: i, isAI: true, chips: 1000, active: true, bankrupt: false, hand: [],
-                        roundBet: 0, hasActed: false, bluffing: false });
-                }
-                buildPlayersHTML();
-                startNewHand();
+                // Go back to menu
+                document.getElementById('game-screen').style.display = 'none';
+                document.getElementById('menu-screen').style.display = 'flex';
             }
         }
 
         function updatePlayerList() {
             let list = document.getElementById('mp-player-list');
             let html = '';
-            let count = 0;
-            // Host is always player 0
+            let count = 1; // host
             html += `<span>👑 You (Host)</span>`;
-            count++;
             for (let pid in connections) {
                 let conn = connections[pid];
                 if (conn.open) {
@@ -1507,7 +1514,6 @@
                 }
             }
             list.innerHTML = html;
-            // Enable start if at least 2 players (host + 1)
             if (isHost) {
                 document.getElementById('mp-start-btn').disabled = (count < 2);
             }
@@ -1522,7 +1528,6 @@
             if (data.type === 'join') {
                 // Host receives join request
                 if (isHost) {
-                    // Assign a player index
                     let idx = players.length;
                     let name = data.name || `Player ${idx}`;
                     players.push({
@@ -1540,13 +1545,13 @@
                     });
                     remotePlayerMap[peerId] = idx;
                     updatePlayerList();
-                    // Rebuild UI for this player
+                    // Build UI for this remote player
                     addRemotePlayerUI(idx, name);
-                    broadcastGameState();
-                    // Send current game state to the new player
+                    // Send current game state if game already started
                     if (gameStarted) {
                         sendGameState(connections[peerId]);
                     }
+                    broadcastGameState();
                 }
             } else if (data.type === 'action') {
                 // Host receives action from remote player
@@ -1554,7 +1559,6 @@
                     let idx = remotePlayerMap[peerId];
                     if (idx !== undefined && players[idx] && players[idx].active && !players[idx].bankrupt) {
                         let p = players[idx];
-                        // Verify it's this player's turn
                         if (currentPlayerIndex === idx) {
                             if (data.action === 'fold') processBet(p, 'fold', 0);
                             else if (data.action === 'check') processBet(p, 'check', 0);
@@ -1563,8 +1567,6 @@
                                 let amt = data.amount || 50;
                                 processBet(p, 'raise', amt);
                             }
-                        } else {
-                            // Not their turn, ignore
                         }
                     }
                 }
@@ -1578,11 +1580,13 @@
                 if (!isHost) {
                     gameStarted = true;
                     isMultiplayerGameRunning = true;
-                    // Initialize players from the state that follows
-                    setStatus('Game started!');
                     document.getElementById('mp-status-label').innerText = '🎮 Playing';
                     document.getElementById('mp-start-btn').style.display = 'none';
                     document.getElementById('mp-leave-btn').style.display = 'none';
+                    // Hide menu, show game
+                    document.getElementById('menu-screen').style.display = 'none';
+                    document.getElementById('game-screen').style.display = 'flex';
+                    setStatus('Game started!');
                 }
             } else if (data.type === 'ad_trigger') {
                 // Remote player triggered ad
@@ -1590,7 +1594,6 @@
                     let idx = data.playerIdx;
                     if (idx === 0) {
                         showAd(() => {
-                            // Request chip reset from host
                             if (connections[roomCode]) {
                                 connections[roomCode].send({ type: 'ad_done', playerIdx: idx });
                             }
@@ -1621,11 +1624,11 @@
                 <div id="player-${idx}" class="player-badge">
                     <div class="player-name">👤 ${name}</div>
                     <div>Chips: <span id="chips-${idx}">1000</span></div>
-                    <div id="action-${idx}" class="action-text">Waiting...</div>
+                    <div id="action-${idx}" class="action-text">Waiting…</div>
                 </div>
             `;
             container.appendChild(wrapper);
-            // Update totalPlayers
+            // Ensure totalPlayers is updated
             totalPlayers = players.length;
         }
 
@@ -1637,7 +1640,7 @@
             }
             connections[roomCode].send(data);
             disableControls();
-            setStatus('Action sent...');
+            setStatus('Action sent…');
         }
 
         function sendGameState(conn) {
@@ -1666,7 +1669,7 @@
                     active: p.active,
                     bankrupt: p.bankrupt,
                     hand: p.hand ? p.hand.map(c => ({ value: c.value, suit: c.suit, num: c.num, color: c.color })) :
-                    [],
+                        [],
                     roundBet: p.roundBet,
                     hasActed: p.hasActed,
                     bluffing: p.bluffing || false
@@ -1685,10 +1688,8 @@
             if (!state) return;
             // Update players
             if (state.players) {
-                // Preserve our own player (index 0)
                 let myPlayer = players[0] || { id: 0, chips: 1000, active: true, bankrupt: false, hand: [], roundBet: 0,
                     hasActed: false };
-                // Rebuild players array from state
                 let newPlayers = state.players.map((sp, idx) => {
                     let p = {
                         id: sp.id,
@@ -1704,7 +1705,6 @@
                         bluffing: sp.bluffing || false
                     };
                     if (idx === 0) {
-                        // Keep our own hand if we have it
                         if (myPlayer.hand && myPlayer.hand.length === 2) {
                             p.hand = myPlayer.hand;
                         }
@@ -1724,7 +1724,7 @@
             if (state.communityCards) communityCards = state.communityCards;
             if (state.gameStarted !== undefined) gameStarted = state.gameStarted;
 
-            // Rebuild UI for remote players
+            // Rebuild remote UI
             rebuildRemoteUI();
             updateUI();
             // Check if it's our turn (player 0)
@@ -1735,24 +1735,17 @@
             } else if (gameStarted) {
                 let current = players[currentPlayerIndex];
                 if (current) {
-                    setStatus(`Waiting for ${current.remoteName || 'Player ' + current.id}...`);
+                    setStatus(`Waiting for ${current.remoteName || 'Player ' + current.id}…`);
                 }
                 disableControls();
             }
             document.getElementById('pot-amount').innerText = pot;
-            // Update multiplayer status
-            if (gameStarted) {
-                document.getElementById('mp-status-label').innerText = '🎮 Playing';
-                document.getElementById('mp-start-btn').style.display = 'none';
-            }
         }
 
         function rebuildRemoteUI() {
             let container = document.getElementById('ai-container');
-            // Clear all remote wrappers (keep only player 0 wrapper which is outside)
-            let wrappers = container.querySelectorAll('.player-wrapper');
-            wrappers.forEach(w => w.remove());
-
+            // Clear all wrappers except those that are not for AI? But we'll rebuild from players.
+            container.innerHTML = '';
             for (let i = 1; i < players.length; i++) {
                 let p = players[i];
                 if (!p) continue;
@@ -1765,16 +1758,14 @@
                     <div id="player-${i}" class="player-badge">
                         <div class="player-name">${label}</div>
                         <div>Chips: <span id="chips-${i}">${p.chips || 1000}</span></div>
-                        <div id="action-${i}" class="action-text">${p.active ? 'Waiting...' : 'Out'}</div>
+                        <div id="action-${i}" class="action-text">${p.active ? 'Waiting…' : 'Out'}</div>
                     </div>
                 `;
                 container.appendChild(wrapper);
-                // Update cards if available
+                // Hide cards for remote players
                 if (p.hand && p.hand.length === 2) {
                     let cardContainer = document.getElementById(`ai-cards-${i}`);
                     if (cardContainer) {
-                        // Only show own cards if this is us? But we're not remote for this client.
-                        // For remote players, always hide their cards.
                         cardContainer.innerHTML = createCardHTML(null, true) + createCardHTML(null, true);
                     }
                 }
@@ -1790,7 +1781,6 @@
                     else if (!me.active) badge.classList.add("folded");
                     else if (currentPlayerIndex === 0 && stage < 4) badge.classList.add("active-turn");
                 }
-                // Update hand
                 if (me.hand && me.hand.length === 2) {
                     document.getElementById('user-hand-container').innerHTML = createCardHTML(me.hand[0]) + createCardHTML(me
                         .hand[1]);
@@ -1804,7 +1794,7 @@
         function startMultiplayerGame() {
             if (!isHost) return;
             if (gameStarted) return;
-            let count = Object.keys(connections).length + 1; // host + remote
+            let count = Object.keys(connections).length + 1;
             if (count < 2) { alert('Need at least 2 players.'); return; }
 
             gameStarted = true;
@@ -1813,8 +1803,7 @@
             document.getElementById('mp-start-btn').style.display = 'none';
             document.getElementById('mp-leave-btn').style.display = 'none';
 
-            // Initialize players: host is player 0, remotes are already in players array
-            // Ensure all remote players are active
+            // Ensure all remote players are active and have chips
             players.forEach(p => {
                 if (p.id !== 0 && p.remotePeerId) {
                     p.active = true;
@@ -1828,12 +1817,15 @@
             for (let pid in connections) {
                 connections[pid].send({ type: 'start_game' });
             }
+            // Hide menu, show game
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
             // Start the hand
             startNewHand();
         }
 
         // ============================================================
-        //  OVERRIDE startNewHand for multiplayer sync
+        //  OVERRIDES for multiplayer sync
         // ============================================================
         const originalStartNewHand = startNewHand;
         startNewHand = function() {
@@ -1844,7 +1836,6 @@
             originalStartNewHand.call(this);
         };
 
-        // Override awardPot to broadcast
         const originalAwardPot = awardPot;
         awardPot = function(winners, reason) {
             originalAwardPot.call(this, winners, reason);
@@ -1853,7 +1844,6 @@
             }
         };
 
-        // Override processBet to broadcast
         const originalProcessBet = processBet;
         processBet = function(player, type, amount) {
             originalProcessBet.call(this, player, type, amount);
@@ -1862,7 +1852,6 @@
             }
         };
 
-        // Override playTurn to broadcast
         const originalPlayTurn = playTurn;
         playTurn = function() {
             if (multiplayerMode && !isHost) return;
@@ -1872,7 +1861,6 @@
             }
         };
 
-        // Override advanceTurn to broadcast
         const originalAdvanceTurn = advanceTurn;
         advanceTurn = function() {
             if (multiplayerMode && !isHost) return;
@@ -1882,7 +1870,6 @@
             }
         };
 
-        // Override showdown to broadcast
         const originalShowdown = showdown;
         showdown = function() {
             if (multiplayerMode && !isHost) return;
@@ -1892,7 +1879,6 @@
             }
         };
 
-        // Override userAction to handle multiplayer
         const originalUserAction = userAction;
         userAction = function(action) {
             if (multiplayerMode && !isHost) {
@@ -1902,11 +1888,9 @@
             originalUserAction.call(this, action);
         };
 
-        // Override setupUserControls to handle remote turns
         const originalSetupUserControls = setupUserControls;
         setupUserControls = function(user) {
             if (multiplayerMode && !isHost) {
-                // Remote client: if it's our turn, the host will send state and we'll enable controls
                 let me = players[0];
                 if (me && me.active && !me.bankrupt && currentPlayerIndex === 0) {
                     originalSetupUserControls.call(this, me);
@@ -1921,19 +1905,17 @@
         // ============================================================
         //  INIT
         // ============================================================
-        // When page loads, set up multiplayer buttons
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('mp-start-btn').style.display = 'none';
             document.getElementById('mp-leave-btn').style.display = 'none';
             document.getElementById('mp-code-display').style.display = 'none';
-            // Enter key for join input
             document.getElementById('mp-join-input').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') joinGame();
             });
         });
 
         console.log('🦆 Ultimate Texas Hold\'em loaded!');
-        console.log('🎮 Multiplayer: Host or Join using a 4-letter code.');
+        console.log('🎮 Multiplayer: Host or Join using a 4‑letter code (no AI).');
         console.log('💡 Bankrupt? Watch a 10s ad to get 100 chips back!');
     </script>
 </body>
