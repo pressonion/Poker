@@ -483,6 +483,19 @@
         .btn-fold:hover {
             background: #c84a4a;
         }
+        .btn-start {
+            background: #2ecc71;
+            color: #141a26;
+            box-shadow: 0 3px 0 #1a8a4a !important;
+        }
+        .btn-start:hover {
+            background: #3ddc84;
+        }
+        .btn-start:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
         #raise-input {
             width: 72px;
             padding: 8px 4px;
@@ -768,6 +781,7 @@
 
             <!-- ACTIONS (outside table) -->
             <div id="actions-wrap">
+                <button class="btn btn-start" id="startBtn" style="display:none;">▶ Start Game</button>
                 <button class="btn btn-check" id="checkBtn" disabled>✓ Check</button>
                 <button class="btn btn-call" id="callBtn" disabled>📞 Call</button>
                 <div class="raise-group">
@@ -908,6 +922,7 @@
                 this.raisedThisRound = false;
                 this.lastRaiser = -1;
                 this.actionHistory = [];
+                this.gameStarted = false; // new flag
             }
 
             addPlayer(id, name) {
@@ -993,6 +1008,7 @@
                 this.advanceToNextActivePlayer();
                 this.phase = 'preflop';
                 this.playersInHand = this.players.filter(p => p.isActive && !p.folded && p.chips > 0).map(p => p.id);
+                this.gameStarted = true;
                 return true;
             }
 
@@ -1182,7 +1198,8 @@
                 const current = this.getCurrentPlayer();
                 const actions = player ? this.getActions(playerId) : { canAct: false, actions: [] };
                 const result = this.getHandResult();
-                const isMyTurn = current && current.id === playerId && !this.handComplete && this.phase !== 'showdown';
+                const isMyTurn = current && current.id === playerId && !this.handComplete && this.phase !== 'showdown' &&
+                    this.gameStarted;
                 return {
                     players: this.players.map(p => ({
                         id: p.id,
@@ -1222,6 +1239,7 @@
                     currentPlayerIndex: this.currentPlayerIndex,
                     smallBlind: this.smallBlind,
                     bigBlind: this.bigBlind,
+                    gameStarted: this.gameStarted,
                 };
             }
         }
@@ -1265,6 +1283,7 @@
         const playersArea = $('playersArea');
         const logEl = $('log');
 
+        const startBtn = $('startBtn');
         const checkBtn = $('checkBtn');
         const callBtn = $('callBtn');
         const raiseBtn = $('raiseBtn');
@@ -1320,7 +1339,7 @@
                 const box = document.createElement('div');
                 box.className = 'player-box';
                 if (p.folded) box.classList.add('folded');
-                if (p.id === currentId && !app.game.handComplete && app.game.phase !== 'showdown')
+                if (p.id === currentId && !app.game.handComplete && app.game.phase !== 'showdown' && app.game.gameStarted)
                     box.classList.add('active-turn');
 
                 const nameDiv = document.createElement('div');
@@ -1384,10 +1403,21 @@
             const state = app.game.getStateForPlayer(app.myPlayerId);
             if (!state) return;
             potAmount.textContent = state.pot;
+
+            // Phase display
             const phaseNames = { waiting: '⏳ Waiting', preflop: '🃏 Pre-Flop', flop: '🎯 Flop', turn: '🎯 Turn',
                 river: '🎯 River', showdown: '🏆 Showdown' };
-            phaseDisplay.textContent = phaseNames[state.phase] || state.phase;
-            if (state.isMyTurn && state.canAct && !state.handComplete) {
+            if (!state.gameStarted) {
+                phaseDisplay.textContent = '⏳ Waiting for host...';
+            } else {
+                phaseDisplay.textContent = phaseNames[state.phase] || state.phase;
+            }
+
+            // Turn display
+            if (!state.gameStarted) {
+                turnDisplay.textContent = '⏳ Waiting for host to start';
+                turnDisplay.style.color = '#9aafcc';
+            } else if (state.isMyTurn && state.canAct && !state.handComplete) {
                 turnDisplay.textContent = '🎯 Your turn';
                 turnDisplay.style.color = '#f7d875';
             } else if (state.handComplete) {
@@ -1398,10 +1428,23 @@
                 turnDisplay.textContent = current ? `👤 ${current.name}'s turn` : '—';
                 turnDisplay.style.color = '#b0c8dd';
             }
+
             renderCommunity();
             renderPlayers();
 
-            const canAct = state.isMyTurn && state.canAct && !state.handComplete && state.phase !== 'showdown';
+            // Start button (host only, when game not started and at least 2 players)
+            if (app.isHost && !app.game.gameStarted) {
+                startBtn.style.display = 'inline-block';
+                const enough = app.game.players.length >= 2;
+                startBtn.disabled = !enough;
+                startBtn.textContent = enough ? '▶ Start Game' : '⏳ Need 2 players';
+            } else {
+                startBtn.style.display = 'none';
+            }
+
+            // Action buttons
+            const canAct = state.isMyTurn && state.canAct && !state.handComplete && state.phase !== 'showdown' && state
+                .gameStarted;
             checkBtn.disabled = !canAct || !state.availableActions.includes('check');
             callBtn.disabled = !canAct || !state.availableActions.includes('call');
             raiseBtn.disabled = !canAct || !state.availableActions.includes('raise');
@@ -1421,6 +1464,16 @@
                 raiseInput.disabled = true;
                 callBtn.textContent = '📞 Call';
             }
+
+            // If game not started, disable all action buttons
+            if (!state.gameStarted) {
+                checkBtn.disabled = true;
+                callBtn.disabled = true;
+                raiseBtn.disabled = true;
+                foldBtn.disabled = true;
+                raiseInput.disabled = true;
+            }
+
             renderLog();
         }
 
@@ -1444,7 +1497,10 @@
             if (app.isProcessing) return;
             app.isProcessing = true;
             const state = app.game.getStateForPlayer(app.myPlayerId);
-            if (!state || !state.isMyTurn || !state.canAct || state.handComplete) { app.isProcessing = false; return; }
+            if (!state || !state.isMyTurn || !state.canAct || state.handComplete || !state.gameStarted) {
+                app.isProcessing = false;
+                return;
+            }
 
             if (app.isHost) {
                 const result = app.game.act(app.myPlayerId, action, amount);
@@ -1501,7 +1557,7 @@
             if (app.game.handComplete) { broadcastState(); return; }
             broadcastState();
             const current = app.game.getCurrentPlayer();
-            if (current && current.id === app.myPlayerId && !app.game.handComplete) {
+            if (current && current.id === app.myPlayerId && !app.game.handComplete && app.game.gameStarted) {
                 updateUI();
                 const actions = app.game.getActions(app.myPlayerId);
                 if (!actions.canAct) {
@@ -1591,14 +1647,12 @@
                 menuPlayerCount.textContent = `👥 Players: 1`;
                 addLog(`🎯 Hosting game "${code}" — waiting for players...`);
 
-                const checkStart = setInterval(() => {
-                    if (app.game.players.length >= 2 && !app.gameStarted) {
-                        clearInterval(checkStart);
-                        app.gameStarted = true;
-                        addLog('🃏 Enough players! Starting game...');
-                        startNewHand();
-                    }
+                // Update player count periodically
+                const countInterval = setInterval(() => {
                     menuPlayerCount.textContent = `👥 Players: ${app.game.players.length}`;
+                    // Also update UI to refresh start button state
+                    if (app.gameStarted) clearInterval(countInterval);
+                    else updateUI();
                 }, 1000);
 
             } catch (err) {
@@ -1617,8 +1671,9 @@
                 menuPlayerCount.textContent = `👥 Players: ${app.game.players.length}`;
                 const state = app.game.getStateForPlayer(null);
                 conn.send({ type: 'state', state });
-                if (app.gameStarted) conn.send({ type: 'gameStarted' });
+                if (app.game.gameStarted) conn.send({ type: 'gameStarted' });
                 broadcastState();
+                updateUI(); // refresh start button
             });
             conn.on('data', data => handleClientMessage(conn, data));
             conn.on('close', () => {
@@ -1628,13 +1683,14 @@
                     app.game.removePlayer(conn.peer);
                     broadcastState();
                     menuPlayerCount.textContent = `👥 Players: ${app.game.players.length}`;
-                    if (app.gameStarted && !app.game.handComplete) {
+                    if (app.game.gameStarted && !app.game.handComplete) {
                         const active = app.game.getActivePlayers();
                         if (active.length <= 1) { app.game.handComplete = true;
                             app.game.phase = 'showdown';
                             handleHostStateUpdate(); } else { app.game.advanceToNextActivePlayer();
                             handleHostStateUpdate(); }
                     }
+                    updateUI();
                 }
             });
         }
@@ -1705,9 +1761,9 @@
                 conn.send({ type: 'join', name });
 
                 showGame();
-                app.gameStarted = true;
+                app.gameStarted = true; // will be set by host state
                 menuInfo.textContent = `✅ Joined game "${code}"`;
-                addLog('🔗 Connected to host! Waiting for game state...');
+                addLog('🔗 Connected to host! Waiting for game to start...');
 
             } catch (err) {
                 menuError.textContent = `❌ Failed to join: ${err.message}`;
@@ -1722,7 +1778,7 @@
                 syncGameState(state);
                 updateUI();
                 const myState = app.game.getStateForPlayer(app.myPlayerId);
-                if (myState && myState.isMyTurn && myState.canAct && !myState.handComplete) {
+                if (myState && myState.isMyTurn && myState.canAct && !myState.handComplete && myState.gameStarted) {
                     addLog('🎯 Your turn!');
                 }
                 if (app.game.handComplete && app.game.phase === 'showdown') {
@@ -1739,12 +1795,17 @@
                 menuError.textContent = data.message;
                 setTimeout(() => menuError.textContent = '', 3000);
             }
-            if (data.type === 'gameStarted') { app.gameStarted = true;
-                addLog('🃏 Game started!'); }
-            if (data.type === 'handComplete') { app.game.handComplete = true;
+            if (data.type === 'gameStarted') {
+                app.game.gameStarted = true;
+                addLog('🃏 Game started!');
+                updateUI();
+            }
+            if (data.type === 'handComplete') {
+                app.game.handComplete = true;
                 app.game.phase = 'showdown';
                 addLog('🏁 Hand complete!');
-                updateUI(); }
+                updateUI();
+            }
         }
 
         function syncGameState(state) {
@@ -1788,6 +1849,7 @@
             app.game.bigBlind = state.bigBlind || 20;
             app.game.lastAction = state.lastAction || '';
             app.game.playersInHand = state.playersInHand || [];
+            app.game.gameStarted = state.gameStarted || false;
             if (!app.game.getPlayer(myId) && app.conn) { /* will be added by host */ }
         }
 
@@ -1795,10 +1857,6 @@
         function showGame() {
             menu.style.display = 'none';
             gameEl.style.display = 'flex';
-            if (app.isHost && app.game.players.length >= 2 && !app.gameStarted) {
-                app.gameStarted = true;
-                setTimeout(() => startNewHand(), 500);
-            }
             updateUI();
         }
 
@@ -1825,6 +1883,13 @@
         // ─── Event Listeners ───
         hostBtn.addEventListener('click', hostGame);
         joinBtn.addEventListener('click', joinGame);
+
+        // Start button
+        startBtn.addEventListener('click', () => {
+            if (app.isHost && !app.game.gameStarted && app.game.players.length >= 2) {
+                startNewHand();
+            }
+        });
 
         randomCodeBtn.addEventListener('click', () => {
             const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -1856,7 +1921,7 @@
         });
 
         document.addEventListener('keydown', e => {
-            if (!app.connected || !app.gameStarted) return;
+            if (!app.connected || !app.game.gameStarted) return;
             if (e.target.tagName === 'INPUT') return;
             if (e.key === 'c' || e.key === 'C') { if (!checkBtn.disabled) checkBtn.click(); }
             if (e.key === 'r' || e.key === 'R') { if (!raiseBtn.disabled) raiseBtn.click(); }
@@ -1875,7 +1940,7 @@
         })();
 
         roomCodeInput.focus();
-        console.log('♠ Poker loaded!  Host gets a random 2-letter code.  Join with that code.');
+        console.log('♠ Poker loaded!  Host gets a random 2-letter code.  Host must press "Start Game" to begin.');
         console.log('💡 Keys: C=Check, R=Raise, F=Fold, Enter=Call');
     </script>
 
