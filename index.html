@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>♠ Poker · Texas Hold'em</title>
-    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js">
-    </script>
+    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
         /* ── Reset & base ── */
         * {
@@ -31,6 +30,44 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        /* ── HOST CONTROLS (Top Right) ── */
+        #host-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            z-index: 1000;
+        }
+        #gameRoomCodeDisplay {
+            background: rgba(16, 22, 36, 0.95);
+            border: 2px solid #f5b342;
+            padding: 10px 20px;
+            border-radius: 14px;
+            font-size: 1.5rem;
+            color: #f7d875;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            letter-spacing: 4px;
+        }
+        .code-label {
+            font-size: 0.7rem;
+            color: #9aafcc;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        #host-controls .btn-start {
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3) !important;
         }
 
         /* ── MENU ── */
@@ -346,7 +383,7 @@
         .player-box {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 20px;
-            padding: 10px 14px 10px 14px;
+            padding: 10px 14px;
             min-width: 110px;
             text-align: center;
             border: 2px solid transparent;
@@ -371,14 +408,6 @@
             justify-content: center;
             gap: 6px;
             flex-wrap: wrap;
-        }
-        .player-box .name .badge {
-            font-size: 0.65rem;
-            background: #f5b342;
-            color: #141a26;
-            padding: 0 10px;
-            border-radius: 20px;
-            font-weight: 600;
         }
         .player-box .chips {
             font-size: 0.85rem;
@@ -456,41 +485,31 @@
             color: #e8f0e8;
             box-shadow: 0 3px 0 #144a32 !important;
         }
-        .btn-check:hover {
-            background: #3a8a62;
-        }
+        .btn-check:hover { background: #3a8a62; }
         .btn-call {
             background: #2a6aaa;
             color: #e8f0f8;
             box-shadow: 0 3px 0 #1a3a6a !important;
         }
-        .btn-call:hover {
-            background: #3a7aba;
-        }
+        .btn-call:hover { background: #3a7aba; }
         .btn-raise {
             background: #c97a2a;
             color: #fff;
             box-shadow: 0 3px 0 #8a5218 !important;
         }
-        .btn-raise:hover {
-            background: #da8a3a;
-        }
+        .btn-raise:hover { background: #da8a3a; }
         .btn-fold {
             background: #b03a3a;
             color: #fff;
             box-shadow: 0 3px 0 #7a2222 !important;
         }
-        .btn-fold:hover {
-            background: #c84a4a;
-        }
+        .btn-fold:hover { background: #c84a4a; }
         .btn-start {
             background: #2ecc71;
             color: #141a26;
             box-shadow: 0 3px 0 #1a8a4a !important;
         }
-        .btn-start:hover {
-            background: #3ddc84;
-        }
+        .btn-start:hover { background: #3ddc84; }
         .btn-start:disabled {
             opacity: 0.4;
             cursor: not-allowed;
@@ -508,18 +527,14 @@
             color: #fff;
             outline: none;
         }
-        #raise-input:focus {
-            border-color: #f5b342;
-        }
+        #raise-input:focus { border-color: #f5b342; }
         .raise-group {
             display: flex;
             align-items: center;
             gap: 4px;
             flex-wrap: wrap;
         }
-        .raise-group .btn-raise {
-            min-width: 60px;
-        }
+        .raise-group .btn-raise { min-width: 60px; }
 
         /* ── LOG ── */
         #log {
@@ -538,9 +553,7 @@
             scrollbar-color: #2a3a4a transparent;
             margin-top: 2px;
         }
-        #log::-webkit-scrollbar {
-            width: 4px;
-        }
+        #log::-webkit-scrollbar { width: 4px; }
         #log::-webkit-scrollbar-thumb {
             background: #2a3a4a;
             border-radius: 10px;
@@ -549,194 +562,45 @@
             padding: 2px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
-        #log .log-entry.highlight {
-            color: #f7d875;
-        }
+        #log .log-entry.highlight { color: #f7d875; }
 
         /* ── responsive ── */
         @media (max-width: 700px) {
-            #menu {
-                padding: 28px 20px;
-            }
-            #menu h1 {
-                font-size: 2.4rem;
-            }
+            #menu { padding: 28px 20px; }
+            #menu h1 { font-size: 2.4rem; }
+            #host-controls { top: 10px; right: 10px; transform: scale(0.85); transform-origin: top right; }
             #table {
                 border-radius: 60px 60px 40px 40px;
                 padding: 16px 12px 12px 12px;
                 min-height: 360px;
             }
-            .card {
-                width: 52px;
-                height: 74px;
-                font-size: 1.2rem;
-            }
-            .card .rank {
-                font-size: 1.1rem;
-            }
-            .card .suit {
-                font-size: 1rem;
-            }
-            .card-sm {
-                width: 38px;
-                height: 54px;
-                font-size: 0.9rem;
-            }
-            .card-sm .rank {
-                font-size: 0.8rem;
-            }
-            .card-sm .suit {
-                font-size: 0.7rem;
-            }
-            .card-xs {
-                width: 30px;
-                height: 44px;
-                font-size: 0.6rem;
-            }
-            .card-xs .rank {
-                font-size: 0.6rem;
-            }
-            .card-xs .suit {
-                font-size: 0.5rem;
-            }
-            #community {
-                gap: 6px;
-                padding: 8px 0 4px 0;
-                min-height: 70px;
-            }
-            #players-area {
-                gap: 10px;
-            }
-            .player-box {
-                padding: 6px 8px;
-                min-width: 70px;
-            }
-            .player-box .name {
-                font-size: 0.75rem;
-            }
-            .player-box .hand {
-                min-height: 40px;
-                gap: 3px;
-            }
-            #actions-wrap {
-                padding: 10px 14px;
-                gap: 6px;
-                border-radius: 40px;
-            }
-            #actions-wrap .btn {
-                padding: 8px 14px;
-                min-width: 50px;
-                font-size: 0.75rem;
-            }
-            #pot-display {
-                font-size: 0.9rem;
-                padding: 4px 14px;
-            }
-            #phase-display {
-                font-size: 0.7rem;
-                padding: 4px 12px;
-            }
-            #turn-display {
-                font-size: 0.7rem;
-                padding: 4px 12px;
-            }
-            .code-row input {
-                width: 72px;
-                font-size: 1.4rem;
-                padding: 10px 4px;
-            }
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-            #raise-input {
-                width: 56px;
-                padding: 6px 2px;
-                font-size: 0.8rem;
-            }
-            .host-code-display {
-                font-size: 1.6rem;
-                padding: 8px 18px;
-                letter-spacing: 6px;
-            }
-        }
-        @media (max-width: 440px) {
-            .card {
-                width: 38px;
-                height: 54px;
-                font-size: 0.9rem;
-            }
-            .card .rank {
-                font-size: 0.8rem;
-            }
-            .card .suit {
-                font-size: 0.7rem;
-            }
-            .card-sm {
-                width: 28px;
-                height: 40px;
-                font-size: 0.6rem;
-            }
-            .card-sm .rank {
-                font-size: 0.6rem;
-            }
-            .card-sm .suit {
-                font-size: 0.5rem;
-            }
-            .card-xs {
-                width: 24px;
-                height: 34px;
-                font-size: 0.5rem;
-            }
-            .card-xs .rank {
-                font-size: 0.5rem;
-            }
-            .card-xs .suit {
-                font-size: 0.4rem;
-            }
-            #community {
-                gap: 4px;
-            }
-            #players-area {
-                gap: 6px;
-            }
-            .player-box {
-                padding: 4px 4px;
-                min-width: 54px;
-            }
-            .player-box .name {
-                font-size: 0.65rem;
-            }
-            .player-box .chips {
-                font-size: 0.65rem;
-            }
-            #actions-wrap .btn {
-                padding: 6px 10px;
-                min-width: 40px;
-                font-size: 0.65rem;
-            }
-            #actions-wrap {
-                padding: 6px 8px;
-                gap: 4px;
-            }
-            #pot-display {
-                font-size: 0.75rem;
-                padding: 2px 10px;
-            }
-            #phase-display {
-                font-size: 0.6rem;
-                padding: 2px 8px;
-            }
-            #turn-display {
-                font-size: 0.6rem;
-                padding: 2px 8px;
-            }
+            .card { width: 52px; height: 74px; font-size: 1.2rem; }
+            .card .rank { font-size: 1.1rem; }
+            .card .suit { font-size: 1rem; }
+            .card-sm { width: 38px; height: 54px; font-size: 0.9rem; }
+            .card-xs { width: 30px; height: 44px; font-size: 0.6rem; }
+            #community { gap: 6px; padding: 8px 0 4px 0; min-height: 70px; }
+            #players-area { gap: 10px; }
+            .player-box { padding: 6px 8px; min-width: 70px; }
+            .player-box .name { font-size: 0.75rem; }
+            .player-box .hand { min-height: 40px; gap: 3px; }
+            #actions-wrap { padding: 10px 14px; gap: 6px; border-radius: 40px; }
+            #actions-wrap .btn { padding: 8px 14px; min-width: 50px; font-size: 0.75rem; }
         }
     </style>
 </head>
 <body>
 
     <div id="app">
+
+        <!-- ═══ HOST CONTROLS (Top Right) ═══ -->
+        <div id="host-controls">
+            <div id="gameRoomCodeDisplay">
+                <span class="code-label">Room Code</span>
+                <span id="gameRoomCode">XX</span>
+            </div>
+            <button class="btn btn-start" id="topStartBtn">▶ Start Game</button>
+        </div>
 
         <!-- ═══ MENU ═══ -->
         <div id="menu">
@@ -775,13 +639,11 @@
                 </div>
 
                 <div id="community"></div>
-
                 <div id="players-area"></div>
             </div>
 
             <!-- ACTIONS (outside table) -->
             <div id="actions-wrap">
-                <button class="btn btn-start" id="startBtn" style="display:none;">▶ Start Game</button>
                 <button class="btn btn-check" id="checkBtn" disabled>✓ Check</button>
                 <button class="btn btn-call" id="callBtn" disabled>📞 Call</button>
                 <div class="raise-group">
@@ -818,9 +680,7 @@
                 [d[i], d[j]] = [d[j], d[i]]; } return d; }
 
         function getCombinations(arr, k) {
-            if (k === 0) return [
-                []
-            ];
+            if (k === 0) return [[]];
             if (!arr.length) return [];
             const [first, ...rest] = arr;
             const withFirst = getCombinations(rest, k - 1).map(c => [first, ...c]);
@@ -849,7 +709,6 @@
                     straightHigh = 5;
                 }
             }
-            // Royal Flush
             if (isFlush && straight && straightHigh === 14) return { rank: 9, rankName: 'Royal Flush', kickers: [] };
             if (isFlush && straight) return { rank: 8, rankName: 'Straight Flush', kickers: [straightHigh] };
             if (counts.includes(4)) {
@@ -899,7 +758,6 @@
             return { rank: bestRank, rankName: bestName || names[bestRank] || 'High Card', kickers: bestKickers };
         }
 
-        // ─── PokerGame class ───
         class PokerGame {
             constructor() { this.reset(); }
 
@@ -911,7 +769,7 @@
                 this.highestBet = 0;
                 this.dealerIndex = 0;
                 this.currentPlayerIndex = 0;
-                this.phase = 'waiting'; // waiting | preflop | flop | turn | river | showdown
+                this.phase = 'waiting'; 
                 this.deck = [];
                 this.minRaise = 20;
                 this.smallBlind = 10;
@@ -922,24 +780,15 @@
                 this.raisedThisRound = false;
                 this.lastRaiser = -1;
                 this.actionHistory = [];
-                this.gameStarted = false; // new flag
+                this.gameStarted = false; 
             }
 
             addPlayer(id, name) {
                 if (this.players.find(p => p.id === id)) return false;
                 this.players.push({
-                    id,
-                    name,
-                    chips: 1000,
-                    hand: [],
-                    isActive: true,
-                    isDealer: false,
-                    isSmallBlind: false,
-                    isBigBlind: false,
-                    currentBet: 0,
-                    folded: false,
-                    allIn: false,
-                    handResult: null
+                    id, name, chips: 1000, hand: [], isActive: true, isDealer: false,
+                    isSmallBlind: false, isBigBlind: false, currentBet: 0,
+                    folded: false, allIn: false, handResult: null
                 });
                 this.playersInHand.push(id);
                 return true;
@@ -951,52 +800,35 @@
             }
 
             getPlayer(id) { return this.players.find(p => p.id === id); }
-
             getActivePlayers() { return this.players.filter(p => p.isActive && !p.folded && p.chips > 0); }
 
             startHand() {
                 if (this.players.length < 2) return false;
                 for (const p of this.players) {
-                    p.hand = [];
-                    p.currentBet = 0;
-                    p.folded = false;
-                    p.allIn = false;
-                    p.handResult = null;
-                    p.isDealer = false;
-                    p.isSmallBlind = false;
-                    p.isBigBlind = false;
+                    p.hand = []; p.currentBet = 0; p.folded = false;
+                    p.allIn = false; p.handResult = null; p.isDealer = false;
+                    p.isSmallBlind = false; p.isBigBlind = false;
                 }
-                this.communityCards = [];
-                this.pot = 0;
-                this.currentBet = 0;
-                this.highestBet = 0;
-                this.handComplete = false;
-                this.lastAction = '';
-                this.raisedThisRound = false;
-                this.lastRaiser = -1;
-                this.actionHistory = [];
-                this.deck = shuffleDeck(createDeck());
+                this.communityCards = []; this.pot = 0; this.currentBet = 0;
+                this.highestBet = 0; this.handComplete = false; this.lastAction = '';
+                this.raisedThisRound = false; this.lastRaiser = -1;
+                this.actionHistory = []; this.deck = shuffleDeck(createDeck());
 
                 this.dealerIndex = (this.dealerIndex + 1) % this.players.length;
-                const dealer = this.players[this.dealerIndex];
-                dealer.isDealer = true;
+                this.players[this.dealerIndex].isDealer = true;
 
                 const sbIdx = (this.dealerIndex + 1) % this.players.length;
                 const bbIdx = (this.dealerIndex + 2) % this.players.length;
                 const sb = this.players[sbIdx];
                 const bb = this.players[bbIdx];
-                sb.isSmallBlind = true;
-                bb.isBigBlind = true;
+                sb.isSmallBlind = true; bb.isBigBlind = true;
 
                 const sbAmt = Math.min(this.smallBlind, sb.chips);
                 const bbAmt = Math.min(this.bigBlind, bb.chips);
-                sb.chips -= sbAmt;
-                sb.currentBet += sbAmt;
-                bb.chips -= bbAmt;
-                bb.currentBet += bbAmt;
+                sb.chips -= sbAmt; sb.currentBet += sbAmt;
+                bb.chips -= bbAmt; bb.currentBet += bbAmt;
                 this.pot += sbAmt + bbAmt;
-                this.currentBet = bbAmt;
-                this.highestBet = bbAmt;
+                this.currentBet = bbAmt; this.highestBet = bbAmt;
 
                 for (let i = 0; i < 2; i++) {
                     for (const p of this.players) {
@@ -1041,11 +873,8 @@
                 if (player.chips > toCall) actions.push('raise');
                 actions.push('fold');
                 return {
-                    canAct: true,
-                    actions,
-                    toCall,
-                    minRaise: Math.max(this.minRaise, toCall + this.minRaise),
-                    maxRaise: player.chips
+                    canAct: true, actions, toCall,
+                    minRaise: Math.max(this.minRaise, toCall + this.minRaise), maxRaise: player.chips
                 };
             }
 
@@ -1059,31 +888,23 @@
                 const toCall = this.highestBet - player.currentBet;
 
                 if (action === 'fold') {
-                    player.folded = true;
-                    this.lastAction = `${player.name} folded`;
-                    this.actionHistory.push(this.lastAction);
-                    this.checkHandComplete();
+                    player.folded = true; this.lastAction = `${player.name} folded`;
+                    this.actionHistory.push(this.lastAction); this.checkHandComplete();
                     if (!this.handComplete) this.advanceToNextActivePlayer();
                     return { success: true, action: 'fold' };
                 }
                 if (action === 'check') {
                     if (toCall > 0) return { success: false, error: 'Must call or raise' };
-                    this.lastAction = `${player.name} checked`;
-                    this.actionHistory.push(this.lastAction);
-                    this.advanceToNextActivePlayer();
-                    this.checkHandComplete();
+                    this.lastAction = `${player.name} checked`; this.actionHistory.push(this.lastAction);
+                    this.advanceToNextActivePlayer(); this.checkHandComplete();
                     return { success: true, action: 'check' };
                 }
                 if (action === 'call') {
                     const callAmt = Math.min(toCall, player.chips);
-                    player.chips -= callAmt;
-                    player.currentBet += callAmt;
-                    this.pot += callAmt;
-                    this.lastAction = `${player.name} called ${callAmt}`;
-                    this.actionHistory.push(this.lastAction);
+                    player.chips -= callAmt; player.currentBet += callAmt; this.pot += callAmt;
+                    this.lastAction = `${player.name} called ${callAmt}`; this.actionHistory.push(this.lastAction);
                     if (player.chips === 0) player.allIn = true;
-                    this.advanceToNextActivePlayer();
-                    this.checkHandComplete();
+                    this.advanceToNextActivePlayer(); this.checkHandComplete();
                     return { success: true, action: 'call', amount: callAmt };
                 }
                 if (action === 'raise') {
@@ -1093,17 +914,12 @@
                     const minRaise = this.highestBet + this.minRaise;
                     if (totalBet < minRaise && player.chips > minRaise - player.currentBet)
                         return { success: false, error: `Minimum raise is ${minRaise}` };
-                    player.chips -= raiseAmt;
-                    player.currentBet += raiseAmt;
-                    this.pot += raiseAmt;
-                    this.highestBet = player.currentBet;
-                    this.lastRaiser = this.currentPlayerIndex;
-                    this.raisedThisRound = true;
-                    this.lastAction = `${player.name} raised to ${this.highestBet}`;
+                    player.chips -= raiseAmt; player.currentBet += raiseAmt; this.pot += raiseAmt;
+                    this.highestBet = player.currentBet; this.lastRaiser = this.currentPlayerIndex;
+                    this.raisedThisRound = true; this.lastAction = `${player.name} raised to ${this.highestBet}`;
                     this.actionHistory.push(this.lastAction);
                     if (player.chips === 0) player.allIn = true;
-                    this.advanceToNextActivePlayer();
-                    this.checkHandComplete();
+                    this.advanceToNextActivePlayer(); this.checkHandComplete();
                     return { success: true, action: 'raise', amount: raiseAmt };
                 }
                 return { success: false, error: 'Invalid action' };
@@ -1111,8 +927,7 @@
 
             checkHandComplete() {
                 const active = this.getActivePlayers();
-                if (active.length <= 1) { this.handComplete = true;
-                    this.phase = 'showdown'; return; }
+                if (active.length <= 1) { this.handComplete = true; this.phase = 'showdown'; return; }
                 let allActed = true;
                 for (const p of active) {
                     if (p.chips > 0 && p.currentBet < this.highestBet) { allActed = false; break; }
@@ -1122,35 +937,23 @@
 
             advancePhase() {
                 if (this.phase === 'preflop') {
-                    this.phase = 'flop';
-                    this.deck.pop();
+                    this.phase = 'flop'; this.deck.pop();
                     for (let i = 0; i < 3; i++) this.communityCards.push(this.deck.pop());
-                    this.resetBets();
-                    this.advanceToNextActivePlayer();
+                    this.resetBets(); this.advanceToNextActivePlayer();
                 } else if (this.phase === 'flop') {
-                    this.phase = 'turn';
-                    this.deck.pop();
-                    this.communityCards.push(this.deck.pop());
-                    this.resetBets();
-                    this.advanceToNextActivePlayer();
+                    this.phase = 'turn'; this.deck.pop(); this.communityCards.push(this.deck.pop());
+                    this.resetBets(); this.advanceToNextActivePlayer();
                 } else if (this.phase === 'turn') {
-                    this.phase = 'river';
-                    this.deck.pop();
-                    this.communityCards.push(this.deck.pop());
-                    this.resetBets();
-                    this.advanceToNextActivePlayer();
+                    this.phase = 'river'; this.deck.pop(); this.communityCards.push(this.deck.pop());
+                    this.resetBets(); this.advanceToNextActivePlayer();
                 } else if (this.phase === 'river') {
-                    this.phase = 'showdown';
-                    this.handComplete = true;
+                    this.phase = 'showdown'; this.handComplete = true;
                 }
             }
 
             resetBets() {
                 for (const p of this.players) p.currentBet = 0;
-                this.highestBet = 0;
-                this.currentBet = 0;
-                this.raisedThisRound = false;
-                this.lastRaiser = -1;
+                this.highestBet = 0; this.currentBet = 0; this.raisedThisRound = false; this.lastRaiser = -1;
             }
 
             getHandResult() {
@@ -1185,12 +988,7 @@
                     const leftover = this.pot - potPerWinner * winners.length;
                     winners[0].chips += leftover;
                 }
-                return {
-                    winners,
-                    handName: best.result.rankName,
-                    pot: this.pot,
-                    winnerNames: winners.map(w => w.name)
-                };
+                return { winners, handName: best.result.rankName, pot: this.pot, winnerNames: winners.map(w => w.name) };
             }
 
             getStateForPlayer(playerId) {
@@ -1198,48 +996,22 @@
                 const current = this.getCurrentPlayer();
                 const actions = player ? this.getActions(playerId) : { canAct: false, actions: [] };
                 const result = this.getHandResult();
-                const isMyTurn = current && current.id === playerId && !this.handComplete && this.phase !== 'showdown' &&
-                    this.gameStarted;
+                const isMyTurn = current && current.id === playerId && !this.handComplete && this.phase !== 'showdown' && this.gameStarted;
                 return {
                     players: this.players.map(p => ({
-                        id: p.id,
-                        name: p.name,
-                        chips: p.chips,
-                        hand: p.id === playerId ? p.hand : [],
-                        isActive: p.isActive,
-                        isDealer: p.isDealer,
-                        isSmallBlind: p.isSmallBlind,
-                        isBigBlind: p.isBigBlind,
-                        currentBet: p.currentBet,
-                        folded: p.folded,
-                        allIn: p.allIn,
+                        id: p.id, name: p.name, chips: p.chips, hand: p.id === playerId ? p.hand : [],
+                        isActive: p.isActive, isDealer: p.isDealer, isSmallBlind: p.isSmallBlind, isBigBlind: p.isBigBlind,
+                        currentBet: p.currentBet, folded: p.folded, allIn: p.allIn,
                         handResult: p.id === playerId ? null : p.handResult,
                         showHand: p.id === playerId || this.handComplete,
                     })),
-                    communityCards: this.communityCards,
-                    pot: this.pot,
-                    currentBet: this.currentBet,
-                    highestBet: this.highestBet,
-                    phase: this.phase,
-                    handComplete: this.handComplete,
-                    isMyTurn,
-                    canAct: actions.canAct,
-                    availableActions: actions.actions,
-                    toCall: actions.toCall || 0,
-                    minRaise: actions.minRaise || this.minRaise,
-                    maxRaise: actions.maxRaise || 0,
-                    lastAction: this.lastAction,
-                    result: result ? {
-                        winners: result.winners.map(w => w.id),
-                        handName: result.handName,
-                        pot: result.pot,
-                        winnerNames: result.winnerNames,
-                    } : null,
-                    dealerIndex: this.dealerIndex,
-                    currentPlayerIndex: this.currentPlayerIndex,
-                    smallBlind: this.smallBlind,
-                    bigBlind: this.bigBlind,
-                    gameStarted: this.gameStarted,
+                    communityCards: this.communityCards, pot: this.pot, currentBet: this.currentBet, highestBet: this.highestBet,
+                    phase: this.phase, handComplete: this.handComplete, isMyTurn, canAct: actions.canAct,
+                    availableActions: actions.actions, toCall: actions.toCall || 0, minRaise: actions.minRaise || this.minRaise,
+                    maxRaise: actions.maxRaise || 0, lastAction: this.lastAction,
+                    result: result ? { winners: result.winners.map(w => w.id), handName: result.handName, pot: result.pot, winnerNames: result.winnerNames, } : null,
+                    dealerIndex: this.dealerIndex, currentPlayerIndex: this.currentPlayerIndex,
+                    smallBlind: this.smallBlind, bigBlind: this.bigBlind, gameStarted: this.gameStarted,
                 };
             }
         }
@@ -1249,18 +1021,8 @@
         // ═══════════════════════════════════════════════════════════════════
 
         const app = {
-            game: new PokerGame(),
-            peer: null,
-            conn: null,
-            isHost: false,
-            myId: null,
-            roomCode: '',
-            connected: false,
-            gameStarted: false,
-            myPlayerId: null,
-            logLines: [],
-            isProcessing: false,
-            hostCode: '',
+            game: new PokerGame(), peer: null, conn: null, isHost: false, myId: null, roomCode: '',
+            connected: false, gameStarted: false, myPlayerId: null, logLines: [], isProcessing: false, hostCode: '',
         };
 
         const $ = id => document.getElementById(id);
@@ -1276,6 +1038,10 @@
         const hostCodeDisplay = $('hostCodeDisplay');
         const hostCodeText = $('hostCodeText');
 
+        const hostControls = $('host-controls');
+        const gameRoomCode = $('gameRoomCode');
+        const topStartBtn = $('topStartBtn');
+
         const potAmount = $('potAmount');
         const phaseDisplay = $('phaseDisplay');
         const turnDisplay = $('turnDisplay');
@@ -1283,14 +1049,12 @@
         const playersArea = $('playersArea');
         const logEl = $('log');
 
-        const startBtn = $('startBtn');
         const checkBtn = $('checkBtn');
         const callBtn = $('callBtn');
         const raiseBtn = $('raiseBtn');
         const foldBtn = $('foldBtn');
         const raiseInput = $('raiseInput');
 
-        // ─── UI Helpers ───
         function renderCard(card, small = false, xs = false) {
             const div = document.createElement('div');
             const cls = `card${small ? ' card-sm' : ''}${xs ? ' card-xs' : ''}`;
@@ -1304,16 +1068,11 @@
 
         function renderCards(cards, small = false, xs = false) {
             const container = document.createElement('div');
-            container.style.display = 'flex';
-            container.style.gap = '4px';
-            container.style.alignItems = 'center';
+            container.style.display = 'flex'; container.style.gap = '4px'; container.style.alignItems = 'center';
             if (!cards || !cards.length) {
                 const span = document.createElement('span');
-                span.style.color = '#4a6a5a';
-                span.style.fontSize = '0.8rem';
-                span.textContent = '—';
-                container.appendChild(span);
-                return container;
+                span.style.color = '#4a6a5a'; span.style.fontSize = '0.8rem'; span.textContent = '—';
+                container.appendChild(span); return container;
             }
             for (const c of cards) container.appendChild(renderCard(c, small, xs));
             return container;
@@ -1345,23 +1104,13 @@
                 const nameDiv = document.createElement('div');
                 nameDiv.className = 'name';
                 nameDiv.textContent = p.name;
-                if (p.isDealer) { const b = document.createElement('span');
-                    b.className = 'dealer-btn';
-                    b.textContent = 'D';
-                    nameDiv.appendChild(b); }
-                if (p.isSmallBlind) { const b = document.createElement('span');
-                    b.className = 'blind-label';
-                    b.textContent = 'SB';
-                    nameDiv.appendChild(b); }
-                if (p.isBigBlind) { const b = document.createElement('span');
-                    b.className = 'blind-label';
-                    b.textContent = 'BB';
-                    nameDiv.appendChild(b); }
+                if (p.isDealer) { const b = document.createElement('span'); b.className = 'dealer-btn'; b.textContent = 'D'; nameDiv.appendChild(b); }
+                if (p.isSmallBlind) { const b = document.createElement('span'); b.className = 'blind-label'; b.textContent = 'SB'; nameDiv.appendChild(b); }
+                if (p.isBigBlind) { const b = document.createElement('span'); b.className = 'blind-label'; b.textContent = 'BB'; nameDiv.appendChild(b); }
                 box.appendChild(nameDiv);
 
                 const chipsDiv = document.createElement('div');
-                chipsDiv.className = 'chips';
-                chipsDiv.innerHTML = `🪙 <span>${p.chips}</span>`;
+                chipsDiv.className = 'chips'; chipsDiv.innerHTML = `🪙 <span>${p.chips}</span>`;
                 box.appendChild(chipsDiv);
 
                 const handDiv = document.createElement('div');
@@ -1379,20 +1128,16 @@
                 box.appendChild(handDiv);
 
                 if (p.currentBet > 0) {
-                    const betDiv = document.createElement('div');
-                    betDiv.className = 'bet-display';
-                    betDiv.textContent = `Bet: ${p.currentBet}`;
-                    box.appendChild(betDiv);
+                    const betDiv = document.createElement('div'); betDiv.className = 'bet-display';
+                    betDiv.textContent = `Bet: ${p.currentBet}`; box.appendChild(betDiv);
                 }
 
                 if (app.game.handComplete && p.id === app.myPlayerId && app.game.getHandResult()) {
-                    const resultDiv = document.createElement('div');
-                    resultDiv.className = 'hand-result';
+                    const resultDiv = document.createElement('div'); resultDiv.className = 'hand-result';
                     const result = app.game.getHandResult();
                     const isWinner = result.winners.some(w => w.id === p.id);
-                    if (isWinner) { resultDiv.textContent = `🏆 WINNER! ${result.handName}`;
-                        resultDiv.style.color = '#f7d875'; } else { resultDiv.textContent = `— ${result.handName || ''}`;
-                        resultDiv.style.color = '#9aafcc'; }
+                    if (isWinner) { resultDiv.textContent = `🏆 WINNER! ${result.handName}`; resultDiv.style.color = '#f7d875'; }
+                    else { resultDiv.textContent = `— ${result.handName || ''}`; resultDiv.style.color = '#9aafcc'; }
                     box.appendChild(resultDiv);
                 }
                 playersArea.appendChild(box);
@@ -1404,47 +1149,39 @@
             if (!state) return;
             potAmount.textContent = state.pot;
 
-            // Phase display
-            const phaseNames = { waiting: '⏳ Waiting', preflop: '🃏 Pre-Flop', flop: '🎯 Flop', turn: '🎯 Turn',
-                river: '🎯 River', showdown: '🏆 Showdown' };
-            if (!state.gameStarted) {
-                phaseDisplay.textContent = '⏳ Waiting for host...';
-            } else {
-                phaseDisplay.textContent = phaseNames[state.phase] || state.phase;
-            }
+            const phaseNames = { waiting: '⏳ Waiting', preflop: '🃏 Pre-Flop', flop: '🎯 Flop', turn: '🎯 Turn', river: '🎯 River', showdown: '🏆 Showdown' };
+            phaseDisplay.textContent = !state.gameStarted ? '⏳ Waiting for host...' : (phaseNames[state.phase] || state.phase);
 
-            // Turn display
             if (!state.gameStarted) {
-                turnDisplay.textContent = '⏳ Waiting for host to start';
-                turnDisplay.style.color = '#9aafcc';
+                turnDisplay.textContent = '⏳ Waiting for host to start'; turnDisplay.style.color = '#9aafcc';
             } else if (state.isMyTurn && state.canAct && !state.handComplete) {
-                turnDisplay.textContent = '🎯 Your turn';
-                turnDisplay.style.color = '#f7d875';
+                turnDisplay.textContent = '🎯 Your turn'; turnDisplay.style.color = '#f7d875';
             } else if (state.handComplete) {
-                turnDisplay.textContent = '🏁 Hand over';
-                turnDisplay.style.color = '#9aafcc';
+                turnDisplay.textContent = '🏁 Hand over'; turnDisplay.style.color = '#9aafcc';
             } else {
                 const current = app.game.getCurrentPlayer();
-                turnDisplay.textContent = current ? `👤 ${current.name}'s turn` : '—';
-                turnDisplay.style.color = '#b0c8dd';
+                turnDisplay.textContent = current ? `👤 ${current.name}'s turn` : '—'; turnDisplay.style.color = '#b0c8dd';
             }
 
             renderCommunity();
             renderPlayers();
 
-            // Start button (host only, when game not started and at least 2 players)
-            if (app.isHost && !app.game.gameStarted) {
-                startBtn.style.display = 'inline-block';
-                const enough = app.game.players.length >= 2;
-                startBtn.disabled = !enough;
-                startBtn.textContent = enough ? '▶ Start Game' : '⏳ Need 2 players';
+            // Handle Host Controls (Top Right)
+            if (app.isHost) {
+                hostControls.style.display = 'flex';
+                if (!state.gameStarted) {
+                    topStartBtn.style.display = 'inline-block';
+                    const enough = app.game.players.length >= 2;
+                    topStartBtn.disabled = !enough;
+                    topStartBtn.textContent = enough ? '▶ Start Game' : '⏳ Need 2 players';
+                } else {
+                    topStartBtn.style.display = 'none';
+                }
             } else {
-                startBtn.style.display = 'none';
+                hostControls.style.display = 'none';
             }
 
-            // Action buttons
-            const canAct = state.isMyTurn && state.canAct && !state.handComplete && state.phase !== 'showdown' && state
-                .gameStarted;
+            const canAct = state.isMyTurn && state.canAct && !state.handComplete && state.phase !== 'showdown' && state.gameStarted;
             checkBtn.disabled = !canAct || !state.availableActions.includes('check');
             callBtn.disabled = !canAct || !state.availableActions.includes('call');
             raiseBtn.disabled = !canAct || !state.availableActions.includes('raise');
@@ -1455,23 +1192,16 @@
                 callBtn.textContent = toCall > 0 ? `📞 Call ${toCall}` : '📞 Call 0';
                 const minRaise = state.minRaise || app.game.minRaise;
                 const maxRaise = state.maxRaise || 0;
-                raiseInput.min = minRaise;
-                raiseInput.max = maxRaise;
+                raiseInput.min = minRaise; raiseInput.max = maxRaise;
                 raiseInput.value = Math.min(Math.max(Number(raiseInput.value) || minRaise, minRaise), maxRaise);
                 raiseInput.disabled = false;
                 raiseBtn.textContent = `⬆ Raise (${raiseInput.value})`;
             } else {
-                raiseInput.disabled = true;
-                callBtn.textContent = '📞 Call';
+                raiseInput.disabled = true; callBtn.textContent = '📞 Call';
             }
 
-            // If game not started, disable all action buttons
             if (!state.gameStarted) {
-                checkBtn.disabled = true;
-                callBtn.disabled = true;
-                raiseBtn.disabled = true;
-                foldBtn.disabled = true;
-                raiseInput.disabled = true;
+                checkBtn.disabled = true; callBtn.disabled = true; raiseBtn.disabled = true; foldBtn.disabled = true; raiseInput.disabled = true;
             }
 
             renderLog();
@@ -1480,27 +1210,20 @@
         function renderLog() {
             logEl.innerHTML = '';
             for (const line of app.logLines.slice(-30)) {
-                const div = document.createElement('div');
-                div.className = 'log-entry';
+                const div = document.createElement('div'); div.className = 'log-entry';
                 if (line.includes('WINNER') || line.includes('🏆')) div.classList.add('highlight');
-                div.textContent = line;
-                logEl.appendChild(div);
+                div.textContent = line; logEl.appendChild(div);
             }
             logEl.scrollTop = logEl.scrollHeight;
         }
 
-        function addLog(msg) { app.logLines.push(msg); if (app.logLines.length > 50) app.logLines.shift();
-            renderLog(); }
+        function addLog(msg) { app.logLines.push(msg); if (app.logLines.length > 50) app.logLines.shift(); renderLog(); }
 
-        // ─── Actions ───
         function sendAction(action, amount = 0) {
             if (app.isProcessing) return;
             app.isProcessing = true;
             const state = app.game.getStateForPlayer(app.myPlayerId);
-            if (!state || !state.isMyTurn || !state.canAct || state.handComplete || !state.gameStarted) {
-                app.isProcessing = false;
-                return;
-            }
+            if (!state || !state.isMyTurn || !state.canAct || state.handComplete || !state.gameStarted) { app.isProcessing = false; return; }
 
             if (app.isHost) {
                 const result = app.game.act(app.myPlayerId, action, amount);
@@ -1509,37 +1232,28 @@
                     const p = app.game.getPlayer(app.myPlayerId);
                     const msg = result.action === 'raise' ? `${p.name} raised to ${result.amount}` :
                         result.action === 'call' ? `${p.name} called ${result.amount}` :
-                        result.action === 'fold' ? `${p.name} folded` :
-                        `${p.name} checked`;
-                    addLog(msg);
-                    handleHostStateUpdate();
+                        result.action === 'fold' ? `${p.name} folded` : `${p.name} checked`;
+                    addLog(msg); handleHostStateUpdate();
                 } else {
-                    addLog(`⚠️ ${result.error}`);
-                    menuError.textContent = result.error;
-                    setTimeout(() => menuError.textContent = '', 2000);
+                    addLog(`⚠️ ${result.error}`); menuError.textContent = result.error; setTimeout(() => menuError.textContent = '', 2000);
                 }
                 return;
             }
 
             if (app.conn && app.conn.open) {
                 app.conn.send({ type: 'action', action, amount });
-                addLog(`⏳ Sending ${action}...`);
-                setTimeout(() => { app.isProcessing = false; }, 300);
+                addLog(`⏳ Sending ${action}...`); setTimeout(() => { app.isProcessing = false; }, 300);
             } else {
-                app.isProcessing = false;
-                addLog('❌ Not connected to host');
+                app.isProcessing = false; addLog('❌ Not connected to host');
             }
         }
 
-        // ─── Host state ───
         function handleHostStateUpdate() {
             if (app.game.handComplete && app.game.phase === 'showdown') {
                 const result = app.game.getHandResult();
                 if (result) {
                     addLog(`🏆 ${result.winnerNames.join(', ')} wins ${result.pot} chips with ${result.handName}!`);
-                    broadcastState();
-                    setTimeout(() => { if (app.isHost && app.connected) startNewHand(); }, 4000);
-                    return;
+                    broadcastState(); setTimeout(() => { if (app.isHost && app.connected) startNewHand(); }, 4000); return;
                 }
             }
             if (app.game.handComplete && app.game.getActivePlayers().length <= 1) {
@@ -1548,9 +1262,7 @@
                     const result = app.game.getHandResult();
                     if (result) {
                         addLog(`🏆 ${result.winnerNames.join(', ')} wins ${result.pot} chips (last player standing)!`);
-                        broadcastState();
-                        setTimeout(() => { if (app.isHost && app.connected) startNewHand(); }, 4000);
-                        return;
+                        broadcastState(); setTimeout(() => { if (app.isHost && app.connected) startNewHand(); }, 4000); return;
                     }
                 }
             }
@@ -1560,11 +1272,7 @@
             if (current && current.id === app.myPlayerId && !app.game.handComplete && app.game.gameStarted) {
                 updateUI();
                 const actions = app.game.getActions(app.myPlayerId);
-                if (!actions.canAct) {
-                    addLog('⏩ Auto-advancing...');
-                    app.game.advanceToNextActivePlayer();
-                    handleHostStateUpdate();
-                }
+                if (!actions.canAct) { addLog('⏩ Auto-advancing...'); app.game.advanceToNextActivePlayer(); handleHostStateUpdate(); }
             } else {
                 updateUI();
             }
@@ -1575,9 +1283,7 @@
             const state = app.game.getStateForPlayer(null);
             if (app.peer) {
                 for (const conn of Object.values(app.peer.connections)) {
-                    for (const c of conn) {
-                        if (c.open) c.send({ type: 'state', state });
-                    }
+                    for (const c of conn) { if (c.open) c.send({ type: 'state', state }); }
                 }
             }
         }
@@ -1587,8 +1293,7 @@
             const active = app.game.players.filter(p => p.isActive && p.chips > 0);
             if (active.length < 2) { addLog('❌ Not enough players to start a new hand'); return; }
             for (const p of app.game.players) {
-                if (p.chips <= 0 && p.isActive) { p.chips = 1000;
-                    addLog(`🔄 ${p.name} re-bought for 1000 chips`); }
+                if (p.chips <= 0 && p.isActive) { p.chips = 1000; addLog(`🔄 ${p.name} re-bought for 1000 chips`); }
                 if (p.chips > 0) p.isActive = true;
             }
             app.game.startHand();
@@ -1598,25 +1303,21 @@
             handleHostStateUpdate();
         }
 
-        // ─── Peer.js ───
         function generateRoomCode() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             return chars[Math.floor(Math.random() * 26)] + chars[Math.floor(Math.random() * 26)];
         }
 
-        // ─── Host ───
         async function hostGame() {
             const code = generateRoomCode();
-            app.hostCode = code;
-            app.roomCode = code;
+            app.hostCode = code; app.roomCode = code;
 
-            // Show code in menu
             hostCodeDisplay.style.display = 'block';
             hostCodeText.textContent = code;
             roomCodeInput.value = code;
+            gameRoomCode.textContent = code; // Update the new Top Right code display
 
-            menuError.textContent = '';
-            menuInfo.textContent = '🔄 Creating game...';
+            menuError.textContent = ''; menuInfo.textContent = '🔄 Creating game...';
 
             try {
                 const peerId = 'poker-' + code;
@@ -1625,11 +1326,7 @@
 
                 await new Promise((resolve, reject) => {
                     peer.on('open', () => {
-                        app.myId = peerId;
-                        app.isHost = true;
-                        app.connected = true;
-                        app.myPlayerId = 'host';
-                        resolve();
+                        app.myId = peerId; app.isHost = true; app.connected = true; app.myPlayerId = 'host'; resolve();
                     });
                     peer.on('error', err => reject(err));
                     setTimeout(() => reject(new Error('Timeout connecting to PeerJS')), 15000);
@@ -1639,27 +1336,22 @@
                 app.game.addPlayer('host', 'You (Host)');
                 app.myPlayerId = 'host';
 
-                peer.on('connection', conn => { app.conn = conn;
-                    setupClientConnection(conn); });
+                peer.on('connection', conn => { app.conn = conn; setupClientConnection(conn); });
 
                 showGame();
                 menuInfo.textContent = `✅ Hosting game "${code}" — Share this code with friends!`;
                 menuPlayerCount.textContent = `👥 Players: 1`;
                 addLog(`🎯 Hosting game "${code}" — waiting for players...`);
 
-                // Update player count periodically
                 const countInterval = setInterval(() => {
                     menuPlayerCount.textContent = `👥 Players: ${app.game.players.length}`;
-                    // Also update UI to refresh start button state
                     if (app.gameStarted) clearInterval(countInterval);
                     else updateUI();
                 }, 1000);
 
             } catch (err) {
-                menuError.textContent = `❌ Failed to host: ${err.message}`;
-                console.error(err);
-                menuInfo.textContent = '';
-                hostCodeDisplay.style.display = 'none';
+                menuError.textContent = `❌ Failed to host: ${err.message}`; console.error(err);
+                menuInfo.textContent = ''; hostCodeDisplay.style.display = 'none';
             }
         }
 
@@ -1672,34 +1364,22 @@
                 const state = app.game.getStateForPlayer(null);
                 conn.send({ type: 'state', state });
                 if (app.game.gameStarted) conn.send({ type: 'gameStarted' });
-                broadcastState();
-                updateUI(); // refresh start button
+                broadcastState(); updateUI(); 
             };
 
-            // Fix for PeerJS open event timing race condition
-            if (conn.open) {
-                initClient();
-            } else {
-                conn.on('open', initClient);
-            }
-            
+            if (conn.open) { initClient(); } else { conn.on('open', initClient); }
             conn.on('data', data => handleClientMessage(conn, data));
             conn.on('close', () => {
                 const player = app.game.getPlayer(conn.peer);
                 if (player) {
-                    addLog(`❌ ${player.name} disconnected`);
-                    app.game.removePlayer(conn.peer);
-                    broadcastState();
+                    addLog(`❌ ${player.name} disconnected`); app.game.removePlayer(conn.peer); broadcastState();
                     menuPlayerCount.textContent = `👥 Players: ${app.game.players.length}`;
                     if (app.game.gameStarted && !app.game.handComplete) {
                         const active = app.game.getActivePlayers();
                         if (active.length <= 1) { 
-                            app.game.handComplete = true;
-                            app.game.phase = 'showdown';
-                            handleHostStateUpdate(); 
+                            app.game.handComplete = true; app.game.phase = 'showdown'; handleHostStateUpdate(); 
                         } else { 
-                            app.game.advanceToNextActivePlayer();
-                            handleHostStateUpdate(); 
+                            app.game.advanceToNextActivePlayer(); handleHostStateUpdate(); 
                         }
                     }
                     updateUI();
@@ -1713,8 +1393,7 @@
                 if (!player) return;
                 const result = app.game.act(conn.peer, data.action, data.amount || 0);
                 if (result.success) {
-                    addLog(`${player.name} ${result.action}${result.amount ? ' ' + result.amount : ''}`);
-                    handleHostStateUpdate();
+                    addLog(`${player.name} ${result.action}${result.amount ? ' ' + result.amount : ''}`); handleHostStateUpdate();
                 } else {
                     conn.send({ type: 'error', message: result.error });
                 }
@@ -1725,74 +1404,54 @@
             }
         }
 
-        // ─── Join ───
         async function joinGame() {
             const code = roomCodeInput.value.trim().toUpperCase();
             if (!code || code.length !== 2 || !/^[A-Z]{2}$/.test(code)) {
-                menuError.textContent = '❌ Enter a 2-letter code (e.g., AB)';
-                return;
+                menuError.textContent = '❌ Enter a 2-letter code (e.g., AB)'; return;
             }
-            app.roomCode = code;
-            menuError.textContent = '';
-            menuInfo.textContent = '🔄 Connecting to game...';
-            hostCodeDisplay.style.display = 'none';
+            app.roomCode = code; menuError.textContent = ''; menuInfo.textContent = '🔄 Connecting to game...'; hostCodeDisplay.style.display = 'none';
 
             try {
                 const peer = new Peer(undefined, { debug: 2 });
                 app.peer = peer;
 
                 const peerId = await new Promise((resolve, reject) => {
-                    peer.on('open', id => { app.myId = id;
-                        resolve(id); });
+                    peer.on('open', id => { app.myId = id; resolve(id); });
                     peer.on('error', err => reject(err));
                     setTimeout(() => reject(new Error('Timeout connecting to PeerJS')), 15000);
                 });
 
-                const hostId = 'poker-' + code;
-                const conn = peer.connect(hostId);
-                app.conn = conn;
-                app.isHost = false;
-                app.myPlayerId = peerId;
+                const hostId = 'poker-' + code; const conn = peer.connect(hostId);
+                app.conn = conn; app.isHost = false; app.myPlayerId = peerId;
 
                 await new Promise((resolve, reject) => {
-                    conn.on('open', () => { app.connected = true;
-                        resolve(); });
+                    conn.on('open', () => { app.connected = true; resolve(); });
                     conn.on('error', err => reject(err));
                     setTimeout(() => reject(new Error('Timeout connecting to host')), 15000);
                 });
 
                 conn.on('data', data => handleHostMessage(data));
                 conn.on('close', () => {
-                    app.connected = false;
-                    addLog('❌ Disconnected from host');
-                    menuInfo.textContent = '❌ Disconnected from host';
+                    app.connected = false; addLog('❌ Disconnected from host'); menuInfo.textContent = '❌ Disconnected from host';
                     setTimeout(() => { if (!app.connected) showMenu(); }, 2000);
                 });
 
                 const name = `Player${Math.floor(Math.random() * 1000)}`;
                 conn.send({ type: 'join', name });
 
-                showGame();
-                app.gameStarted = true; // will be set by host state
-                menuInfo.textContent = `✅ Joined game "${code}"`;
+                showGame(); app.gameStarted = true; menuInfo.textContent = `✅ Joined game "${code}"`;
                 addLog('🔗 Connected to host! Waiting for game to start...');
 
             } catch (err) {
-                menuError.textContent = `❌ Failed to join: ${err.message}`;
-                console.error(err);
-                menuInfo.textContent = '';
+                menuError.textContent = `❌ Failed to join: ${err.message}`; console.error(err); menuInfo.textContent = '';
             }
         }
 
         function handleHostMessage(data) {
             if (data.type === 'state') {
-                const state = data.state;
-                syncGameState(state);
-                updateUI();
+                const state = data.state; syncGameState(state); updateUI();
                 const myState = app.game.getStateForPlayer(app.myPlayerId);
-                if (myState && myState.isMyTurn && myState.canAct && !myState.handComplete && myState.gameStarted) {
-                    addLog('🎯 Your turn!');
-                }
+                if (myState && myState.isMyTurn && myState.canAct && !myState.handComplete && myState.gameStarted) { addLog('🎯 Your turn!'); }
                 if (app.game.handComplete && app.game.phase === 'showdown') {
                     const result = app.game.getHandResult();
                     if (result) {
@@ -1803,20 +1462,13 @@
                 }
             }
             if (data.type === 'error') {
-                addLog(`⚠️ ${data.message}`);
-                menuError.textContent = data.message;
-                setTimeout(() => menuError.textContent = '', 3000);
+                addLog(`⚠️ ${data.message}`); menuError.textContent = data.message; setTimeout(() => menuError.textContent = '', 3000);
             }
             if (data.type === 'gameStarted') {
-                app.game.gameStarted = true;
-                addLog('🃏 Game started!');
-                updateUI();
+                app.game.gameStarted = true; addLog('🃏 Game started!'); updateUI();
             }
             if (data.type === 'handComplete') {
-                app.game.handComplete = true;
-                app.game.phase = 'showdown';
-                addLog('🏁 Hand complete!');
-                updateUI();
+                app.game.handComplete = true; app.game.phase = 'showdown'; addLog('🏁 Hand complete!'); updateUI();
             }
         }
 
@@ -1829,75 +1481,43 @@
             for (const p of app.game.players) {
                 const sp = playerMap[p.id];
                 if (sp) {
-                    p.chips = sp.chips;
-                    p.hand = sp.hand || [];
-                    p.isActive = sp.isActive;
-                    p.isDealer = sp.isDealer;
-                    p.isSmallBlind = sp.isSmallBlind;
-                    p.isBigBlind = sp.isBigBlind;
-                    p.currentBet = sp.currentBet || 0;
-                    p.folded = sp.folded || false;
-                    p.allIn = sp.allIn || false;
-                    p.handResult = sp.handResult || null;
+                    p.chips = sp.chips; p.hand = sp.hand || []; p.isActive = sp.isActive; p.isDealer = sp.isDealer;
+                    p.isSmallBlind = sp.isSmallBlind; p.isBigBlind = sp.isBigBlind; p.currentBet = sp.currentBet || 0;
+                    p.folded = sp.folded || false; p.allIn = sp.allIn || false; p.handResult = sp.handResult || null;
                 }
             }
-            for (const sp of state.players) {
-                if (!app.game.getPlayer(sp.id)) app.game.addPlayer(sp.id, sp.name);
-            }
+            for (const sp of state.players) { if (!app.game.getPlayer(sp.id)) app.game.addPlayer(sp.id, sp.name); }
             const stateIds = state.players.map(p => p.id);
-            for (const p of app.game.players) {
-                if (!stateIds.includes(p.id)) app.game.removePlayer(p.id);
-            }
-            app.game.communityCards = state.communityCards || [];
-            app.game.pot = state.pot || 0;
-            app.game.currentBet = state.currentBet || 0;
-            app.game.highestBet = state.highestBet || 0;
-            app.game.phase = state.phase || 'waiting';
-            app.game.handComplete = state.handComplete || false;
-            app.game.dealerIndex = state.dealerIndex || 0;
-            app.game.currentPlayerIndex = state.currentPlayerIndex || 0;
-            app.game.minRaise = state.minRaise || 20;
-            app.game.smallBlind = state.smallBlind || 10;
-            app.game.bigBlind = state.bigBlind || 20;
-            app.game.lastAction = state.lastAction || '';
-            app.game.playersInHand = state.playersInHand || [];
-            app.game.gameStarted = state.gameStarted || false;
-            if (!app.game.getPlayer(myId) && app.conn) { /* will be added by host */ }
+            for (const p of app.game.players) { if (!stateIds.includes(p.id)) app.game.removePlayer(p.id); }
+            
+            app.game.communityCards = state.communityCards || []; app.game.pot = state.pot || 0;
+            app.game.currentBet = state.currentBet || 0; app.game.highestBet = state.highestBet || 0;
+            app.game.phase = state.phase || 'waiting'; app.game.handComplete = state.handComplete || false;
+            app.game.dealerIndex = state.dealerIndex || 0; app.game.currentPlayerIndex = state.currentPlayerIndex || 0;
+            app.game.minRaise = state.minRaise || 20; app.game.smallBlind = state.smallBlind || 10;
+            app.game.bigBlind = state.bigBlind || 20; app.game.lastAction = state.lastAction || '';
+            app.game.playersInHand = state.playersInHand || []; app.game.gameStarted = state.gameStarted || false;
         }
 
-        // ─── UI Navigation ───
         function showGame() {
-            menu.style.display = 'none';
-            gameEl.style.display = 'flex';
-            updateUI();
+            menu.style.display = 'none'; gameEl.style.display = 'flex'; updateUI();
         }
 
         function showMenu() {
-            menu.style.display = 'block';
-            gameEl.style.display = 'none';
+            menu.style.display = 'block'; gameEl.style.display = 'none';
             if (app.peer) { try { app.peer.destroy(); } catch (e) {} }
-            app.peer = null;
-            app.conn = null;
-            app.connected = false;
-            app.isHost = false;
-            app.gameStarted = false;
-            app.game = new PokerGame();
-            app.myPlayerId = null;
-            app.hostCode = '';
-            hostCodeDisplay.style.display = 'none';
-            menuPlayerCount.textContent = '';
-            menuInfo.textContent = '';
-            menuError.textContent = '';
-            roomCodeInput.value = '';
-            roomCodeInput.focus();
+            app.peer = null; app.conn = null; app.connected = false; app.isHost = false; app.gameStarted = false;
+            app.game = new PokerGame(); app.myPlayerId = null; app.hostCode = '';
+            hostCodeDisplay.style.display = 'none'; menuPlayerCount.textContent = '';
+            menuInfo.textContent = ''; menuError.textContent = ''; roomCodeInput.value = ''; roomCodeInput.focus();
         }
 
         // ─── Event Listeners ───
         hostBtn.addEventListener('click', hostGame);
         joinBtn.addEventListener('click', joinGame);
 
-        // Start button
-        startBtn.addEventListener('click', () => {
+        // Top Right Start Button triggers the start process
+        topStartBtn.addEventListener('click', () => {
             if (app.isHost && !app.game.gameStarted && app.game.players.length >= 2) {
                 startNewHand();
             }
@@ -1910,25 +1530,19 @@
 
         roomCodeInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') { if (document.activeElement === roomCodeInput) hostBtn.focus(); }
-            if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
-                setTimeout(() => { roomCodeInput.value = roomCodeInput.value.toUpperCase(); }, 10);
-            }
+            if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) { setTimeout(() => { roomCodeInput.value = roomCodeInput.value.toUpperCase(); }, 10); }
         });
 
         checkBtn.addEventListener('click', () => sendAction('check'));
         callBtn.addEventListener('click', () => sendAction('call'));
         foldBtn.addEventListener('click', () => sendAction('fold'));
         raiseBtn.addEventListener('click', () => {
-            const amount = parseInt(raiseInput.value) || app.game.minRaise;
-            sendAction('raise', amount);
+            const amount = parseInt(raiseInput.value) || app.game.minRaise; sendAction('raise', amount);
         });
 
         raiseInput.addEventListener('input', () => {
-            const val = parseInt(raiseInput.value) || 0;
-            const min = parseInt(raiseInput.min) || 20;
-            const max = parseInt(raiseInput.max) || 0;
-            if (val < min && max > 0) raiseInput.value = min;
-            if (val > max && max > 0) raiseInput.value = max;
+            const val = parseInt(raiseInput.value) || 0; const min = parseInt(raiseInput.min) || 20; const max = parseInt(raiseInput.max) || 0;
+            if (val < min && max > 0) raiseInput.value = min; if (val > max && max > 0) raiseInput.value = max;
             raiseBtn.textContent = `⬆ Raise (${raiseInput.value})`;
         });
 
@@ -1943,18 +1557,12 @@
 
         window.addEventListener('resize', () => { if (app.connected) updateUI(); });
 
-        // URL param auto-join
         (function() {
-            const params = new URLSearchParams(window.location.search);
-            const code = params.get('room');
-            if (code && code.length === 2) { roomCodeInput.value = code.toUpperCase();
-                setTimeout(() => joinGame(), 400); }
+            const params = new URLSearchParams(window.location.search); const code = params.get('room');
+            if (code && code.length === 2) { roomCodeInput.value = code.toUpperCase(); setTimeout(() => joinGame(), 400); }
         })();
 
         roomCodeInput.focus();
-        console.log('♠ Poker loaded!  Host gets a random 2-letter code.  Host must press "Start Game" to begin.');
-        console.log('💡 Keys: C=Check, R=Raise, F=Fold, Enter=Call');
     </script>
-
 </body>
 </html>
