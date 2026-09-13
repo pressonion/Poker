@@ -1576,7 +1576,7 @@
             if (app.peer) {
                 for (const conn of Object.values(app.peer.connections)) {
                     for (const c of conn) {
-                        if (c.open && c !== app.conn) c.send({ type: 'state', state });
+                        if (c.open) c.send({ type: 'state', state });
                     }
                 }
             }
@@ -1664,7 +1664,7 @@
         }
 
         function setupClientConnection(conn) {
-            conn.on('open', () => {
+            const initClient = () => {
                 const name = `Player${app.game.players.length}`;
                 app.game.addPlayer(conn.peer, name);
                 addLog(`🔗 ${name} joined!`);
@@ -1674,7 +1674,15 @@
                 if (app.game.gameStarted) conn.send({ type: 'gameStarted' });
                 broadcastState();
                 updateUI(); // refresh start button
-            });
+            };
+
+            // Fix for PeerJS open event timing race condition
+            if (conn.open) {
+                initClient();
+            } else {
+                conn.on('open', initClient);
+            }
+            
             conn.on('data', data => handleClientMessage(conn, data));
             conn.on('close', () => {
                 const player = app.game.getPlayer(conn.peer);
@@ -1685,10 +1693,14 @@
                     menuPlayerCount.textContent = `👥 Players: ${app.game.players.length}`;
                     if (app.game.gameStarted && !app.game.handComplete) {
                         const active = app.game.getActivePlayers();
-                        if (active.length <= 1) { app.game.handComplete = true;
+                        if (active.length <= 1) { 
+                            app.game.handComplete = true;
                             app.game.phase = 'showdown';
-                            handleHostStateUpdate(); } else { app.game.advanceToNextActivePlayer();
-                            handleHostStateUpdate(); }
+                            handleHostStateUpdate(); 
+                        } else { 
+                            app.game.advanceToNextActivePlayer();
+                            handleHostStateUpdate(); 
+                        }
                     }
                     updateUI();
                 }
