@@ -7,561 +7,172 @@
     <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
         /* ── Reset & base ── */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-            background: #141a26;
-            color: #e8edf5;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
+            background: #141a26; color: #e8edf5;
+            min-height: 100vh; display: flex;
+            justify-content: center; align-items: center; padding: 16px;
         }
 
         #app {
-            width: 100%;
-            max-width: 1100px;
-            min-height: 700px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 100%; max-width: 1100px; min-height: 700px;
+            display: flex; flex-direction: column; align-items: center;
         }
 
         /* ── HOST CONTROLS (Top Right) ── */
         #host-controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: none;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 12px;
-            z-index: 1000;
+            position: fixed; top: 20px; right: 20px;
+            display: none; flex-direction: column; align-items: flex-end;
+            gap: 12px; z-index: 1000;
         }
         #gameRoomCodeDisplay {
-            background: rgba(16, 22, 36, 0.95);
-            border: 2px solid #f5b342;
-            padding: 10px 20px;
-            border-radius: 14px;
-            font-size: 1.5rem;
-            color: #f7d875;
-            font-family: 'Courier New', monospace;
-            font-weight: 700;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-            letter-spacing: 4px;
+            background: rgba(16, 22, 36, 0.95); border: 2px solid #f5b342;
+            padding: 10px 20px; border-radius: 14px; font-size: 1.5rem;
+            color: #f7d875; font-family: 'Courier New', monospace; font-weight: 700;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6); letter-spacing: 4px;
         }
         .code-label {
-            font-size: 0.7rem;
-            color: #9aafcc;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 4px;
+            font-size: 0.7rem; color: #9aafcc; letter-spacing: 1px;
+            text-transform: uppercase; display: block; margin-bottom: 4px;
             font-family: 'Segoe UI', Roboto, sans-serif;
         }
         #host-controls .btn-start {
-            padding: 12px 24px;
-            font-size: 1.1rem;
+            padding: 12px 24px; font-size: 1.1rem;
             box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3) !important;
         }
 
         /* ── MENU ── */
         #menu {
-            background: #1f293d;
-            border-radius: 48px;
-            padding: 44px 50px;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
-            text-align: center;
-            width: 100%;
-            max-width: 520px;
-            margin: auto;
-            border: 1px solid #3a4c64;
+            background: #1f293d; border-radius: 48px; padding: 44px 50px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7); text-align: center;
+            width: 100%; max-width: 520px; margin: auto; border: 1px solid #3a4c64;
         }
         #menu h1 {
-            font-size: 3.2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
+            font-size: 3.2rem; font-weight: 700; letter-spacing: 2px;
             background: linear-gradient(135deg, #f7d875, #f5b342);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 4px;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px;
         }
-        #menu .sub {
-            color: #9aafcc;
-            font-size: 1rem;
-            margin-bottom: 28px;
-            letter-spacing: 2px;
-        }
+        #menu .sub { color: #9aafcc; font-size: 1rem; margin-bottom: 28px; letter-spacing: 2px; }
 
-        .code-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-        }
+        .code-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
         .code-row input {
-            width: 100px;
-            padding: 14px 8px;
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-align: center;
-            text-transform: uppercase;
-            background: #101624;
-            border: 2px solid #3a4c64;
-            border-radius: 16px;
-            color: #fff;
-            outline: none;
-            transition: 0.2s;
-            letter-spacing: 6px;
+            width: 100px; padding: 14px 8px; font-size: 1.8rem; font-weight: 700;
+            text-align: center; text-transform: uppercase; background: #101624;
+            border: 2px solid #3a4c64; border-radius: 16px; color: #fff; outline: none; transition: 0.2s; letter-spacing: 6px;
         }
-        .code-row input:focus {
-            border-color: #f5b342;
-            box-shadow: 0 0 0 3px rgba(245, 179, 66, 0.25);
-        }
-        .code-row input::placeholder {
-            letter-spacing: 1px;
-            font-size: 1rem;
-            color: #4a5a70;
-        }
+        .code-row input:focus { border-color: #f5b342; box-shadow: 0 0 0 3px rgba(245, 179, 66, 0.25); }
+        .code-row input::placeholder { letter-spacing: 1px; font-size: 1rem; color: #4a5a70; }
         .code-row .random-btn {
-            background: none;
-            border: 1px dashed #4a5a70;
-            color: #7a8aa0;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.2s;
+            background: none; border: 1px dashed #4a5a70; color: #7a8aa0; padding: 6px 14px;
+            border-radius: 30px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;
         }
-        .code-row .random-btn:hover {
-            border-color: #f5b342;
-            color: #f5b342;
-        }
+        .code-row .random-btn:hover { border-color: #f5b342; color: #f5b342; }
 
-        .btn-group {
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
+        .btn-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
         .btn {
-            padding: 14px 38px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: 0.2s;
-            background: #2d3d55;
-            color: #c8d6e5;
-            box-shadow: 0 4px 0 #16202e;
-            letter-spacing: 0.3px;
+            padding: 14px 38px; font-size: 1.05rem; font-weight: 600; border: none;
+            border-radius: 60px; cursor: pointer; transition: 0.2s; background: #2d3d55;
+            color: #c8d6e5; box-shadow: 0 4px 0 #16202e; letter-spacing: 0.3px;
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.08);
-        }
-        .btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #16202e;
-        }
-        .btn-primary {
-            background: #f5b342;
-            color: #141a26;
-            box-shadow: 0 4px 0 #b87a2a;
-        }
-        .btn-primary:hover {
-            background: #fcc45e;
-        }
-        .btn-secondary {
-            background: #3a506e;
-            color: #e8edf5;
-            box-shadow: 0 4px 0 #1f2a3a;
-        }
-        .btn-secondary:hover {
-            background: #4a6488;
-        }
-        .btn:disabled {
-            opacity: 0.4;
-            transform: none !important;
-            cursor: not-allowed;
-        }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #16202e; }
+        .btn-primary { background: #f5b342; color: #141a26; box-shadow: 0 4px 0 #b87a2a; }
+        .btn-primary:hover { background: #fcc45e; }
+        .btn-secondary { background: #3a506e; color: #e8edf5; box-shadow: 0 4px 0 #1f2a3a; }
+        .btn-secondary:hover { background: #4a6488; }
+        .btn:disabled { opacity: 0.4; transform: none !important; cursor: not-allowed; }
 
-        #menuError {
-            color: #f06a7a;
-            min-height: 24px;
-            font-size: 0.9rem;
-            margin-top: 6px;
-        }
-        #menuInfo {
-            color: #7ab8f0;
-            min-height: 24px;
-            font-size: 0.95rem;
-            margin-top: 6px;
-        }
-        #menuPlayerCount {
-            color: #9aafcc;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
+        #menuError { color: #f06a7a; min-height: 24px; font-size: 0.9rem; margin-top: 6px; }
+        #menuInfo { color: #7ab8f0; min-height: 24px; font-size: 0.95rem; margin-top: 6px; }
+        #menuPlayerCount { color: #9aafcc; font-size: 0.9rem; margin-top: 10px; }
         .host-code-display {
-            background: #101624;
-            border-radius: 40px;
-            padding: 12px 28px;
-            display: inline-block;
-            margin: 8px 0 16px 0;
-            border: 2px solid #f5b342;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 8px;
-            color: #f7d875;
-            font-family: 'Courier New', monospace;
+            background: #101624; border-radius: 40px; padding: 12px 28px; display: inline-block;
+            margin: 8px 0 16px 0; border: 2px solid #f5b342; font-size: 2rem; font-weight: 700;
+            letter-spacing: 8px; color: #f7d875; font-family: 'Courier New', monospace;
         }
-        .host-code-label {
-            color: #9aafcc;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
+        .host-code-label { color: #9aafcc; font-size: 0.9rem; letter-spacing: 1px; }
 
         /* ── GAME ── */
-        #game {
-            display: none;
-            width: 100%;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
+        #game { display: none; width: 100%; flex-direction: column; align-items: center; gap: 10px; }
 
         /* ── TABLE ── */
         #table {
             background: radial-gradient(ellipse at center, #1a7a44 0%, #0d4a28 100%);
-            border-radius: 120px 120px 80px 80px;
-            padding: 24px 28px 18px 28px;
-            width: 100%;
-            max-width: 1000px;
-            min-height: 440px;
-            box-shadow: inset 0 -20px 60px rgba(0, 0, 0, 0.6), 0 20px 50px rgba(0, 0, 0, 0.5);
-            border: 8px solid #2d1f0e;
-            position: relative;
-            display: flex;
-            flex-direction: column;
+            border-radius: 120px 120px 80px 80px; padding: 24px 28px 18px 28px; width: 100%;
+            max-width: 1000px; min-height: 440px; box-shadow: inset 0 -20px 60px rgba(0, 0, 0, 0.6), 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 8px solid #2d1f0e; position: relative; display: flex; flex-direction: column;
         }
 
-        /* top bar */
-        #table-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 6px 8px 6px;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        #pot-display {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 6px 22px;
-            border-radius: 40px;
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #f7d875;
-            border: 1px solid #c9a84c;
-            backdrop-filter: blur(4px);
-        }
-        #pot-display span {
-            color: #fff;
-        }
-        #phase-display {
-            background: rgba(0, 0, 0, 0.45);
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #bdd4e8;
-            border: 1px solid #3a5a7a;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        #turn-display {
-            background: rgba(0, 0, 0, 0.45);
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            color: #b0c8dd;
-            border: 1px solid #2a4a6a;
-        }
+        #table-top { display: flex; justify-content: space-between; align-items: center; padding: 0 6px 8px 6px; flex-wrap: wrap; gap: 6px; }
+        #pot-display { background: rgba(0, 0, 0, 0.5); padding: 6px 22px; border-radius: 40px; font-size: 1.15rem; font-weight: 600; color: #f7d875; border: 1px solid #c9a84c; backdrop-filter: blur(4px); }
+        #pot-display span { color: #fff; }
+        #phase-display { background: rgba(0, 0, 0, 0.45); padding: 6px 18px; border-radius: 40px; font-size: 0.85rem; font-weight: 500; color: #bdd4e8; border: 1px solid #3a5a7a; text-transform: uppercase; letter-spacing: 1px; }
+        #turn-display { background: rgba(0, 0, 0, 0.45); padding: 6px 18px; border-radius: 40px; font-size: 0.85rem; color: #b0c8dd; border: 1px solid #2a4a6a; }
 
-        /* community cards */
-        #community {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            padding: 12px 0 8px 0;
-            min-height: 110px;
-            flex-wrap: wrap;
-        }
-        .card {
-            width: 76px;
-            height: 106px;
-            background: #fff;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.8rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-            border: 2px solid #d0c8b0;
-            position: relative;
-            color: #222;
-            transition: 0.15s;
-        }
-        .card-back {
-            background: linear-gradient(135deg, #1a3a6a, #2a5a8a);
-            border: 2px solid #4a7aaa;
-            color: transparent;
-            background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0px, rgba(255, 255, 255, 0.04) 8px, transparent 8px, transparent 16px);
-        }
-        .card-back::after {
-            content: '♠';
-            color: rgba(255, 255, 255, 0.10);
-            font-size: 2.6rem;
-            position: absolute;
-        }
-        .card .suit {
-            font-size: 1.5rem;
-            line-height: 1;
-        }
-        .card .rank {
-            font-size: 1.7rem;
-            line-height: 1;
-        }
-        .card.red {
-            color: #d32f2f;
-        }
-        .card.black {
-            color: #222;
-        }
-        .card-sm {
-            width: 56px;
-            height: 78px;
-            font-size: 1.3rem;
-        }
-        .card-sm .rank {
-            font-size: 1.2rem;
-        }
-        .card-sm .suit {
-            font-size: 1.1rem;
-        }
-        .card-xs {
-            width: 42px;
-            height: 60px;
-            font-size: 0.9rem;
-        }
-        .card-xs .rank {
-            font-size: 0.9rem;
-        }
-        .card-xs .suit {
-            font-size: 0.8rem;
-        }
+        #community { display: flex; justify-content: center; gap: 14px; padding: 12px 0 8px 0; min-height: 110px; flex-wrap: wrap; }
+        .card { width: 76px; height: 106px; background: #fff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; font-size: 1.8rem; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); border: 2px solid #d0c8b0; position: relative; color: #222; transition: 0.15s; }
+        .card-back { background: linear-gradient(135deg, #1a3a6a, #2a5a8a); border: 2px solid #4a7aaa; color: transparent; background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0px, rgba(255, 255, 255, 0.04) 8px, transparent 8px, transparent 16px); }
+        .card-back::after { content: '♠'; color: rgba(255, 255, 255, 0.10); font-size: 2.6rem; position: absolute; }
+        .card .suit { font-size: 1.5rem; line-height: 1; }
+        .card .rank { font-size: 1.7rem; line-height: 1; }
+        .card.red { color: #d32f2f; }
+        .card.black { color: #222; }
+        .card-sm { width: 56px; height: 78px; font-size: 1.3rem; }
+        .card-sm .rank { font-size: 1.2rem; }
+        .card-sm .suit { font-size: 1.1rem; }
+        .card-xs { width: 42px; height: 60px; font-size: 0.9rem; }
+        .card-xs .rank { font-size: 0.9rem; }
+        .card-xs .suit { font-size: 0.8rem; }
 
-        /* players */
-        #players-area {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            flex-wrap: wrap;
-            padding: 8px 0 2px 0;
-        }
-        .player-box {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 20px;
-            padding: 10px 14px;
-            min-width: 110px;
-            text-align: center;
-            border: 2px solid transparent;
-            backdrop-filter: blur(4px);
-            transition: 0.25s;
-            flex: 0 1 auto;
-        }
-        .player-box.active-turn {
-            border-color: #f7d875;
-            box-shadow: 0 0 30px rgba(247, 216, 117, 0.2);
-            background: rgba(0, 0, 0, 0.55);
-        }
-        .player-box.folded {
-            opacity: 0.35;
-        }
-        .player-box .name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: #e8edf5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .player-box .chips {
-            font-size: 0.85rem;
-            color: #bdd4e8;
-            margin-top: 2px;
-        }
-        .player-box .chips span {
-            color: #f7d875;
-            font-weight: 600;
-        }
-        .player-box .hand {
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-            margin-top: 6px;
-            min-height: 60px;
-        }
-        .player-box .bet-display {
-            font-size: 0.75rem;
-            color: #f0b87a;
-            margin-top: 3px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            padding: 2px 12px;
-            display: inline-block;
-        }
-        .player-box .hand-result {
-            font-size: 0.7rem;
-            color: #f7d875;
-            margin-top: 4px;
-            font-weight: 600;
-        }
-        .player-box .dealer-btn {
-            display: inline-block;
-            background: #f5b342;
-            color: #141a26;
-            font-size: 0.55rem;
-            font-weight: 700;
-            padding: 1px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-        }
-        .player-box .blind-label {
-            font-size: 0.55rem;
-            color: #9aafcc;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 0 8px;
-            border-radius: 12px;
-        }
+        #players-area { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; padding: 8px 0 2px 0; }
+        .player-box { background: rgba(0, 0, 0, 0.4); border-radius: 20px; padding: 10px 14px; min-width: 110px; text-align: center; border: 2px solid transparent; backdrop-filter: blur(4px); transition: 0.25s; flex: 0 1 auto; }
+        .player-box.active-turn { border-color: #f7d875; box-shadow: 0 0 30px rgba(247, 216, 117, 0.2); background: rgba(0, 0, 0, 0.55); }
+        .player-box.folded { opacity: 0.35; }
+        .player-box .name { font-weight: 700; font-size: 0.95rem; color: #e8edf5; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+        .player-box .chips { font-size: 0.85rem; color: #bdd4e8; margin-top: 2px; }
+        .player-box .chips span { color: #f7d875; font-weight: 600; }
+        .player-box .hand { display: flex; justify-content: center; gap: 5px; margin-top: 6px; min-height: 60px; }
+        .player-box .bet-display { font-size: 0.75rem; color: #f0b87a; margin-top: 3px; background: rgba(0, 0, 0, 0.3); border-radius: 20px; padding: 2px 12px; display: inline-block; }
+        .player-box .hand-result { font-size: 0.7rem; color: #f7d875; margin-top: 4px; font-weight: 600; }
+        .player-box .dealer-btn { display: inline-block; background: #f5b342; color: #141a26; font-size: 0.55rem; font-weight: 700; padding: 1px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+        .player-box .blind-label { font-size: 0.55rem; color: #9aafcc; background: rgba(0, 0, 0, 0.3); padding: 0 8px; border-radius: 12px; }
 
         /* ── ACTIONS (outside table) ── */
         #actions-wrap {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: center;
-            padding: 6px 0 2px 0;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 60px;
-            backdrop-filter: blur(4px);
-            padding: 12px 20px;
-            border: 1px solid #2a3a4a;
+            width: 100%; max-width: 1000px; display: flex; justify-content: center; padding: 6px 0 2px 0;
+            gap: 10px; flex-wrap: wrap; align-items: center; background: rgba(0, 0, 0, 0.25); border-radius: 60px;
+            backdrop-filter: blur(4px); padding: 12px 20px; border: 1px solid #2a3a4a;
         }
-        #actions-wrap .btn {
-            padding: 10px 24px;
-            min-width: 70px;
-            font-size: 0.9rem;
-            box-shadow: 0 3px 0 #101a24;
-        }
-        .btn-check {
-            background: #2a7a52;
-            color: #e8f0e8;
-            box-shadow: 0 3px 0 #144a32 !important;
-        }
+        #actions-wrap .btn { padding: 10px 24px; min-width: 70px; font-size: 0.9rem; box-shadow: 0 3px 0 #101a24; }
+        .btn-check { background: #2a7a52; color: #e8f0e8; box-shadow: 0 3px 0 #144a32 !important; }
         .btn-check:hover { background: #3a8a62; }
-        .btn-call {
-            background: #2a6aaa;
-            color: #e8f0f8;
-            box-shadow: 0 3px 0 #1a3a6a !important;
-        }
+        .btn-call { background: #2a6aaa; color: #e8f0f8; box-shadow: 0 3px 0 #1a3a6a !important; }
         .btn-call:hover { background: #3a7aba; }
-        .btn-raise {
-            background: #c97a2a;
-            color: #fff;
-            box-shadow: 0 3px 0 #8a5218 !important;
-        }
+        .btn-raise { background: #c97a2a; color: #fff; box-shadow: 0 3px 0 #8a5218 !important; }
         .btn-raise:hover { background: #da8a3a; }
-        .btn-fold {
-            background: #b03a3a;
-            color: #fff;
-            box-shadow: 0 3px 0 #7a2222 !important;
-        }
+        .btn-fold { background: #b03a3a; color: #fff; box-shadow: 0 3px 0 #7a2222 !important; }
         .btn-fold:hover { background: #c84a4a; }
-        .btn-start {
-            background: #2ecc71;
-            color: #141a26;
-            box-shadow: 0 3px 0 #1a8a4a !important;
-        }
+        .btn-start { background: #2ecc71; color: #141a26; box-shadow: 0 3px 0 #1a8a4a !important; }
         .btn-start:hover { background: #3ddc84; }
-        .btn-start:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none !important;
-        }
+        .btn-start:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
         #raise-input {
-            width: 72px;
-            padding: 8px 4px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-align: center;
-            background: #101624;
-            border: 2px solid #3a4c64;
-            border-radius: 12px;
-            color: #fff;
-            outline: none;
+            width: 72px; padding: 8px 4px; font-size: 0.95rem; font-weight: 600; text-align: center;
+            background: #101624; border: 2px solid #3a4c64; border-radius: 12px; color: #fff; outline: none;
         }
         #raise-input:focus { border-color: #f5b342; }
-        .raise-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
+        .raise-group { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
         .raise-group .btn-raise { min-width: 60px; }
 
         /* ── LOG ── */
         #log {
-            width: 100%;
-            max-width: 1000px;
-            background: #0e141fe0;
-            border-radius: 20px;
-            padding: 8px 18px;
-            max-height: 80px;
-            overflow-y: auto;
-            font-size: 0.8rem;
-            color: #b0c8dd;
-            border: 1px solid #1f2f3f;
-            backdrop-filter: blur(4px);
-            scrollbar-width: thin;
-            scrollbar-color: #2a3a4a transparent;
-            margin-top: 2px;
+            width: 100%; max-width: 1000px; background: #0e141fe0; border-radius: 20px; padding: 8px 18px;
+            max-height: 80px; overflow-y: auto; font-size: 0.8rem; color: #b0c8dd; border: 1px solid #1f2f3f;
+            backdrop-filter: blur(4px); scrollbar-width: thin; scrollbar-color: #2a3a4a transparent; margin-top: 2px;
         }
         #log::-webkit-scrollbar { width: 4px; }
-        #log::-webkit-scrollbar-thumb {
-            background: #2a3a4a;
-            border-radius: 10px;
-        }
-        #log .log-entry {
-            padding: 2px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
+        #log::-webkit-scrollbar-thumb { background: #2a3a4a; border-radius: 10px; }
+        #log .log-entry { padding: 2px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
         #log .log-entry.highlight { color: #f7d875; }
 
         /* ── responsive ── */
@@ -569,11 +180,7 @@
             #menu { padding: 28px 20px; }
             #menu h1 { font-size: 2.4rem; }
             #host-controls { top: 10px; right: 10px; transform: scale(0.85); transform-origin: top right; }
-            #table {
-                border-radius: 60px 60px 40px 40px;
-                padding: 16px 12px 12px 12px;
-                min-height: 360px;
-            }
+            #table { border-radius: 60px 60px 40px 40px; padding: 16px 12px 12px 12px; min-height: 360px; }
             .card { width: 52px; height: 74px; font-size: 1.2rem; }
             .card .rank { font-size: 1.1rem; }
             .card .suit { font-size: 1rem; }
@@ -648,7 +255,7 @@
                 <button class="btn btn-call" id="callBtn" disabled>📞 Call</button>
                 <div class="raise-group">
                     <button class="btn btn-raise" id="raiseBtn" disabled>⬆ Raise</button>
-                    <input id="raiseInput" type="number" min="20" step="10" value="40" disabled />
+                    <input id="raise-input" type="number" min="20" step="10" value="40" disabled />
                 </div>
                 <button class="btn btn-fold" id="foldBtn" disabled>✕ Fold</button>
             </div>
@@ -660,6 +267,49 @@
     </div>
 
     <script>
+        // ═══════════════════════════════════════════════════════════════════
+        //  AUDIO SETUP
+        // ═══════════════════════════════════════════════════════════════════
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function initAudio() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            try {
+                if (audioCtx.state === 'suspended') return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (type === 'action') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+                } else if (type === 'start') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'turn') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+                }
+            } catch(e) {}
+        }
+
         // ═══════════════════════════════════════════════════════════════════
         //  POKER ENGINE
         // ═══════════════════════════════════════════════════════════════════
@@ -1023,6 +673,7 @@
         const app = {
             game: new PokerGame(), peer: null, conn: null, isHost: false, myId: null, roomCode: '',
             connected: false, gameStarted: false, myPlayerId: null, logLines: [], isProcessing: false, hostCode: '',
+            lastTurnNotified: false
         };
 
         const $ = id => document.getElementById(id);
@@ -1043,17 +694,17 @@
         const topStartBtn = $('topStartBtn');
 
         const potAmount = $('potAmount');
-        const phaseDisplay = $('phaseDisplay');
-        const turnDisplay = $('turnDisplay');
+        const phaseDisplay = $('phase-display'); // FIXED ID
+        const turnDisplay = $('turn-display'); // FIXED ID
         const communityEl = $('community');
-        const playersArea = $('playersArea');
+        const playersArea = $('players-area'); // FIXED ID
         const logEl = $('log');
 
         const checkBtn = $('checkBtn');
         const callBtn = $('callBtn');
         const raiseBtn = $('raiseBtn');
         const foldBtn = $('foldBtn');
-        const raiseInput = $('raiseInput');
+        const raiseInput = $('raise-input'); // FIXED ID TO MATCH HTML AND CSS
 
         function renderCard(card, small = false, xs = false) {
             const div = document.createElement('div');
@@ -1154,21 +805,27 @@
 
             if (!state.gameStarted) {
                 turnDisplay.textContent = '⏳ Waiting for host to start'; turnDisplay.style.color = '#9aafcc';
+                app.lastTurnNotified = false;
             } else if (state.isMyTurn && state.canAct && !state.handComplete) {
                 turnDisplay.textContent = '🎯 Your turn'; turnDisplay.style.color = '#f7d875';
+                if (!app.lastTurnNotified) {
+                    playSound('turn');
+                    app.lastTurnNotified = true;
+                }
             } else if (state.handComplete) {
                 turnDisplay.textContent = '🏁 Hand over'; turnDisplay.style.color = '#9aafcc';
+                app.lastTurnNotified = false;
             } else {
                 const current = app.game.getCurrentPlayer();
                 turnDisplay.textContent = current ? `👤 ${current.name}'s turn` : '—'; turnDisplay.style.color = '#b0c8dd';
+                app.lastTurnNotified = false;
             }
 
             renderCommunity();
             renderPlayers();
 
-            // Handle Host Controls (Top Right)
+            hostControls.style.display = 'flex';
             if (app.isHost) {
-                hostControls.style.display = 'flex';
                 if (!state.gameStarted) {
                     topStartBtn.style.display = 'inline-block';
                     const enough = app.game.players.length >= 2;
@@ -1178,7 +835,7 @@
                     topStartBtn.style.display = 'none';
                 }
             } else {
-                hostControls.style.display = 'none';
+                topStartBtn.style.display = 'none';
             }
 
             const canAct = state.isMyTurn && state.canAct && !state.handComplete && state.phase !== 'showdown' && state.gameStarted;
@@ -1224,6 +881,8 @@
             app.isProcessing = true;
             const state = app.game.getStateForPlayer(app.myPlayerId);
             if (!state || !state.isMyTurn || !state.canAct || state.handComplete || !state.gameStarted) { app.isProcessing = false; return; }
+
+            playSound('action');
 
             if (app.isHost) {
                 const result = app.game.act(app.myPlayerId, action, amount);
@@ -1297,6 +956,7 @@
                 if (p.chips > 0) p.isActive = true;
             }
             app.game.startHand();
+            playSound('start');
             addLog(`🃏 New hand started! (${app.game.phase})`);
             const dealer = app.game.players[app.game.dealerIndex];
             addLog(`👑 Dealer: ${dealer.name} | SB: ${app.game.smallBlind} | BB: ${app.game.bigBlind}`);
@@ -1315,7 +975,7 @@
             hostCodeDisplay.style.display = 'block';
             hostCodeText.textContent = code;
             roomCodeInput.value = code;
-            gameRoomCode.textContent = code; // Update the new Top Right code display
+            gameRoomCode.textContent = code;
 
             menuError.textContent = ''; menuInfo.textContent = '🔄 Creating game...';
 
@@ -1439,7 +1099,10 @@
                 const name = `Player${Math.floor(Math.random() * 1000)}`;
                 conn.send({ type: 'join', name });
 
-                showGame(); app.gameStarted = true; menuInfo.textContent = `✅ Joined game "${code}"`;
+                gameRoomCode.textContent = code; 
+                showGame(); 
+                app.gameStarted = false; 
+                menuInfo.textContent = `✅ Joined game "${code}"`;
                 addLog('🔗 Connected to host! Waiting for game to start...');
 
             } catch (err) {
@@ -1465,7 +1128,7 @@
                 addLog(`⚠️ ${data.message}`); menuError.textContent = data.message; setTimeout(() => menuError.textContent = '', 3000);
             }
             if (data.type === 'gameStarted') {
-                app.game.gameStarted = true; addLog('🃏 Game started!'); updateUI();
+                app.game.gameStarted = true; addLog('🃏 Game started!'); playSound('start'); updateUI();
             }
             if (data.type === 'handComplete') {
                 app.game.handComplete = true; app.game.phase = 'showdown'; addLog('🏁 Hand complete!'); updateUI();
@@ -1513,10 +1176,9 @@
         }
 
         // ─── Event Listeners ───
-        hostBtn.addEventListener('click', hostGame);
-        joinBtn.addEventListener('click', joinGame);
+        hostBtn.addEventListener('click', () => { initAudio(); hostGame(); });
+        joinBtn.addEventListener('click', () => { initAudio(); joinGame(); });
 
-        // Top Right Start Button triggers the start process
         topStartBtn.addEventListener('click', () => {
             if (app.isHost && !app.game.gameStarted && app.game.players.length >= 2) {
                 startNewHand();
@@ -1559,7 +1221,7 @@
 
         (function() {
             const params = new URLSearchParams(window.location.search); const code = params.get('room');
-            if (code && code.length === 2) { roomCodeInput.value = code.toUpperCase(); setTimeout(() => joinGame(), 400); }
+            if (code && code.length === 2) { roomCodeInput.value = code.toUpperCase(); setTimeout(() => { initAudio(); joinGame(); }, 400); }
         })();
 
         roomCodeInput.focus();
