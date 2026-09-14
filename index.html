@@ -486,9 +486,14 @@
                     }
                 }
 
+                // DEAL 3 CARDS IMMEDIATELY (FLOP)
+                this.deck.pop(); // Burn card
+                for (let i = 0; i < 3; i++) this.communityCards.push(this.deck.pop());
+
                 this.currentPlayerIndex = (bbIdx + 1) % this.players.length;
                 this.advanceToNextActivePlayer();
-                this.phase = 'preflop';
+                
+                this.phase = 'flop'; // Skip straight to the flop
                 this.playersInHand = this.players.filter(p => p.isActive && !p.folded && p.chips > 0).map(p => p.id);
                 this.gameStarted = true;
                 return true;
@@ -694,17 +699,17 @@
         const topStartBtn = $('topStartBtn');
 
         const potAmount = $('potAmount');
-        const phaseDisplay = $('phase-display'); // FIXED ID
-        const turnDisplay = $('turn-display'); // FIXED ID
+        const phaseDisplay = $('phase-display');
+        const turnDisplay = $('turn-display');
         const communityEl = $('community');
-        const playersArea = $('players-area'); // FIXED ID
+        const playersArea = $('players-area');
         const logEl = $('log');
 
         const checkBtn = $('checkBtn');
         const callBtn = $('callBtn');
         const raiseBtn = $('raiseBtn');
         const foldBtn = $('foldBtn');
-        const raiseInput = $('raise-input'); // FIXED ID TO MATCH HTML AND CSS
+        const raiseInput = $('raise-input');
 
         function renderCard(card, small = false, xs = false) {
             const div = document.createElement('div');
@@ -937,12 +942,17 @@
             }
         }
 
+        // FIXED STATE BROADCAST
         function broadcastState() {
             if (!app.isHost || !app.connected) return;
-            const state = app.game.getStateForPlayer(null);
             if (app.peer) {
-                for (const conn of Object.values(app.peer.connections)) {
-                    for (const c of conn) { if (c.open) c.send({ type: 'state', state }); }
+                for (const peerId in app.peer.connections) {
+                    for (const c of app.peer.connections[peerId]) { 
+                        if (c.open) {
+                            const state = app.game.getStateForPlayer(peerId);
+                            c.send({ type: 'state', state }); 
+                        } 
+                    }
                 }
             }
         }
@@ -1021,7 +1031,7 @@
                 app.game.addPlayer(conn.peer, name);
                 addLog(`🔗 ${name} joined!`);
                 menuPlayerCount.textContent = `👥 Players: ${app.game.players.length}`;
-                const state = app.game.getStateForPlayer(null);
+                const state = app.game.getStateForPlayer(conn.peer);
                 conn.send({ type: 'state', state });
                 if (app.game.gameStarted) conn.send({ type: 'gameStarted' });
                 broadcastState(); updateUI(); 
